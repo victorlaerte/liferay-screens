@@ -1,2 +1,0 @@
-liferay-mobile-widgets
-======================
