@@ -79,10 +79,13 @@ public class WebContentDisplayScreenlet
 		return modifiedHtml;
 	}
 
+	public WebContentDisplayListener getListener() {
+		return _listener;
+	}
+
 	public void setListener(WebContentDisplayListener listener) {
 		_listener = listener;
 	}
-
 
 	public boolean isJavascriptEnabled() {
 		return _javascriptEnabled;
@@ -90,6 +93,30 @@ public class WebContentDisplayScreenlet
 
 	public void setJavascriptEnabled(boolean javascriptEnabled) {
 		_javascriptEnabled = javascriptEnabled;
+	}
+
+	public String getArticleId() {
+		return _articleId;
+	}
+
+	public void setArticleId(final String articleId) {
+		this._articleId = articleId;
+	}
+
+	public boolean isAutoLoad() {
+		return _autoLoad;
+	}
+
+	public void setAutoLoad(final boolean autoLoad) {
+		this._autoLoad = autoLoad;
+	}
+
+	public long getGroupId() {
+		return _groupId;
+	}
+
+	public void setGroupId(final long groupId) {
+		this._groupId = groupId;
 	}
 
 	protected void autoLoad() {
@@ -152,6 +179,7 @@ public class WebContentDisplayScreenlet
 	protected void onScreenletAttached() {
 		if (_autoLoad) {
 			autoLoad();
+
 		}
 	}
 
