@@ -105,6 +105,13 @@
 		<attr name="editable" format="boolean"/>
 	</declare-styleable>
 
+	<declare-styleable name="AudienceTargetingScreenlet">
+		<attr name="layoutId"/>
+		<attr name="groupId"/>
+		<attr name="screenletApp" format="string"/>
+		<attr name="placeholder" format="string"/>
+	</declare-styleable>
+
 	<declare-styleable name="ModalProgressBar">
 		<attr name="actionViewId" format="reference"/>
 	</declare-styleable>
