@@ -31,6 +31,7 @@
 		<activity android:name=".WebViewActivity"/>
 		<activity android:name=".AddBookmarkActivity"/>
 		<activity android:name=".fullview.LoginFullActivity"/>
+		<activity android:name=".AudienceTargetingActivity"/>
 
 	</application>
 </manifest>
