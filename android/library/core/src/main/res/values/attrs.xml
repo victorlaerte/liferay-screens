@@ -108,9 +108,10 @@
 	<declare-styleable name="AudienceTargetingScreenlet">
 		<attr name="layoutId"/>
 		<attr name="groupId"/>
+		<attr name="autoLoad"/>
 		<attr name="screenletApp" format="string"/>
 		<attr name="placeholder" format="string"/>
-		<attr name="autoLoad"/>
+		<attr name="defaultLayout" format="reference"/>
 	</declare-styleable>
 
 	<declare-styleable name="ModalProgressBar">
