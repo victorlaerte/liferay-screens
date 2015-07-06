@@ -70,6 +70,9 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 
 		View demoResources = findViewById(R.id.show_demo_resources);
 		demoResources.setOnTouchListener(this);
+
+		findViewById(R.id.show_more_info).setOnTouchListener(this);
+
 		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
 		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
 	}
@@ -290,6 +293,10 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		switch (v.getId()) {
 			case R.id.show_demo_resources:
 				startActivity(new Intent(this, ShowResourcesActivity.class));
+				overridePendingTransition(0, 0);
+				break;
+			case R.id.show_more_info:
+				startActivity(new Intent(this, ShowMoreInfoActivity.class));
 				overridePendingTransition(0, 0);
 				break;
 			case R.id.account_settings_menu_entry:
