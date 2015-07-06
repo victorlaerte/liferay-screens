@@ -33,6 +33,13 @@
 			android:background="@color/westeros_light_gray"
 			android:text="@string/sign_out"/>
 
+		<com.liferay.mobile.screens.audiencetargeting.AudienceTargetingScreenlet
+			android:id="@+id/audience_targeting"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			liferay:autoLoad="true"
+			liferay:placeholder="if_not_direction_show_banner"/>
+
 	</LinearLayout>
 
 	<FrameLayout
