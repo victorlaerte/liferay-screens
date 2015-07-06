@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liferay.mobile.screens.bankofwesteros.R;
+import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
 import com.liferay.mobile.screens.bankofwesteros.utils.Card;
 import com.liferay.mobile.screens.bankofwesteros.utils.EndAnimationListener;
 import com.liferay.mobile.screens.base.list.BaseListListener;
@@ -63,8 +64,10 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
 		callMenuEntry.setOnTouchListener(this);
 		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
-		findViewById(R.id.send_message_menu_entry).setOnTouchListener(this);
+		View sendMessages = findViewById(R.id.send_message_menu_entry);
+		sendMessages.setOnTouchListener(this);
 		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
+		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
 	}
 
 	@Override
