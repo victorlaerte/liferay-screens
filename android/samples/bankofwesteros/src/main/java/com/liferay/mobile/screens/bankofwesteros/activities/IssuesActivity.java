@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.liferay.mobile.screens.bankofwesteros.R;
 import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
+import com.liferay.mobile.screens.bankofwesteros.audience.ShowMoreInfoActivity;
+import com.liferay.mobile.screens.bankofwesteros.audience.ShowResourcesActivity;
 import com.liferay.mobile.screens.bankofwesteros.utils.Card;
 import com.liferay.mobile.screens.bankofwesteros.utils.EndAnimationListener;
 import com.liferay.mobile.screens.base.list.BaseListListener;
@@ -42,6 +44,10 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
+
+		setTheme(getIntent().getIntExtra("theme", R.style.WesterosTheme));
+
 		setContentView(R.layout.issues);
 
 		_backgroundCard = findViewById(R.id.background);

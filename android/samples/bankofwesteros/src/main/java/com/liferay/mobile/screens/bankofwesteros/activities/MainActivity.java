@@ -82,7 +82,13 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 
 	@Override
 	public void onLoginSuccess(User user) {
-		toIssues();
+		AudienceTargetingHelper.changeThemeOfIssuesListIfSales(new AudienceListener() {
+			@Override
+			public void onSuccess(String result) {
+				boolean isSales = Boolean.valueOf(result);
+				toIssues(isSales ? R.style.SalesTheme : R.style.WesterosTheme);
+			}
+		});
 	}
 
 	@Override
@@ -131,6 +137,10 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 	}
 
 	private void toIssues() {
+		toIssues(R.style.WesterosTheme);
+	}
+
+	private void toIssues(final int theme) {
 		_background.animate().alpha(0);
 
 		int maxHeightInDp = convertDpToPx(_maxHeight);
@@ -138,15 +148,16 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 
 		final ViewPropertyAnimator animate = _card1.animate();
 		animate.y(maxHeightInDp)
-			.setListener(new EndAnimationListener() {
-				@Override
-				public void onAnimationEnd(Animator animator) {
-					animate.setListener(null);
-					Intent intent = new Intent(MainActivity.this, IssuesActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-					startActivity(intent);
-				}
-			});
+				.setListener(new EndAnimationListener() {
+					@Override
+					public void onAnimationEnd(Animator animator) {
+						animate.setListener(null);
+						Intent intent = new Intent(MainActivity.this, IssuesActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						intent.putExtra("theme", theme);
+						startActivity(intent);
+					}
+				});
 	}
 
 
