@@ -67,7 +67,11 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		View sendMessages = findViewById(R.id.send_message_menu_entry);
 		sendMessages.setOnTouchListener(this);
 		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
+
+		View demoResources = findViewById(R.id.show_demo_resources);
+		demoResources.setOnTouchListener(this);
 		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
+		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
 	}
 
 	@Override
@@ -284,6 +288,10 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	private void launchMenu(View v) {
 		int color = android.R.color.transparent;
 		switch (v.getId()) {
+			case R.id.show_demo_resources:
+				startActivity(new Intent(this, ShowResourcesActivity.class));
+				overridePendingTransition(0, 0);
+				break;
 			case R.id.account_settings_menu_entry:
 				startActivity(new Intent(this, AccountSettingsActivity.class));
 				overridePendingTransition(0, 0);

@@ -28,6 +28,12 @@
 			android:text="@string/send_a_message"/>
 
 		<TextView
+		<TextView
+			android:id="@+id/show_demo_resources"
+			style="@style/westeros_menu_entry"
+			android:text="@string/show_demo_resources"/>
+
+		<TextView
 			android:id="@+id/sign_out_menu_entry"
 			style="@style/westeros_menu_entry"
 			android:background="@color/westeros_light_gray"
