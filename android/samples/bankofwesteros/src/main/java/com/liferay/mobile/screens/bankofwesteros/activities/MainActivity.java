@@ -22,11 +22,13 @@ import android.view.ViewPropertyAnimator;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.liferay.mobile.screens.audiencetargeting.AudienceListener;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordListener;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordScreenlet;
 import com.liferay.mobile.screens.auth.login.LoginListener;
 import com.liferay.mobile.screens.auth.login.LoginScreenlet;
 import com.liferay.mobile.screens.bankofwesteros.R;
+import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
 import com.liferay.mobile.screens.bankofwesteros.utils.EndAnimationListener;
 import com.liferay.mobile.screens.context.User;
 import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
