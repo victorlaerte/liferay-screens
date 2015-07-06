@@ -110,6 +110,7 @@
 		<attr name="groupId"/>
 		<attr name="screenletApp" format="string"/>
 		<attr name="placeholder" format="string"/>
+		<attr name="autoLoad"/>
 	</declare-styleable>
 
 	<declare-styleable name="ModalProgressBar">
