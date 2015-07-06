@@ -75,6 +75,7 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 
 		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
 		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
+		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
 	}
 
 	@Override
