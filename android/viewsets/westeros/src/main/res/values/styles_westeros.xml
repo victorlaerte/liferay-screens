@@ -72,7 +72,7 @@
 
 	<style name="westeros_dark_button" parent="westeros_button">
 		<item name="android:background">@drawable/westeros_dark_button_ripple</item>
-		<item name="android:textColor">@color/westeros_red</item>
+		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
 	<style name="westeros_progress_bar">

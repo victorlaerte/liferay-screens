@@ -1,11 +1,18 @@
 <resources>
 
+	<style name="SalesTheme" parent="WesterosTheme">
+		<item name="colorPrimary">#009688</item>
+		<item name="colorAccent">#00796B</item>
+		<!--<item name="colorAccent">#FFEB3B</item>-->
+		<item name="colorPrimaryDark">#00796B</item>
+	</style>
+
 	<style name="westeros_card_title">
 		<item name="android:layout_centerHorizontal">true</item>
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">@dimen/westeros_card_title_height</item>
 		<item name="android:gravity">center</item>
-		<item name="android:textColor">@color/westeros_red</item>
+		<item name="android:textColor">?attr/colorPrimary</item>
 		<item name="android:textSize">22sp</item>
 		<item name="android:textAllCaps">true</item>
 	</style>
