@@ -30,12 +30,12 @@
 		<TextView
 			android:id="@+id/show_more_info"
 			style="@style/westeros_menu_entry"
-			android:text="@string/show_more_info"/>
+			android:text="@string/more_info"/>
 
 		<TextView
 			android:id="@+id/show_demo_resources"
 			style="@style/westeros_menu_entry"
-			android:text="@string/show_demo_resources"/>
+			android:text="@string/demo_resources"/>
 
 		<TextView
 			android:id="@+id/sign_out_menu_entry"
@@ -48,7 +48,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			liferay:autoLoad="true"
-			liferay:placeholder="if_not_direction_show_banner"/>
+			liferay:placeholder="settings_banner"/>
 
 	</LinearLayout>
 
@@ -67,12 +67,12 @@
 			android:orientation="vertical">
 
 			<ImageView
-				android:tint="?attr/colorPrimary"
 				android:id="@+id/card1_to_background_menu"
 				style="@style/westeros_arrow"
 				android:layout_alignParentLeft="true"
 				android:layout_alignParentStart="true"
-				android:src="@drawable/icon_options_red"/>
+				android:src="@drawable/icon_options_red"
+				android:tint="?attr/colorPrimary"/>
 
 			<TextView
 				android:id="@+id/title_issues"
@@ -80,12 +80,12 @@
 				android:text="@string/my_issues"/>
 
 			<ImageView
-				android:tint="?attr/colorPrimary"
 				android:id="@+id/card1_to_background"
 				style="@style/westeros_arrow"
 				android:layout_alignParentEnd="true"
 				android:layout_alignParentRight="true"
-				android:src="@drawable/icon_down"/>
+				android:src="@drawable/icon_down"
+				android:tint="?attr/colorPrimary"/>
 
 			<View
 				android:id="@+id/divider_issues"
@@ -113,12 +113,12 @@
 			android:orientation="vertical">
 
 			<ImageView
-				android:tint="?attr/colorPrimary"
 				android:id="@+id/card1_to_front_view"
 				style="@style/westeros_arrow"
 				android:layout_alignParentLeft="true"
 				android:src="@drawable/icon_left"
-				android:tag="card1_to_front_view"/>
+				android:tag="card1_to_front_view"
+				android:tint="?attr/colorPrimary"/>
 
 			<TextView
 				android:id="@+id/title_detail_issue"

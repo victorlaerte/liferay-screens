@@ -21,10 +21,10 @@ import java.util.Locale;
  */
 public class AudienceTargetingHelper {
 
-	public static final String IF_OLD_DONT_ALLOW_MESSAGES = "if_old_dont_allow_messages";
-	public static final String IF_DEVELOPER_SHOW_BUTTON = "if_developer_show_button";
-	public static final String IF_MARKETING_SHOW_DIALOG_TO_NEW_FORM = "if_marketing_show_dialog_to_new_form";
-	public static final String IF_SALES_CHANGE_THEME = "if_sales_change_theme";
+	public static final String IF_OLD_DONT_ALLOW_MESSAGES = "show_messages_button";
+	public static final String IF_DEVELOPER_SHOW_BUTTON = "show_demo_resources_button";
+	public static final String IF_MARKETING_SHOW_DIALOG_TO_NEW_FORM = "show_form_dialog";
+	public static final String IF_SALES_CHANGE_THEME = "change_app_theme";
 
 	public static void changeThemeOfIssuesListIfSales(final AudienceListener listener) {
 		AudienceTargetingManager manager = new AudienceTargetingManager(2);
