@@ -15,10 +15,14 @@
 package com.liferay.mobile.screens.viewsets.defaultviews.webcontentdisplay;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -72,8 +76,8 @@ public class WebContentDisplayView extends FrameLayout
 
 		//TODO check encoding
 		_webView.loadDataWithBaseURL(
-				LiferayServerContext.getServer(), styledHtml, "text/html", "utf-8",
-				null);
+			LiferayServerContext.getServer(), styledHtml, "text/html", "utf-8",
+			null);
 	}
 
 	@Override
@@ -90,6 +94,20 @@ public class WebContentDisplayView extends FrameLayout
 		super.onFinishInflate();
 
 		_webView = (WebView) findViewById(R.id.liferay_webview);
+//		_webView.getSettings().setSupportMultipleWindows(true);
+		_webView.setWebChromeClient(new WebChromeClient());
+//		_webView.setWebChromeClient(new WebChromeClient() {
+//			@Override
+//			public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
+//				WebView.HitTestResult result = view.getHitTestResult();
+//				String data = result.getExtra();
+//				Context context = view.getContext();
+//				Intent browserIntent = new Intent(Intent.ACTION_VIEW,  Uri.parse(data));
+//				browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//				context.startActivity(browserIntent);
+//				return false;
+//			}
+//		});
 		_progressBar = (ProgressBar) findViewById(R.id.liferay_webview_progress);
 	}
 
@@ -100,20 +118,19 @@ public class WebContentDisplayView extends FrameLayout
 		WebContentDisplayScreenlet screenlet = (WebContentDisplayScreenlet) getParent();
 		if (screenlet.isJavascriptEnabled()) {
 			_webView.getSettings().setJavaScriptEnabled(true);
-			_webView.setWebChromeClient(new WebChromeClient());
 		}
 	}
 
 	private static final String STYLES =
 		"<style>" +
-		".MobileCSS {padding: 4%; width: 92%;} " +
-		".MobileCSS, .MobileCSS span, .MobileCSS p, .MobileCSS h1, " +
+			".MobileCSS {padding: 4%; width: 92%;} " +
+			".MobileCSS, .MobileCSS span, .MobileCSS p, .MobileCSS h1, " +
 			".MobileCSS h2, .MobileCSS h3{ " +
-		"font-size: 110%; font-weight: 200;" +
+			"font-size: 110%; font-weight: 200;" +
 			"font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;} " +
-		".MobileCSS img { width: 100% !important; } " +
-		".span2, .span3, .span4, .span6, .span8, .span10 { width: 100%; }" +
-		"</style>";
+			".MobileCSS img { width: 100% !important; } " +
+			".span2, .span3, .span4, .span6, .span8, .span10 { width: 100%; }" +
+			"</style>";
 
 	private WebView _webView;
 	private ProgressBar _progressBar;
