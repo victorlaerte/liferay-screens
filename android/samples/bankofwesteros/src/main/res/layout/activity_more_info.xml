@@ -9,6 +9,6 @@
 		android:layout_height="wrap_content"
 		liferay:autoLoad="true"
 		liferay:defaultLayout="@layout/content_default"
-		liferay:placeholder="more_info_content"/>
+		liferay:placeholder="@string/more_info_content_placeholder"/>
 
 </RelativeLayout>
