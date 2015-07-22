@@ -17,9 +17,11 @@ package com.liferay.mobile.screens.viewsets.defaultviews.webcontentdisplay;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -33,6 +35,8 @@ import com.liferay.mobile.screens.viewsets.defaultviews.DefaultTheme;
 import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
 import com.liferay.mobile.screens.webcontentdisplay.WebContentDisplayScreenlet;
 import com.liferay.mobile.screens.webcontentdisplay.view.WebContentDisplayViewModel;
+
+import java.lang.ref.WeakReference;
 
 /**
  * @author Silvio Santos
@@ -94,21 +98,50 @@ public class WebContentDisplayView extends FrameLayout
 		super.onFinishInflate();
 
 		_webView = (WebView) findViewById(R.id.liferay_webview);
-//		_webView.getSettings().setSupportMultipleWindows(true);
-		_webView.setWebChromeClient(new WebChromeClient());
-//		_webView.setWebChromeClient(new WebChromeClient() {
-//			@Override
-//			public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
-//				WebView.HitTestResult result = view.getHitTestResult();
-//				String data = result.getExtra();
-//				Context context = view.getContext();
-//				Intent browserIntent = new Intent(Intent.ACTION_VIEW,  Uri.parse(data));
-//				browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//				context.startActivity(browserIntent);
-//				return false;
-//			}
-//		});
+		_webView.getSettings().setSupportMultipleWindows(true);
+		_webView.setWebViewClient(new WebViewClient());
+		_webView.setWebChromeClient(new WebChromeClient() {
+			@Override
+			public boolean onCreateWindow(WebView webView, boolean dialog, boolean userGesture, Message resultMsg) {
+				final Context context = webView.getContext();
+
+				final WebView.HitTestResult result = webView.getHitTestResult();
+
+				if (isALinkInsideAnImage(result)) {
+					retrieveOriginalLinkAndRedirect();
+				}
+				else {
+					String url = result.getExtra();
+					launchLinkInNewActivity(context, url);
+				}
+				return false;
+			}
+		});
+		_webView.setDownloadListener(new DownloadListener() {
+			@Override
+			public void onDownloadStart(final String url, final String userAgent, final String contentDisposition, final String mimeType, final long contentLength) {
+				launchLinkInNewActivity(getContext(), url);
+			}
+		});
 		_progressBar = (ProgressBar) findViewById(R.id.liferay_webview_progress);
+	}
+
+	private static class ContextHandler extends Handler {
+
+		private WeakReference<Context> _contextWeakReference;
+
+		public ContextHandler(WeakReference<Context> contextWeakReference) {
+			_contextWeakReference = contextWeakReference;
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			String url = (String) msg.getData().get("url");
+			Context context = _contextWeakReference.get();
+			if (context != null) {
+				launchLinkInNewActivity(context, url);
+			}
+		}
 	}
 
 	@Override
@@ -119,6 +152,23 @@ public class WebContentDisplayView extends FrameLayout
 		if (screenlet.isJavascriptEnabled()) {
 			_webView.getSettings().setJavaScriptEnabled(true);
 		}
+	}
+
+	private boolean isALinkInsideAnImage(final WebView.HitTestResult result) {
+		return result.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE;
+	}
+
+	private void retrieveOriginalLinkAndRedirect() {
+		Handler handler = new ContextHandler(new WeakReference<>(getContext()));
+		Message message = handler.obtainMessage();
+		_webView.requestFocusNodeHref(message);
+	}
+
+
+	private static void launchLinkInNewActivity(final Context context, final String url) {
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(intent);
 	}
 
 	private static final String STYLES =
@@ -134,5 +184,6 @@ public class WebContentDisplayView extends FrameLayout
 
 	private WebView _webView;
 	private ProgressBar _progressBar;
+
 
 }
