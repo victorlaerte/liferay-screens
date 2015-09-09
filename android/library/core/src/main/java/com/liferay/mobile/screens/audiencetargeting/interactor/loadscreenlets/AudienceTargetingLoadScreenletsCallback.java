@@ -9,20 +9,20 @@ import org.json.JSONArray;
  * @author Javier Gamarra
  */
 public class AudienceTargetingLoadScreenletsCallback
-	extends InteractorAsyncTaskCallback<JSONArray> {
+	extends InteractorAsyncTaskCallback<Object> {
 
 	public AudienceTargetingLoadScreenletsCallback(int targetScreenletId) {
 		super(targetScreenletId);
 	}
 
 	@Override
-	public JSONArray transform(Object obj) throws Exception {
-		return (JSONArray) obj;
+	public Object transform(Object obj) throws Exception {
+		return obj;
 	}
 
 	@Override
-	protected BasicEvent createEvent(final int targetScreenletId, final JSONArray result) {
-		return new AudienceTargetingScreenletsLoadedEvent(targetScreenletId, result);
+	protected BasicEvent createEvent(final int targetScreenletId, final Object result) {
+		return new AudienceTargetingScreenletsLoadedEvent(targetScreenletId, (JSONArray) result);
 	}
 
 	@Override

@@ -7,8 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.liferay.mobile.android.util.download.DownloadProgressCallback;
-import com.liferay.mobile.android.util.download.DownloadUtil;
+import com.liferay.mobile.android.http.HttpUtil;
 import com.liferay.mobile.screens.context.LiferayScreensContext;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
@@ -18,8 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 /**
@@ -39,16 +36,15 @@ public class DownloadTask implements Runnable {
 
 			final Activity activity = LiferayScreensContext.getActivityFromContext(_context.get());
 
-			//TODO show progress in callback
-			final DownloadProgressCallback callback = null;
+//			//TODO show progress in callback
+//			final FileProgressCallback callback = null;
 
 			File file = new File(Environment.getExternalStorageDirectory() + "/screens/");
-			OutputStream os = new FileOutputStream(file);
 
-			String url = constructUrl(jsonObject, LiferayServerContext.getServer());
-
-			DownloadUtil.download(SessionContext.createSessionFromCurrentSession(), url, os,
-				callback);
+//			String url = constructUrl(jsonObject, LiferayServerContext.getServer());
+//
+//			Response response = HttpUtil.download(SessionContext.createSessionFromCurrentSession(), url,
+//				callback);
 
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_VIEW);

@@ -1,20 +1,24 @@
-# Liferay Screens Samples for Android
+# Liferay Screens for Android Samples
 
-## Introduction
+This directory contains sample apps that demonstrate Liferay Screens for Android. You can refer to these apps, along with the [Liferay Screens for Android documentation](https://dev.liferay.com/develop/tutorials/-/knowledge_base/6-2/android-apps-with-liferay-screens), to see how Screenlets and Views are used. 
 
-This directory contains sample apps to show you how to use Liferay Screens in your projects.
+## The Add Bookmark Screenlet
 
-## The Showcase App
-
-![The Test app.](../documentation/Images/signup.png)
-
-The Test app uses all available screenlets so you can see how to use them in your apps. The Test app also lets you change some configuration parameters to modify the app's behavior or change the theme and viewset used to show the screenlets.
+The Add Bookmark Screenlet lets you add bookmarks to the Bookmarks portlet in 
+Liferay Portal. It's developed in [this tutorial](https://dev.liferay.com/develop/tutorials/-/knowledge_base/6-2/creating-android-screenlets) as an example of creating your own Screenlet.
 
 ## The Westeros Bank App
 
-[![The Westeros Bank app](../documentation/Images/westeros-youtube.png)](https://www.youtube.com/watch?v=AroTd6zI794 "The Westeros Bank app - Click to Watch!")
+The [Westeros Bank app](https://www.youtube.com/watch?v=AroTd6zI794) is a real-world example that uses Screenlets to manage technical issues for the *Westeros Bank*. This example app demonstrates how to use Screenlets in a real-world app, and how to extend and customize standard Screenlets and View Sets to meet your design requirements.
 
-The Westeros Bank app is a real example using some screenlets to manage technical issues for the *Westeros Bank*. In this sample you'll learn how to use screenlets in a real-world app, and how to extend and customize standard screenlets and viewsets to meet your design requirements.
+## The Push Notifications app
 
+The Push Notifications app uses the [push portlet](https://www.liferay.com/marketplace/-/mp/application/48439053) and Liferay Portal to show global notifications and refresh the list each time a DDL record is added in the portal.
 
+See the push notifications [tutorial](https://dev.liferay.com/develop/tutorials/-/knowledge_base/6-2/using-liferay-push-in-android-apps) 
+for more information.
+
+## The Test App
+
+The Test app uses all available screenlets. It also lets you change some configuration parameters to modify its behavior and appearance.
 

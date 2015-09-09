@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 21
+	compileSdkVersion 22
 	buildToolsVersion "22.0.1"
 
 	packagingOptions {
@@ -11,7 +11,7 @@ android {
 
 	defaultConfig {
 		applicationId "com.liferay.mobile.screens.testapp"
-		minSdkVersion 14
+		minSdkVersion 15
 		targetSdkVersion 22
 		versionCode 1
 		versionName "1.0"
@@ -53,5 +53,6 @@ dependencies {
 	compile project (':liferay-screens')
 	compile project (':liferay-material-viewset')
 	compile project (':addbookmarkscreenlet')
-	compile 'com.android.support:appcompat-v7:22.0.0'
+
+	compile 'com.android.support:appcompat-v7:22.2.0'
 }
