@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.liferay.mobile.screens.R;
+import com.liferay.mobile.screens.audiencetargeting.interactor.AudienceTargetingResult;
 import com.liferay.mobile.screens.base.BaseScreenlet;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
@@ -34,8 +35,8 @@ import java.util.Locale;
  * @author Jose Manuel Navarro
  */
 public class WebContentDisplayScreenlet
-		extends BaseScreenlet<WebContentDisplayViewModel, WebContentDisplayInteractor>
-		implements WebContentDisplayListener {
+	extends BaseScreenlet<WebContentDisplayViewModel, WebContentDisplayInteractor>
+	implements WebContentDisplayListener {
 
 	public WebContentDisplayScreenlet(Context context) {
 		super(context);
@@ -60,6 +61,14 @@ public class WebContentDisplayScreenlet
 		if (_listener != null) {
 			_listener.onWebContentFailure(this, e);
 		}
+	}
+
+	public AudienceTargetingResult getAtResult() {
+		return _atResult;
+	}
+
+	public void setAtResult(AudienceTargetingResult atResult) {
+		_atResult = atResult;
 	}
 
 	@Override
@@ -182,7 +191,7 @@ public class WebContentDisplayScreenlet
 
 		}
 	}
-
+	private AudienceTargetingResult _atResult;
 	private String _articleId;
 	private boolean _autoLoad;
 	private long _groupId;
