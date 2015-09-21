@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.liferay.mobile.screens.R;
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.base.BaseScreenlet;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
@@ -131,6 +132,8 @@ public class DDLFormScreenlet
 
 		if (_listener != null) {
 			_listener.onDDLFormLoaded(record);
+
+			ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_VIEW, record.getRecordId(), "");
 		}
 
 		if (_loadRecordAfterForm) {
@@ -153,6 +156,8 @@ public class DDLFormScreenlet
 	@Override
 	public void onDDLFormRecordAdded(Record record) {
 		getViewModel().showFinishOperation(ADD_RECORD_ACTION, record);
+
+		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId(), "");
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordAdded(record);
@@ -189,6 +194,8 @@ public class DDLFormScreenlet
 	@Override
 	public void onDDLFormRecordUpdated(Record record) {
 		getViewModel().showFinishOperation(UPDATE_RECORD_ACTION, record);
+
+		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId(), "");
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordUpdated(record);

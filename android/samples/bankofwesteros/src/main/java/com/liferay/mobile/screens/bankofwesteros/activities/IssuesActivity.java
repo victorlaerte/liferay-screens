@@ -14,10 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.bankofwesteros.R;
 import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
 import com.liferay.mobile.screens.bankofwesteros.audience.ShowMoreInfoActivity;
 import com.liferay.mobile.screens.bankofwesteros.audience.ShowResourcesActivity;
+import com.liferay.mobile.screens.bankofwesteros.push.PushActivity;
 import com.liferay.mobile.screens.bankofwesteros.utils.Card;
 import com.liferay.mobile.screens.bankofwesteros.utils.EndAnimationListener;
 import com.liferay.mobile.screens.base.list.BaseListListener;
@@ -34,65 +36,13 @@ import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * @author Javier Gamarra
  */
 public class IssuesActivity extends CardActivity implements View.OnClickListener, DDLFormListener, BaseListListener<DDLEntry>, View.OnTouchListener {
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		super.onCreate(savedInstanceState);
-
-		setTheme(getIntent().getIntExtra("theme", R.style.WesterosTheme));
-
-		setContentView(R.layout.issues);
-
-		_backgroundCard = findViewById(R.id.background);
-
-		_card1ToBackgroundMenu = (ImageView) findViewById(R.id.card1_to_background_menu);
-		_card1ToBackgroundMenu.setOnClickListener(this);
-		_card1ToBackground = (ImageView) findViewById(R.id.card1_to_background);
-		_card1ToBackground.setOnClickListener(this);
-
-		_reportIssueTitle = (TextView) findViewById(R.id.report_issue_title);
-
-		_ddlFormScreenlet = (DDLFormScreenlet) findViewById(R.id.ddlform);
-		_ddlFormScreenlet.setListener(this);
-		_ddlListScreenlet = (DDLListScreenlet) findViewById(R.id.ddllist);
-		_ddlListScreenlet.setListener(this);
-
-		_sendButton = (Button) findViewById(R.id.liferay_form_submit);
-
-		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
-		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
-		callMenuEntry.setOnTouchListener(this);
-		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
-		View sendMessages = findViewById(R.id.send_message_menu_entry);
-		sendMessages.setOnTouchListener(this);
-		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
-
-		View demoResources = findViewById(R.id.show_demo_resources);
-		demoResources.setOnTouchListener(this);
-
-		findViewById(R.id.show_more_info).setOnTouchListener(this);
-
-		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
-		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
-		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		//we don't want to crash if activity gets restored without session
-		if (!SessionContext.hasSession()) {
-			finish();
-		}
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -189,6 +139,63 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	@Override
 	public void onListPageReceived(BaseListScreenlet source, int page, List<DDLEntry> entries,
 								   int rowCount) {
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setTheme(getIntent().getIntExtra("theme", R.style.WesterosTheme));
+
+		setContentView(R.layout.issues);
+
+		_backgroundCard = findViewById(R.id.background);
+
+		_card1ToBackgroundMenu = (ImageView) findViewById(R.id.card1_to_background_menu);
+		_card1ToBackgroundMenu.setOnClickListener(this);
+		_card1ToBackground = (ImageView) findViewById(R.id.card1_to_background);
+		_card1ToBackground.setOnClickListener(this);
+
+		_reportIssueTitle = (TextView) findViewById(R.id.report_issue_title);
+
+		_ddlFormScreenlet = (DDLFormScreenlet) findViewById(R.id.ddlform);
+		_ddlFormScreenlet.setListener(this);
+		_ddlListScreenlet = (DDLListScreenlet) findViewById(R.id.ddllist);
+		_ddlListScreenlet.setListener(this);
+
+		_sendButton = (Button) findViewById(R.id.liferay_form_submit);
+
+//		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
+//		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
+//		callMenuEntry.setOnTouchListener(this);
+		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
+//		View sendMessages = findViewById(R.id.send_message_menu_entry);
+//		sendMessages.setOnTouchListener(this);
+		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
+
+		View demoResources = findViewById(R.id.show_demo_resources);
+		demoResources.setVisibility(View.GONE);
+//		.setOnTouchListener(this);
+
+		findViewById(R.id.push_activity).setVisibility(View.GONE);
+
+		findViewById(R.id.show_more_info).setVisibility(View.GONE);
+//		setOnTouchListener(this);
+
+//		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
+		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
+//		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		//we don't want to crash if activity gets restored without session
+		if (!SessionContext.hasSession()) {
+			finish();
+		}
 	}
 
 	@Override
@@ -310,14 +317,14 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 				startActivity(new Intent(this, AccountSettingsActivity.class));
 				overridePendingTransition(0, 0);
 				break;
-			case R.id.call_menu_entry:
-				color = R.color.westeros_light_gray;
-
-				startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(getString(R.string.default_telephone_uri))));
-				break;
-			case R.id.send_message_menu_entry:
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.default_sms_uri))));
-				break;
+//			case R.id.call_menu_entry:
+//				color = R.color.westeros_light_gray;
+//
+//				startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(getString(R.string.default_telephone_uri))));
+//				break;
+//			case R.id.send_message_menu_entry:
+//				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.default_sms_uri))));
+//				break;
 			case R.id.sign_out_menu_entry:
 				color = R.color.westeros_light_gray;
 
@@ -326,8 +333,27 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
 				break;
+			case R.id.push_activity:
+				startActivity(new Intent(this, PushActivity.class));
+				break;
 		}
 		v.setBackgroundColor(getResources().getColor(color));
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		timeOnScreen = new Date();
+	}
+
+	@Override
+	protected void onStop() {
+
+		long time = new Date().getTime() - timeOnScreen.getTime();
+		ATTrackingActions.postTime(this, ATTrackingActions.SESSION_ON_SCREEN, time);
+
+		super.onStop();
 	}
 
 	private DDLFormScreenlet _ddlFormScreenlet;
@@ -341,4 +367,5 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	private TextView _reportIssueTitle;
 	private Button _sendButton;
 
+	private Date timeOnScreen;
 }

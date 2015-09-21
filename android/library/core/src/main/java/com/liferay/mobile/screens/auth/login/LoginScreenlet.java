@@ -24,7 +24,10 @@ import android.view.View;
 
 import com.liferay.mobile.android.oauth.OAuthConfig;
 import com.liferay.mobile.android.oauth.activity.OAuthActivity;
+import com.liferay.mobile.android.service.Session;
+import com.liferay.mobile.android.v62.company.CompanyService;
 import com.liferay.mobile.screens.R;
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.auth.BasicAuthMethod;
 import com.liferay.mobile.screens.auth.login.interactor.LoginBasicInteractor;
 import com.liferay.mobile.screens.auth.login.interactor.LoginInteractor;
@@ -199,6 +202,9 @@ public class LoginScreenlet
 
 	@Override
 	protected void onUserAction(String userActionName, LoginInteractor interactor, Object... args) {
+
+//		ATTrackingActions.view(getContext(), ATTrackingActions.BUTTON_CLICK, "loginButton");
+
 		if (BASIC_AUTH.equals(userActionName)) {
 			LoginViewModel viewModel = getViewModel();
 			LoginBasicInteractor loginBasicInteractor = (LoginBasicInteractor) interactor;

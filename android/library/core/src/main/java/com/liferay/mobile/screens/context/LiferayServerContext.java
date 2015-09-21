@@ -27,6 +27,7 @@ public class LiferayServerContext {
 		LiferayServerContext.setCompanyId(resources.getInteger(R.integer.liferay_company_id));
 		LiferayServerContext.setGroupId(resources.getInteger(R.integer.liferay_group_id));
 		LiferayServerContext.setServer(resources.getString(R.string.liferay_server));
+		LiferayServerContext.setConsumerId(resources.getString(R.string.consumer));
 	}
 
 	public static long getCompanyId() {
@@ -53,8 +54,17 @@ public class LiferayServerContext {
 		_server = server;
 	}
 
+	public static void setConsumerId(String consumerId) {
+		_consumerId = Long.valueOf(consumerId);
+	}
+
+	public static long getConsumerId() {
+		return _consumerId;
+	}
+
 	private static long _companyId;
 	private static long _groupId;
 	private static String _server;
+	private static long _consumerId;
 
 }
