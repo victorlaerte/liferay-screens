@@ -32,65 +32,63 @@ import java.util.Map;
  * @author Silvio Santos
  */
 public abstract class BaseListCallback<E>
-        extends InteractorBatchAsyncTaskCallback<BaseListResult<E>> {
+	extends InteractorBatchAsyncTaskCallback<BaseListResult<E>> {
 
-    public BaseListResult transform(Object obj) throws Exception {
-        BaseListResult result = new BaseListResult();
-        JSONArray jsonArray = ((JSONArray) obj).getJSONArray(0);
-        List<E> entries = new ArrayList<>();
+	public BaseListCallback(int targetScreenletId, Pair<Integer, Integer> rowsRange) {
+		super(targetScreenletId);
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            entries.add(createEntity(JSONUtil.toMap(jsonObject)));
-        }
+		_rowsRange = rowsRange;
+	}
 
-        result.setEntries(entries);
-        result.setRowCount(((JSONArray) obj).getInt(1));
-        return result;
-    }
+	public BaseListResult transform(Object obj) throws Exception {
+		BaseListResult result = new BaseListResult();
+		JSONArray jsonArray = ((JSONArray) obj).getJSONArray(0);
+		List<E> entries = new ArrayList<>();
 
-    @Override
-    public void onSuccess(final ArrayList<BaseListResult<E>> results) {
-        onSuccess(results.get(0));
-    }
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			entries.add(createEntity(JSONUtil.toMap(jsonObject)));
+		}
 
-    @Override
-    public void onSuccess(BaseListResult<E> result) {
-        cleanRequestState();
+		result.setEntries(entries);
+		result.setRowCount(((JSONArray) obj).getInt(1));
+		return result;
+	}
 
-        super.onSuccess(result);
-    }
+	public void onSuccess(BaseListResult<E> result) {
+		cleanRequestState();
 
-    @Override
-    public void onFailure(Exception e) {
-        cleanRequestState();
+		super.onSuccess(result);
+	}
 
-        super.onFailure(e);
-    }
+	public void onSuccess(ArrayList<BaseListResult<E>> results) {
+		onSuccess(results.get(0));
+	}
 
-    public abstract E createEntity(Map<String, Object> stringObjectMap);
+	@Override
+	public void onFailure(Exception e) {
+		cleanRequestState();
 
-    public BaseListCallback(int targetScreenletId, Pair<Integer, Integer> rowsRange) {
-        super(targetScreenletId);
+		super.onFailure(e);
+	}
 
-        _rowsRange = rowsRange;
-    }
+	public abstract E createEntity(Map<String, Object> stringObjectMap);
 
-    @Override
-    protected BasicEvent createEvent(int targetScreenletId, BaseListResult<E> result) {
-        return new BaseListEvent<>(
-                targetScreenletId, _rowsRange.first, _rowsRange.second, result.getEntries(), result.getRowCount());
-    }
+	@Override
+	protected BasicEvent createEvent(int targetScreenletId, BaseListResult<E> result) {
+		return new BaseListEvent<>(
+			targetScreenletId, _rowsRange.first, _rowsRange.second, result.getEntries(), result.getRowCount());
+	}
 
-    @Override
-    protected BasicEvent createEvent(int targetScreenletId, Exception e) {
-        return new BaseListEvent<E>(targetScreenletId, e);
-    }
+	@Override
+	protected BasicEvent createEvent(int targetScreenletId, Exception e) {
+		return new BaseListEvent<E>(targetScreenletId, e);
+	}
 
-    protected void cleanRequestState() {
-        RequestState.getInstance().remove(getTargetScreenletId(), _rowsRange);
-    }
+	protected void cleanRequestState() {
+		RequestState.getInstance().remove(getTargetScreenletId(), _rowsRange);
+	}
 
-    private final Pair<Integer, Integer> _rowsRange;
+	private final Pair<Integer, Integer> _rowsRange;
 
 }
