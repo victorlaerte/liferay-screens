@@ -29,6 +29,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.liferay.mobile.screens.R;
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.util.LiferayLogger;
 import com.liferay.mobile.screens.viewsets.defaultviews.DefaultTheme;
@@ -99,13 +100,31 @@ public class WebContentDisplayView extends FrameLayout
 
 		_webView = (WebView) findViewById(R.id.liferay_webview);
 		_webView.getSettings().setSupportMultipleWindows(true);
-		_webView.setWebViewClient(new WebViewClient());
+		_webView.setWebViewClient(new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+//FIXME
+				int end = url.indexOf("//");
+
+				int end1 = url.indexOf("/", end + 2);
+
+				String shortedUrl = url.substring(0, end1);
+				ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(), shortedUrl);
+
+				view.loadUrl(url);
+				return false;
+			}
+		});
 		_webView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public boolean onCreateWindow(WebView webView, boolean dialog, boolean userGesture, Message resultMsg) {
 				final Context context = webView.getContext();
 
 				final WebView.HitTestResult result = webView.getHitTestResult();
+
+				ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(),
+					result.getExtra());
 
 				if (isALinkInsideAnImage(result)) {
 					retrieveOriginalLinkAndRedirect();
@@ -124,24 +143,6 @@ public class WebContentDisplayView extends FrameLayout
 			}
 		});
 		_progressBar = (ProgressBar) findViewById(R.id.liferay_webview_progress);
-	}
-
-	private static class ContextHandler extends Handler {
-
-		private WeakReference<Context> _contextWeakReference;
-
-		public ContextHandler(WeakReference<Context> contextWeakReference) {
-			_contextWeakReference = contextWeakReference;
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			String url = (String) msg.getData().get("url");
-			Context context = _contextWeakReference.get();
-			if (context != null) {
-				launchLinkInNewActivity(context, url);
-			}
-		}
 	}
 
 	@Override
@@ -164,13 +165,11 @@ public class WebContentDisplayView extends FrameLayout
 		_webView.requestFocusNodeHref(message);
 	}
 
-
 	private static void launchLinkInNewActivity(final Context context, final String url) {
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
-
 	private static final String STYLES =
 		"<style>" +
 			".MobileCSS {padding: 4%; width: 92%;} " +
@@ -181,9 +180,25 @@ public class WebContentDisplayView extends FrameLayout
 			".MobileCSS img { width: 100% !important; } " +
 			".span2, .span3, .span4, .span6, .span8, .span10 { width: 100%; }" +
 			"</style>";
-
 	private WebView _webView;
 	private ProgressBar _progressBar;
+
+	private static class ContextHandler extends Handler {
+
+		public ContextHandler(WeakReference<Context> contextWeakReference) {
+			_contextWeakReference = contextWeakReference;
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			String url = (String) msg.getData().get("url");
+			Context context = _contextWeakReference.get();
+			if (context != null) {
+				launchLinkInNewActivity(context, url);
+			}
+		}
+		private WeakReference<Context> _contextWeakReference;
+	}
 
 
 }

@@ -5,6 +5,7 @@
 	<integer name="liferay_group_id">10181</integer>
 	<!-- Default host IP using Genymotion emulator -->
 	<string name="liferay_server">http://192.168.56.1:8080</string>
-	
-	<string name="app_name">Liferay Screens App</string>
+
+	<string name="app_name">Screens</string>
+	<string name="consumer">59871</string>
 </resources>

@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.audiencetargeting.AudienceTargetingScreenlet;
 import com.liferay.mobile.screens.audiencetargeting.interactor.AudienceTargetingResult;
 import com.liferay.mobile.screens.audiencetargeting.interactor.requestcontent.AudienceTargetingContentRequestedEvent;
 import com.liferay.mobile.screens.audiencetargeting.view.AudienceTargetingViewModel;
 import com.liferay.mobile.screens.util.LiferayLogger;
 import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
+
+import java.util.Date;
 
 /**
  * @author Javier Gamarra
@@ -55,6 +58,23 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 	}
 
 	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+
+		_timeOnScreen = new Date();
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+
+		if (_result != null) {
+			long time = new Date().getTime() - _timeOnScreen.getTime();
+			ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.AT_ON_SCREEN, _result, String.valueOf(time));
+		}
+	}
+
+	@Override
 	public void showPlaceholder() {
 		addPlaceholder();
 	}
@@ -84,4 +104,7 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 			LayoutInflater.from(getContext()).inflate(screenlet.getDefaultLayout(), this);
 		}
 	}
+
+	private Date _timeOnScreen = new Date();
+	private AudienceTargetingResult _result;
 }

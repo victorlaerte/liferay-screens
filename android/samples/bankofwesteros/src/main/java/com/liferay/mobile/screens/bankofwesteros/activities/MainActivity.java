@@ -22,6 +22,8 @@ import android.view.ViewPropertyAnimator;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.liferay.mobile.screens.audiencetargeting.ATReferrer;
+import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.audiencetargeting.AudienceListener;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordListener;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordScreenlet;
@@ -45,6 +47,9 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		ATTrackingActions.postInstallation(this);
+		ATTrackingActions.postSession(this);
 
 		_background = (ImageView) findViewById(R.id.background);
 		_background.setOnClickListener(this);
@@ -70,6 +75,12 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 			.withHeight(250)
 			.withConfiguration(new Configuration.Builder().setInAnimation(R.anim.slide_up).setOutAnimation(R.anim.slide_down).build())
 			.build();
+
+		EditText login = (EditText) findViewById(R.id.liferay_login);
+		login.setText(getString(R.string.liferay_anonymousApiUserName));
+
+		EditText password = (EditText) findViewById(R.id.liferay_password);
+		password.setText(getString(R.string.liferay_anonymousApiPassword));
 	}
 
 	@Override

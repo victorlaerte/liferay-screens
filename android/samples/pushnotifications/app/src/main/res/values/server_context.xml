@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="liferay_server">https://screensdemo.liferay.com/</string>
+	<string name="liferay_server">http://audiencetargeting.liferay.org.es:8080/</string>
 	<integer name="liferay_company_id">20155</integer>
-	<integer name="liferay_group_id">20525</integer>
+	<integer name="liferay_group_id">20182</integer>
 
 	<integer name="ddl_recordset_id">21862</integer>
 	<integer name="ddl_structure_id">21860</integer>
@@ -14,9 +14,9 @@
 	<string name="anonymous_user">anonymous1@liferay.com</string>
 	<string name="anonymous_password">anonymous1</string>
 
-	<string name="default_user">push1@liferay.com</string>
-	<string name="default_password">push2</string>
+	<string name="default_user">test@liferay.com</string>
+	<string name="default_password">t3st</string>
 
-	<string name="sender_id">708911533651</string>
+	<string name="sender_id">384668353141</string>
 
 </resources>
