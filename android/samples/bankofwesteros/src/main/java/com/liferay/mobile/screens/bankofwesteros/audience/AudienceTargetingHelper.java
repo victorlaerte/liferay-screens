@@ -8,17 +8,7 @@ import android.view.View;
 
 import com.liferay.mobile.screens.audiencetargeting.AudienceListener;
 import com.liferay.mobile.screens.audiencetargeting.AudienceTargetingManager;
-import com.liferay.mobile.screens.context.LiferayScreensContext;
-import com.liferay.mobile.screens.util.LiferayLogger;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Locale;
-
-/**
- * Created by nhpatt on 01/07/2015.
- */
 public class AudienceTargetingHelper {
 
 	public static final String IF_OLD_DONT_ALLOW_MESSAGES = "show_messages_button";
@@ -41,8 +31,6 @@ public class AudienceTargetingHelper {
 			}
 		});
 	}
-
-
 
 	public static void checkIfDeveloperCanShowResources(final View demoResources) {
 		AudienceTargetingManager manager = new AudienceTargetingManager(demoResources.getId());
