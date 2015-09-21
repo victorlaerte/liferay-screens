@@ -1,5 +1,6 @@
 package com.liferay.mobile.screens.push;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -9,16 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.liferay.mobile.android.service.Session;
 import com.liferay.mobile.push.Push;
+import com.liferay.mobile.push.bus.BusUtil;
 import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.util.LiferayLogger;
 import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
+import com.squareup.otto.Bus;
 
 import org.json.JSONObject;
 
 /**
  * @author Javier Gamarra
  */
-public abstract class AbstractPushActivity extends AppCompatActivity
+public abstract class AbstractPushActivity extends Activity
 	implements Push.OnSuccess, Push.OnPushNotification, Push.OnFailure {
 
 	public static final String PUSH_PREFERENCES = "PUSH_PREFERENCES";
