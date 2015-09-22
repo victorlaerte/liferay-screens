@@ -353,6 +353,7 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		}
 		v.setBackgroundColor(getResources().getColor(color));
 	}
+
 	private DDLFormScreenlet _ddlFormScreenlet;
 	private DDLListScreenlet _ddlListScreenlet;
 

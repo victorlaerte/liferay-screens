@@ -35,6 +35,7 @@ public class LiferayServerContext {
 		LiferayServerContext.setCompanyId(companyId);
 		LiferayServerContext.setGroupId(groupId);
 		LiferayServerContext.setServer(server);
+		LiferayServerContext.setConsumerId(resources.getString(R.string.consumer));
 	}
 
 	public static long getCompanyId() {
