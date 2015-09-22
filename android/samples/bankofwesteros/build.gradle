@@ -50,6 +50,7 @@ dependencies {
 	compile 'com.android.support:appcompat-v7:23.0.1'
 	compile "com.daimajia.swipelayout:library:1.1.9@aar"
 
-	compile project('liferay-westeros-viewset')
+//	compile project ('liferay-screens')
+	compile project ('liferay-westeros-viewset')
 	compile "com.google.android.gms:play-services:7.8.0"
 }

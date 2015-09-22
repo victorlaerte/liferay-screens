@@ -23,11 +23,18 @@ import com.liferay.mobile.screens.R;
  */
 public class LiferayServerContext {
 
-	public static void loadFromResources(Resources resources) {
-		LiferayServerContext.setCompanyId(resources.getInteger(R.integer.liferay_company_id));
-		LiferayServerContext.setGroupId(resources.getInteger(R.integer.liferay_group_id));
-		LiferayServerContext.setServer(resources.getString(R.string.liferay_server));
-		LiferayServerContext.setConsumerId(resources.getString(R.string.consumer));
+	public static void loadFromResources(Resources resources, final String packageName) {
+		int companyIdentifier = resources.getIdentifier("liferay_company_id", "integer", packageName);
+		int groupIdentifier = resources.getIdentifier("liferay_group_id", "integer", packageName);
+
+		long companyId = getValueFromIntegerOrString(resources, R.string.liferay_company_id, companyIdentifier);
+		long groupId = getValueFromIntegerOrString(resources, R.string.liferay_group_id, groupIdentifier);
+
+		String server = resources.getString(R.string.liferay_server);
+
+		LiferayServerContext.setCompanyId(companyId);
+		LiferayServerContext.setGroupId(groupId);
+		LiferayServerContext.setServer(server);
 	}
 
 	public static long getCompanyId() {
@@ -54,12 +61,16 @@ public class LiferayServerContext {
 		_server = server;
 	}
 
+	public static long getConsumerId() {
+		return _consumerId;
+	}
+
 	public static void setConsumerId(String consumerId) {
 		_consumerId = Long.valueOf(consumerId);
 	}
 
-	public static long getConsumerId() {
-		return _consumerId;
+	private static long getValueFromIntegerOrString(final Resources resources, final int stringId, int integerId) {
+		return integerId == 0 ? Long.valueOf(resources.getString(stringId)) : resources.getInteger(integerId);
 	}
 
 	private static long _companyId;
