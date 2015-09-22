@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<!--<string name="liferay_server">http://audiencetargeting.liferay.org.es:8080</string>-->
+	<string name="liferay_server">http://audiencetargeting.liferay.org.es</string>
 
-	<!--<integer name="liferay_company_id">20155</integer>-->
-	<!--<integer name="liferay_group_id">20182</integer>-->
+	<integer name="liferay_company_id">20155</integer>
+	<integer name="liferay_group_id">20182</integer>
 
-	<!--&lt;!&ndash; SignupScreenlet values &ndash;&gt;-->
-	<!--<string name="liferay_anonymousApiUserName">test@liferay.com</string>-->
-	<!--<string name="liferay_anonymousApiPassword">t3st</string>-->
+	<!-- SignupScreenlet values -->
+	<string name="liferay_anonymousApiUserName">test@liferay.com</string>
+	<string name="liferay_anonymousApiPassword">t3st</string>
 
-	<!--&lt;!&ndash; DDLFormScreenlet values &ndash;&gt;-->
-	<!--<integer name="liferay_recordset_id">60630</integer>-->
-	<!--<integer name="liferay_structure_id">60613</integer>-->
-	<!--<string name="liferay_recordset_fields">Title</string>-->
+	<!-- DDLFormScreenlet values -->
+	<integer name="liferay_recordset_id">60630</integer>
+	<integer name="liferay_structure_id">60613</integer>
+	<string name="liferay_recordset_fields">Title</string>
 
-	<!--&lt;!&ndash;<string name="app_name">Sales</string>&ndash;&gt;-->
-	<!--&lt;!&ndash;<string name="consumer">59870</string>&ndash;&gt;-->
-	<!--&lt;!&ndash;<string name="app_name">MarketingApp</string>&ndash;&gt;-->
-	<!--&lt;!&ndash;<string name="consumer">59871</string>&ndash;&gt;-->
-	<!--<string name="app_name">Screens</string>-->
-	<!--<string name="consumer">21107</string>-->
+	<string name="app_name">Screens</string>
+	<string name="consumer">21107</string>
 
 	<string name="settings_banner_placeholder">settings_banner</string>
 	<string name="more_info_content_placeholder">more_info_content</string>
@@ -31,21 +27,21 @@
 
 
 	<!-- local values -->
-	<string name="liferay_server">http://192.168.40.253:8080</string>
-	<integer name="liferay_company_id">20155</integer>
-	<integer name="liferay_group_id">20182</integer>
+	<!--<string name="liferay_server">http://192.168.40.253:8080</string>-->
+	<!--<integer name="liferay_company_id">20155</integer>-->
+	<!--<integer name="liferay_group_id">20182</integer>-->
 
-	<!-- SignupScreenlet values -->
-	<string name="liferay_anonymousApiUserName">test@liferay.com</string>
-	<string name="liferay_anonymousApiPassword">test</string>
+	<!--&lt;!&ndash; SignupScreenlet values &ndash;&gt;-->
+	<!--<string name="liferay_anonymousApiUserName">test@liferay.com</string>-->
+	<!--<string name="liferay_anonymousApiPassword">test</string>-->
 
-	<!-- DDLFormScreenlet values -->
-	<integer name="liferay_recordset_id">34382</integer>
-	<integer name="liferay_structure_id">34375</integer>
-	<string name="liferay_recordset_fields">Title</string>
+	<!--&lt;!&ndash; DDLFormScreenlet values &ndash;&gt;-->
+	<!--<integer name="liferay_recordset_id">34382</integer>-->
+	<!--<integer name="liferay_structure_id">34375</integer>-->
+	<!--<string name="liferay_recordset_fields">Title</string>-->
 
-	<string name="app_name">screens</string>
-	<string name="consumer">25006</string>
+	<!--<string name="app_name">screens</string>-->
+	<!--<string name="consumer">25006</string>-->
 
 
 

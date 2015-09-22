@@ -165,26 +165,24 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 
 		_sendButton = (Button) findViewById(R.id.liferay_form_submit);
 
-//		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
-//		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
-//		callMenuEntry.setOnTouchListener(this);
+		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
+		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
+		callMenuEntry.setOnTouchListener(this);
 		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
-//		View sendMessages = findViewById(R.id.send_message_menu_entry);
-//		sendMessages.setOnTouchListener(this);
+		View sendMessages = findViewById(R.id.send_message_menu_entry);
+		sendMessages.setOnTouchListener(this);
 		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
 
 		View demoResources = findViewById(R.id.show_demo_resources);
-		demoResources.setVisibility(View.GONE);
-//		.setOnTouchListener(this);
+		demoResources.setOnTouchListener(this);
 
 		findViewById(R.id.push_activity).setVisibility(View.GONE);
 
-		findViewById(R.id.show_more_info).setVisibility(View.GONE);
-//		setOnTouchListener(this);
+		findViewById(R.id.show_more_info).setOnTouchListener(this);
 
-//		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
+		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
 		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
-//		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
+		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
 
 	}
 
@@ -246,6 +244,22 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		else {
 			clearDDLEntrySelected();
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		timeOnScreen = new Date();
+	}
+
+	@Override
+	protected void onStop() {
+
+		long time = new Date().getTime() - timeOnScreen.getTime();
+		ATTrackingActions.postTime(this, ATTrackingActions.SESSION_ON_SCREEN, time);
+
+		super.onStop();
 	}
 
 	private SpannableStringBuilder getCallSpannableString() {
@@ -317,14 +331,14 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 				startActivity(new Intent(this, AccountSettingsActivity.class));
 				overridePendingTransition(0, 0);
 				break;
-//			case R.id.call_menu_entry:
-//				color = R.color.westeros_light_gray;
-//
-//				startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(getString(R.string.default_telephone_uri))));
-//				break;
-//			case R.id.send_message_menu_entry:
-//				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.default_sms_uri))));
-//				break;
+			case R.id.call_menu_entry:
+				color = R.color.westeros_light_gray;
+
+				startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(getString(R.string.default_telephone_uri))));
+				break;
+			case R.id.send_message_menu_entry:
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.default_sms_uri))));
+				break;
 			case R.id.sign_out_menu_entry:
 				color = R.color.westeros_light_gray;
 
@@ -339,23 +353,6 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		}
 		v.setBackgroundColor(getResources().getColor(color));
 	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		timeOnScreen = new Date();
-	}
-
-	@Override
-	protected void onStop() {
-
-		long time = new Date().getTime() - timeOnScreen.getTime();
-		ATTrackingActions.postTime(this, ATTrackingActions.SESSION_ON_SCREEN, time);
-
-		super.onStop();
-	}
-
 	private DDLFormScreenlet _ddlFormScreenlet;
 	private DDLListScreenlet _ddlListScreenlet;
 

@@ -2,7 +2,7 @@ package com.liferay.mobile.screens.testapp.audience;
 
 import android.support.annotation.NonNull;
 
-import com.liferay.mobile.screens.cache.executor.Executor;
+import com.liferay.mobile.screens.audiencetargeting.Executor;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.util.LiferayLocale;
