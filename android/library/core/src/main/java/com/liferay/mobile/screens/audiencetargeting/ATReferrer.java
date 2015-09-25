@@ -13,14 +13,25 @@ public class ATReferrer {
 	public static final String CONSUMER = "com.liferay.consumer.manager.model.Consumer";
 	public static final String PLACEHOLDER = "com.liferay.consumer.manager.extension.screens.model.Placeholder";
 
-	public ATReferrer(String className, long classPK) {
+	public ATReferrer(String className, long classPK, String elementId) {
 		_className = className;
 		_classPKs.add(classPK);
+		_elementId = elementId;
+	}
+
+	public ATReferrer(String className, long classPK) {
+		this(className, classPK, "");
 	}
 
 	public ATReferrer(String className, List<Long> classPKs) {
 		_className = className;
 		_classPKs = classPKs;
+		_elementId = "";
+	}
+
+	public ATReferrer(String elementId) {
+		_className = "";
+		_elementId = elementId;
 	}
 
 	public String getFormattedClassPKs() {
@@ -37,11 +48,16 @@ public class ATReferrer {
 		return _classPKs;
 	}
 
+	public String getElementId() {
+		return _elementId;
+	}
+
 	public String getClassName() {
 		return _className;
 	}
 
 	private final String _className;
+	private final String _elementId;
 	private List<Long> _classPKs = new ArrayList<>();
 
 

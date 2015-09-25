@@ -257,7 +257,7 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	protected void onStop() {
 
 		long time = new Date().getTime() - timeOnScreen.getTime();
-		ATTrackingActions.postTime(this, ATTrackingActions.SESSION_ON_SCREEN, time);
+		ATTrackingActions.postSessionOnScreen(this, time);
 
 		super.onStop();
 	}

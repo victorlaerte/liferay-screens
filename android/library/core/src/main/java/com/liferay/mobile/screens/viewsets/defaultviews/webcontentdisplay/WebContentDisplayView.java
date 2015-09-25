@@ -110,7 +110,8 @@ public class WebContentDisplayView extends FrameLayout
 				int end1 = url.indexOf("/", end + 2);
 
 				String shortedUrl = url.substring(0, end1);
-				ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(), shortedUrl);
+				ATTrackingActions.postATContent(getContext(), ATTrackingActions.CLICK,
+					((WebContentDisplayScreenlet) getParent()).getAtResult(), shortedUrl);
 
 				view.loadUrl(url);
 				return false;
@@ -123,7 +124,7 @@ public class WebContentDisplayView extends FrameLayout
 
 				final WebView.HitTestResult result = webView.getHitTestResult();
 
-				ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(),
+				ATTrackingActions.postATContent(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(),
 					result.getExtra());
 
 				if (isALinkInsideAnImage(result)) {

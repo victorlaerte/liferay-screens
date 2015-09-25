@@ -39,7 +39,7 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 
 		try {
 
-			ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.VIEW, event.getResult(), "");
+			ATTrackingActions.postATContent(getContext(), ATTrackingActions.VIEW, event.getResult(), "");
 
 			AudienceTargetingRenderer renderer = new AudienceTargetingRendererFactory()
 				.getRenderer(event.getResult().getClassName(), event.getContent());
@@ -70,7 +70,7 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 
 		if (_result != null) {
 			long time = new Date().getTime() - _timeOnScreen.getTime();
-			ATTrackingActions.postWithATResult(getContext(), ATTrackingActions.AT_ON_SCREEN, _result, String.valueOf(time));
+			ATTrackingActions.postATContent(getContext(), ATTrackingActions.AT_ON_SCREEN, _result, String.valueOf(time));
 		}
 	}
 

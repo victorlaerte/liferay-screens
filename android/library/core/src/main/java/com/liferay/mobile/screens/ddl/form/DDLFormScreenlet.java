@@ -133,7 +133,7 @@ public class DDLFormScreenlet
 		if (_listener != null) {
 			_listener.onDDLFormLoaded(record);
 
-			ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_VIEW, record.getRecordId(), "");
+			ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_VIEW, record.getRecordSetId());
 		}
 
 		if (_loadRecordAfterForm) {
@@ -157,7 +157,7 @@ public class DDLFormScreenlet
 	public void onDDLFormRecordAdded(Record record) {
 		getViewModel().showFinishOperation(ADD_RECORD_ACTION, record);
 
-		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId(), "");
+		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordSetId());
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordAdded(record);
@@ -195,7 +195,7 @@ public class DDLFormScreenlet
 	public void onDDLFormRecordUpdated(Record record) {
 		getViewModel().showFinishOperation(UPDATE_RECORD_ACTION, record);
 
-		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId(), "");
+		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId());
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordUpdated(record);
@@ -417,52 +417,38 @@ public class DDLFormScreenlet
 		DDLFormViewModel viewModel = (DDLFormViewModel) view;
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.CHECKBOX,
-				R.styleable.DDLFormScreenlet_checkboxFieldLayoutId);
+			R.styleable.DDLFormScreenlet_checkboxFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.DATE,
-				R.styleable.DDLFormScreenlet_dateFieldLayoutId);
+			R.styleable.DDLFormScreenlet_dateFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.NUMBER,
-				R.styleable.DDLFormScreenlet_numberFieldLayoutId);
+			R.styleable.DDLFormScreenlet_numberFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.INTEGER,
-				R.styleable.DDLFormScreenlet_numberFieldLayoutId);
+			R.styleable.DDLFormScreenlet_numberFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.DECIMAL,
-				R.styleable.DDLFormScreenlet_numberFieldLayoutId);
+			R.styleable.DDLFormScreenlet_numberFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.RADIO,
-				R.styleable.DDLFormScreenlet_radioFieldLayoutId);
+			R.styleable.DDLFormScreenlet_radioFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.SELECT,
-				R.styleable.DDLFormScreenlet_selectFieldLayoutId);
+			R.styleable.DDLFormScreenlet_selectFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.TEXT,
-				R.styleable.DDLFormScreenlet_textFieldLayoutId);
+			R.styleable.DDLFormScreenlet_textFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.TEXT_AREA,
-				R.styleable.DDLFormScreenlet_textAreaFieldLayoutId);
+			R.styleable.DDLFormScreenlet_textAreaFieldLayoutId);
 
 		setFieldLayoutId(viewModel, typedArray, Field.EditorType.DOCUMENT,
-				R.styleable.DDLFormScreenlet_documentFieldLayoutId);
+			R.styleable.DDLFormScreenlet_documentFieldLayoutId);
 
 		typedArray.recycle();
 
 		return view;
-	}
-
-	private void setFieldLayoutId(
-		DDLFormViewModel viewModel, TypedArray typedArray, Field.EditorType editorType,
-		Integer id) {
-
-		int resourceId = typedArray.getResourceId(id, 0);
-
-		if (resourceId == 0) {
-			viewModel.resetFieldLayoutId(editorType);
-		}
-		else {
-			viewModel.setFieldLayoutId(editorType, resourceId);
-		}
 	}
 
 	@Override
@@ -615,6 +601,20 @@ public class DDLFormScreenlet
 	protected void onScreenletAttached() {
 		if (_autoLoad && _record.getFieldCount() == 0) {
 			load();
+		}
+	}
+
+	private void setFieldLayoutId(
+		DDLFormViewModel viewModel, TypedArray typedArray, Field.EditorType editorType,
+		Integer id) {
+
+		int resourceId = typedArray.getResourceId(id, 0);
+
+		if (resourceId == 0) {
+			viewModel.resetFieldLayoutId(editorType);
+		}
+		else {
+			viewModel.setFieldLayoutId(editorType, resourceId);
 		}
 	}
 
