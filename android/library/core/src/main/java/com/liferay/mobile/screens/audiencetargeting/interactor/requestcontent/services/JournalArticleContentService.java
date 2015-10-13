@@ -21,6 +21,6 @@ public class JournalArticleContentService extends AudienceTargetingContentServic
 		ScreensjournalarticleService journalArticleService = new ScreensjournalarticleService(session);
 
 		Locale locale = LiferayScreensContext.getContext().getResources().getConfiguration().locale;
-		journalArticleService.getJournalArticle((int) LiferayServerContext.getGroupId(), result.getClassPK(), locale.toString());
+		journalArticleService.getJournalArticleContent((int) LiferayServerContext.getGroupId(), result.getClassPK(), locale.toString());
 	}
 }

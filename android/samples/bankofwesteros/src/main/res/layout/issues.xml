@@ -196,6 +196,7 @@
 			android:layout_height="match_parent"
 			android:layout_below="@id/report_issue_title"
 			liferay:layoutId="@layout/ddl_form_westeros"
+			liferay:offlinePolicy="REMOTE_FIRST"
 			liferay:recordSetId="@integer/liferay_recordset_id"
 			liferay:selectFieldLayoutId="@layout/ddlfield_select_westeros"
 			liferay:structureId="@integer/liferay_structure_id"

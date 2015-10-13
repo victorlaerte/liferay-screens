@@ -21,6 +21,11 @@ public class FlingTouchListener implements View.OnTouchListener {
 		return true;
 	}
 
+	private GestureDetector _gestureDetector;
+	private FlingListener _flingListener;
+	private static final float SWIPE_VELOCITY_THRESHOLD = 10f;
+	private static final float SWIPE_MOVEMENT_THRESHOLD = 100f;
+
 	private class GestureDetectorListener extends GestureDetector.SimpleOnGestureListener {
 
 		@Override
@@ -58,10 +63,4 @@ public class FlingTouchListener implements View.OnTouchListener {
 			return true;
 		}
 	}
-
-	private GestureDetector _gestureDetector;
-	private FlingListener _flingListener;
-
-	private static final float SWIPE_VELOCITY_THRESHOLD = 10f;
-	private static final float SWIPE_MOVEMENT_THRESHOLD = 100f;
 }

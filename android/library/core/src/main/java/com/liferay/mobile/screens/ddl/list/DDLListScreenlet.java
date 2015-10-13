@@ -21,9 +21,11 @@ import android.view.View;
 
 import com.liferay.mobile.screens.R;
 import com.liferay.mobile.screens.base.list.BaseListScreenlet;
+import com.liferay.mobile.screens.cache.OfflinePolicy;
 import com.liferay.mobile.screens.ddl.list.interactor.DDLListInteractor;
 import com.liferay.mobile.screens.ddl.list.interactor.DDLListInteractorImpl;
 import com.liferay.mobile.screens.ddl.list.interactor.DDLListInteractorListener;
+import com.liferay.mobile.screens.ddl.model.Record;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ import java.util.Locale;
  * @author Silvio Santos
  */
 public class DDLListScreenlet
-	extends BaseListScreenlet<DDLEntry, DDLListInteractor>
+	extends BaseListScreenlet<Record, DDLListInteractor>
 	implements DDLListInteractorListener {
 
 	public DDLListScreenlet(Context context) {
@@ -49,11 +51,6 @@ public class DDLListScreenlet
 		super(context, attributes, defaultStyle);
 	}
 
-	@Override
-	protected void loadRows(DDLListInteractor interactor, int startRow, int endRow, Locale locale) throws Exception {
-		interactor.loadRows(_recordSetId, _userId, startRow, endRow, locale);
-	}
-
 	public long getRecordSetId() {
 		return _recordSetId;
 	}
@@ -64,6 +61,10 @@ public class DDLListScreenlet
 
 	public long getUserId() {
 		return _userId;
+	}
+
+	public void setUserId(long userId) {
+		_userId = userId;
 	}
 
 	public void setUserId(int userId) {
@@ -78,10 +79,49 @@ public class DDLListScreenlet
 		_labelFields = labelFields;
 	}
 
+	public OfflinePolicy getOfflinePolicy() {
+		return _offlinePolicy;
+	}
+
+	public void setOfflinePolicy(OfflinePolicy offlinePolicy) {
+		_offlinePolicy = offlinePolicy;
+	}
+
+	@Override
+	public void loadingFromCache(boolean success) {
+		if (getListener() != null) {
+			getListener().loadingFromCache(success);
+		}
+	}
+
+	@Override
+	public void retrievingOnline(boolean triedInCache, Exception e) {
+		if (getListener() != null) {
+			getListener().retrievingOnline(triedInCache, e);
+		}
+	}
+
+	@Override
+	public void storingToCache(Object object) {
+		if (getListener() != null) {
+			getListener().storingToCache(object);
+		}
+	}
+
+	@Override
+	protected void loadRows(DDLListInteractor interactor, int startRow, int endRow, Locale locale) throws Exception {
+		interactor.loadRows(_recordSetId, _userId, startRow, endRow, locale);
+	}
+
 	@Override
 	protected View createScreenletView(Context context, AttributeSet attributes) {
 		TypedArray typedArray = context.getTheme().obtainStyledAttributes(
 			attributes, R.styleable.DDLListScreenlet, 0, 0);
+
+		int offlinePolicy = typedArray.getInt(R.styleable.DDLListScreenlet_offlinePolicy,
+			OfflinePolicy.REMOTE_ONLY.ordinal());
+		_offlinePolicy = OfflinePolicy.values()[offlinePolicy];
+
 		_recordSetId = castToLong(typedArray.getString(
 			R.styleable.DDLListScreenlet_recordSetId));
 		_userId = castToLong(typedArray.getString(
@@ -95,11 +135,12 @@ public class DDLListScreenlet
 
 	@Override
 	protected DDLListInteractor createInteractor(String actionName) {
-		return new DDLListInteractorImpl(getScreenletId());
+		return new DDLListInteractorImpl(getScreenletId(), _offlinePolicy);
 	}
 
 	private List<String> parse(String labelFields) {
 		if (labelFields == null) {
+
 			throw new IllegalArgumentException("DDLListScreenlet must define 'labelFields' parameter");
 		}
 
@@ -107,12 +148,11 @@ public class DDLListScreenlet
 		for (String text : labelFields.split(",")) {
 			parsedFields.add(text.trim());
 		}
-
 		return parsedFields;
 	}
 
 	private long _recordSetId;
 	private long _userId;
 	private List<String> _labelFields;
-
+	private OfflinePolicy _offlinePolicy;
 }

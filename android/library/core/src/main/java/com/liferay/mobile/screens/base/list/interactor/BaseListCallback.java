@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -34,10 +35,11 @@ import java.util.Map;
 public abstract class BaseListCallback<E>
 	extends InteractorBatchAsyncTaskCallback<BaseListResult<E>> {
 
-	public BaseListCallback(int targetScreenletId, Pair<Integer, Integer> rowsRange) {
+	public BaseListCallback(int targetScreenletId, Pair<Integer, Integer> rowsRange, Locale locale) {
 		super(targetScreenletId);
 
 		_rowsRange = rowsRange;
+		_locale = locale;
 	}
 
 	public BaseListResult transform(Object obj) throws Exception {
@@ -55,14 +57,16 @@ public abstract class BaseListCallback<E>
 		return result;
 	}
 
+	@Override
+	public void onSuccess(ArrayList<BaseListResult<E>> results) {
+		onSuccess(results.get(0));
+	}
+
+	@Override
 	public void onSuccess(BaseListResult<E> result) {
 		cleanRequestState();
 
 		super.onSuccess(result);
-	}
-
-	public void onSuccess(ArrayList<BaseListResult<E>> results) {
-		onSuccess(results.get(0));
 	}
 
 	@Override
@@ -76,13 +80,13 @@ public abstract class BaseListCallback<E>
 
 	@Override
 	protected BasicEvent createEvent(int targetScreenletId, BaseListResult<E> result) {
-		return new BaseListEvent<>(
-			targetScreenletId, _rowsRange.first, _rowsRange.second, result.getEntries(), result.getRowCount());
+		return new BaseListEvent<>(targetScreenletId, _rowsRange.first, _rowsRange.second, _locale,
+			result.getEntries(), result.getRowCount());
 	}
 
 	@Override
 	protected BasicEvent createEvent(int targetScreenletId, Exception e) {
-		return new BaseListEvent<E>(targetScreenletId, e);
+		return new BaseListEvent<E>(targetScreenletId, _rowsRange.first, _rowsRange.second, _locale, e);
 	}
 
 	protected void cleanRequestState() {
@@ -91,4 +95,5 @@ public abstract class BaseListCallback<E>
 
 	private final Pair<Integer, Integer> _rowsRange;
 
+	private final Locale _locale;
 }

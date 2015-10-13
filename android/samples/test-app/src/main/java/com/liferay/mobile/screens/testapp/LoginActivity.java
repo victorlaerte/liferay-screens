@@ -42,11 +42,7 @@ public class LoginActivity extends ThemeActivity implements LoginListener {
 
 		hideInactiveScreenlet(R.id.login_default, R.id.login_material);
 
-		EditText userName = (EditText) _loginScreenlet.findViewById(R.id.liferay_login);
-		userName.setText(getString(R.string.default_user_name));
-
-		EditText password = (EditText) _loginScreenlet.findViewById(R.id.liferay_password);
-		password.setText(getString(R.string.default_password));
+		setDefaultValues();
 	}
 
 	@Override
@@ -62,6 +58,14 @@ public class LoginActivity extends ThemeActivity implements LoginListener {
 	@Override
 	public void onLoginFailure(Exception e) {
 		error("Login failed", e);
+	}
+
+	private void setDefaultValues() {
+		EditText login = (EditText) _loginScreenlet.findViewById(R.id.liferay_login);
+		login.setText(getString(R.string.default_user_name));
+
+		EditText password = (EditText) _loginScreenlet.findViewById(R.id.liferay_password);
+		password.setText(getString(R.string.default_password));
 	}
 
 	private LoginScreenlet _loginScreenlet;

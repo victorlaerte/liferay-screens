@@ -23,6 +23,7 @@ import android.view.View;
 import com.liferay.mobile.screens.R;
 import com.liferay.mobile.screens.audiencetargeting.interactor.AudienceTargetingResult;
 import com.liferay.mobile.screens.base.BaseScreenlet;
+import com.liferay.mobile.screens.cache.OfflinePolicy;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.webcontentdisplay.interactor.WebContentDisplayInteractor;
@@ -88,8 +89,25 @@ public class WebContentDisplayScreenlet
 		return modifiedHtml;
 	}
 
-	public WebContentDisplayListener getListener() {
-		return _listener;
+	@Override
+	public void loadingFromCache(boolean success) {
+		if (_listener != null) {
+			_listener.loadingFromCache(success);
+		}
+	}
+
+	@Override
+	public void retrievingOnline(boolean triedInCache, Exception e) {
+		if (_listener != null) {
+			_listener.retrievingOnline(triedInCache, e);
+		}
+	}
+
+	@Override
+	public void storingToCache(Object object) {
+		if (_listener != null) {
+			_listener.storingToCache(object);
+		}
 	}
 
 	public void setListener(WebContentDisplayListener listener) {
@@ -108,24 +126,40 @@ public class WebContentDisplayScreenlet
 		return _articleId;
 	}
 
-	public void setArticleId(final String articleId) {
-		this._articleId = articleId;
+	public void setArticleId(String articleId) {
+		_articleId = articleId;
+	}
+
+	public Long getTemplateId() {
+		return _templateId;
+	}
+
+	public void setTemplateId(Long templateId) {
+		_templateId = templateId;
+	}
+
+	public OfflinePolicy getOfflinePolicy() {
+		return _offlinePolicy;
+	}
+
+	public void setOfflinePolicy(OfflinePolicy offlinePolicy) {
+		_offlinePolicy = offlinePolicy;
 	}
 
 	public boolean isAutoLoad() {
 		return _autoLoad;
 	}
 
-	public void setAutoLoad(final boolean autoLoad) {
-		this._autoLoad = autoLoad;
+	public void setAutoLoad(boolean autoLoad) {
+		_autoLoad = autoLoad;
 	}
 
 	public long getGroupId() {
 		return _groupId;
 	}
 
-	public void setGroupId(final long groupId) {
-		this._groupId = groupId;
+	public void setGroupId(long groupId) {
+		_groupId = groupId;
 	}
 
 	protected void autoLoad() {
@@ -153,10 +187,14 @@ public class WebContentDisplayScreenlet
 		_groupId = castToLongOrUseDefault(typedArray.getString(
 			R.styleable.WebContentDisplayScreenlet_groupId), LiferayServerContext.getGroupId());
 
-		_templateId = typedArray.getString(R.styleable.WebContentDisplayScreenlet_templateId);
+		_templateId = castToLong(typedArray.getString(R.styleable.WebContentDisplayScreenlet_templateId));
 
 		_javascriptEnabled = typedArray.getBoolean(
 			R.styleable.WebContentDisplayScreenlet_javascriptEnabled, false);
+
+		int offlinePolicy = typedArray.getInt(R.styleable.WebContentDisplayScreenlet_offlinePolicy,
+			OfflinePolicy.REMOTE_ONLY.ordinal());
+		_offlinePolicy = OfflinePolicy.values()[offlinePolicy];
 
 		int layoutId = typedArray.getResourceId(
 			R.styleable.WebContentDisplayScreenlet_layoutId, getDefaultLayoutId());
@@ -168,7 +206,7 @@ public class WebContentDisplayScreenlet
 
 	@Override
 	protected WebContentDisplayInteractor createInteractor(String actionName) {
-		return new WebContentDisplayInteractorImpl(getScreenletId());
+		return new WebContentDisplayInteractorImpl(getScreenletId(), _offlinePolicy);
 	}
 
 	@Override
@@ -195,7 +233,8 @@ public class WebContentDisplayScreenlet
 	}
 	private AudienceTargetingResult _atResult;
 
-	private String _templateId;
+	private OfflinePolicy _offlinePolicy;
+	private Long _templateId;
 	private String _articleId;
 	private boolean _autoLoad;
 	private long _groupId;

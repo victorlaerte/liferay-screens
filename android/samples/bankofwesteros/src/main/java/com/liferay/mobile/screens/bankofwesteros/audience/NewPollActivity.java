@@ -72,4 +72,19 @@ public class NewPollActivity extends Activity implements DDLFormListener {
 	public void onDDLFormDocumentUploadFailed(DocumentField documentField, Exception e) {
 
 	}
+
+	@Override
+	public void loadingFromCache(boolean success) {
+
+	}
+
+	@Override
+	public void retrievingOnline(boolean triedInCache, Exception e) {
+
+	}
+
+	@Override
+	public void storingToCache(Object object) {
+
+	}
 }
