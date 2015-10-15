@@ -19,7 +19,6 @@ import com.liferay.mobile.screens.bankofwesteros.R;
 import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
 import com.liferay.mobile.screens.bankofwesteros.audience.ShowMoreInfoActivity;
 import com.liferay.mobile.screens.bankofwesteros.audience.ShowResourcesActivity;
-import com.liferay.mobile.screens.bankofwesteros.push.PushActivity;
 import com.liferay.mobile.screens.bankofwesteros.utils.Card;
 import com.liferay.mobile.screens.bankofwesteros.utils.EndAnimationListener;
 import com.liferay.mobile.screens.base.list.BaseListListener;
@@ -43,6 +42,65 @@ import java.util.List;
  */
 public class IssuesActivity extends CardActivity implements View.OnClickListener,
 	DDLFormListener, BaseListListener<Record>, View.OnTouchListener {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setTheme(getIntent().getIntExtra("theme", R.style.WesterosTheme));
+
+		setContentView(R.layout.issues);
+
+		_backgroundCard = findViewById(R.id.background);
+
+		_card1ToBackgroundMenu = (ImageView) findViewById(R.id.card1_to_background_menu);
+		_card1ToBackgroundMenu.setOnClickListener(this);
+		_card1ToBackground = (ImageView) findViewById(R.id.card1_to_background);
+		_card1ToBackground.setOnClickListener(this);
+
+		_reportIssueTitle = (TextView) findViewById(R.id.report_issue_title);
+
+		_ddlFormScreenlet = (DDLFormScreenlet) findViewById(R.id.ddlform);
+		_ddlFormScreenlet.setListener(this);
+		_ddlListScreenlet = (DDLListScreenlet) findViewById(R.id.ddllist);
+		_ddlListScreenlet.setListener(this);
+
+		_sendButton = (Button) findViewById(R.id.liferay_form_submit);
+
+		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
+		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
+		callMenuEntry.setOnTouchListener(this);
+		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
+		View sendMessages = findViewById(R.id.send_message_menu_entry);
+		sendMessages.setOnTouchListener(this);
+		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
+
+		View demoResources = findViewById(R.id.show_demo_resources);
+		demoResources.setOnTouchListener(this);
+
+		findViewById(R.id.show_more_info).setOnTouchListener(this);
+
+		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
+		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
+		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		timeOnScreen = new Date();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		//we don't want to crash if activity gets restored without session
+		if (!SessionContext.hasSession()) {
+			finish();
+		}
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -142,60 +200,6 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setTheme(getIntent().getIntExtra("theme", R.style.WesterosTheme));
-
-		setContentView(R.layout.issues);
-
-		_backgroundCard = findViewById(R.id.background);
-
-		_card1ToBackgroundMenu = (ImageView) findViewById(R.id.card1_to_background_menu);
-		_card1ToBackgroundMenu.setOnClickListener(this);
-		_card1ToBackground = (ImageView) findViewById(R.id.card1_to_background);
-		_card1ToBackground.setOnClickListener(this);
-
-		_reportIssueTitle = (TextView) findViewById(R.id.report_issue_title);
-
-		_ddlFormScreenlet = (DDLFormScreenlet) findViewById(R.id.ddlform);
-		_ddlFormScreenlet.setListener(this);
-		_ddlListScreenlet = (DDLListScreenlet) findViewById(R.id.ddllist);
-		_ddlListScreenlet.setListener(this);
-
-		_sendButton = (Button) findViewById(R.id.liferay_form_submit);
-
-		TextView callMenuEntry = (TextView) findViewById(R.id.call_menu_entry);
-		callMenuEntry.setText(getCallSpannableString(), TextView.BufferType.SPANNABLE);
-		callMenuEntry.setOnTouchListener(this);
-		findViewById(R.id.account_settings_menu_entry).setOnTouchListener(this);
-		View sendMessages = findViewById(R.id.send_message_menu_entry);
-		sendMessages.setOnTouchListener(this);
-		findViewById(R.id.sign_out_menu_entry).setOnTouchListener(this);
-
-		View demoResources = findViewById(R.id.show_demo_resources);
-		demoResources.setOnTouchListener(this);
-
-		findViewById(R.id.push_activity).setVisibility(View.GONE);
-
-		findViewById(R.id.show_more_info).setOnTouchListener(this);
-
-		AudienceTargetingHelper.checkIfOldToShowMessages(sendMessages);
-		AudienceTargetingHelper.checkIfDeveloperCanShowResources(demoResources);
-		AudienceTargetingHelper.checkIfMarketingAndShowNewForm(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		//we don't want to crash if activity gets restored without session
-		if (!SessionContext.hasSession()) {
-			finish();
-		}
-	}
-
-	@Override
 	public void loadingFromCache(boolean success) {
 
 	}
@@ -259,13 +263,6 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 		else {
 			clearDDLEntrySelected();
 		}
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		timeOnScreen = new Date();
 	}
 
 	@Override
@@ -362,9 +359,6 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 				Intent intent = new Intent(this, MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(intent);
-				break;
-			case R.id.push_activity:
-				startActivity(new Intent(this, PushActivity.class));
 				break;
 		}
 		v.setBackgroundColor(getResources().getColor(color));
