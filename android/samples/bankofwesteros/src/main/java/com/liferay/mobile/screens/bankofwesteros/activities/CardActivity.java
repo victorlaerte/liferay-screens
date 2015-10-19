@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +16,24 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.liferay.mobile.android.service.Session;
 import com.liferay.mobile.screens.bankofwesteros.R;
 import com.liferay.mobile.screens.bankofwesteros.gestures.FlingListener;
 import com.liferay.mobile.screens.bankofwesteros.gestures.FlingTouchListener;
 import com.liferay.mobile.screens.bankofwesteros.utils.Card;
+import com.liferay.mobile.screens.context.SessionContext;
+import com.liferay.mobile.screens.push.PushScreensActivity;
+import com.liferay.mobile.screens.util.LiferayLogger;
+import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Queue;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -30,7 +41,7 @@ import static android.view.View.VISIBLE;
 /**
  * @author Javier Gamarra
  */
-public abstract class CardActivity extends Activity implements View.OnClickListener {
+public abstract class CardActivity extends PushScreensActivity implements View.OnClickListener {
 
 	public static final int TOP_POSITION = 18;
 
@@ -345,6 +356,31 @@ public abstract class CardActivity extends Activity implements View.OnClickListe
 
 		//we have to remove from the queue the last back movement
 		_cardHistory.poll();
+	}
+
+	@Override
+	protected String getSenderId() {
+		return "384668353141";
+	}
+
+	@Override
+	protected Session getDefaultSession() {
+		return SessionContext.createSessionFromCurrentSession();
+	}
+
+	@Override
+	protected void onPushNotificationReceived(JSONObject jsonObject) {
+		try {
+			LiferayCrouton.info(this, jsonObject.get("body").toString());
+		}
+		catch (JSONException e) {
+			LiferayLogger.e("Error parsing");
+		}
+	}
+
+	@Override
+	protected void onErrorRegisteringPush(String message, Exception e) {
+
 	}
 
 	protected int _maxWidth;
