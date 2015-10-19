@@ -4,11 +4,11 @@
 	<string name="liferay_server">http://audiencetargeting.liferay.org.es</string>
 
 	<integer name="liferay_company_id">20155</integer>
-	<integer name="liferay_group_id">20182</integer>
+	<integer name="liferay_group_id">37585</integer>
 
 	<!-- SignupScreenlet values -->
 	<string name="liferay_anonymousApiUserName">test@liferay.com</string>
-	<string name="liferay_anonymousApiPassword">t3st</string>
+	<string name="liferay_anonymousApiPassword">test</string>
 
 	<!-- DDLFormScreenlet values -->
 	<integer name="liferay_recordset_id">60630</integer>
