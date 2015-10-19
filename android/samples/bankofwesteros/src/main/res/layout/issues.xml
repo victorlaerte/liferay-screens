@@ -38,11 +38,6 @@
 			android:text="@string/demo_resources"/>
 
 		<TextView
-			android:id="@+id/push_activity"
-			style="@style/westeros_menu_entry"
-			android:text="Push Activity"/>
-
-		<TextView
 			android:id="@+id/sign_out_menu_entry"
 			style="@style/westeros_menu_entry"
 			android:background="@color/westeros_light_gray"
