@@ -25,4 +25,8 @@ public interface WebContentDisplayListener extends CacheListener {
 
 	void onWebContentFailure(WebContentDisplayScreenlet source, Exception e);
 
+	void urlLoaded(String url);
+
+	void newWindowOpened(String url);
+
 }

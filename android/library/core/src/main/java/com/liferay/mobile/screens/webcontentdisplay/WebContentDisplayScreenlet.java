@@ -64,6 +64,20 @@ public class WebContentDisplayScreenlet
 		}
 	}
 
+	@Override
+	public void urlLoaded(String url) {
+		if (_listener != null) {
+			_listener.urlLoaded(url);
+		}
+	}
+
+	@Override
+	public void newWindowOpened(String url) {
+		if (_listener != null) {
+			_listener.newWindowOpened(url);
+		}
+	}
+
 	public AudienceTargetingResult getAtResult() {
 		return _atResult;
 	}

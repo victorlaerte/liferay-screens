@@ -34,6 +34,7 @@ import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.util.LiferayLogger;
 import com.liferay.mobile.screens.viewsets.defaultviews.DefaultTheme;
 import com.liferay.mobile.screens.viewsets.defaultviews.LiferayCrouton;
+import com.liferay.mobile.screens.webcontentdisplay.WebContentDisplayListener;
 import com.liferay.mobile.screens.webcontentdisplay.WebContentDisplayScreenlet;
 import com.liferay.mobile.screens.webcontentdisplay.view.WebContentDisplayViewModel;
 
@@ -104,6 +105,8 @@ public class WebContentDisplayView extends FrameLayout
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
+				((WebContentDisplayListener) getParent()).urlLoaded(url);
+
 //FIXME
 				int end = url.indexOf("//");
 
@@ -120,12 +123,15 @@ public class WebContentDisplayView extends FrameLayout
 		_webView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public boolean onCreateWindow(WebView webView, boolean dialog, boolean userGesture, Message resultMsg) {
+
 				final Context context = webView.getContext();
 
 				final WebView.HitTestResult result = webView.getHitTestResult();
 
 				ATTrackingActions.postATContent(getContext(), ATTrackingActions.CLICK, ((WebContentDisplayScreenlet) getParent()).getAtResult(),
 					result.getExtra());
+
+				((WebContentDisplayListener) getParent()).newWindowOpened(result.getExtra());
 
 				if (isALinkInsideAnImage(result)) {
 					retrieveOriginalLinkAndRedirect();
@@ -171,6 +177,7 @@ public class WebContentDisplayView extends FrameLayout
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
+
 	private static final String STYLES =
 		"<style>" +
 			".MobileCSS {padding: 4%; width: 92%;} " +
@@ -199,6 +206,7 @@ public class WebContentDisplayView extends FrameLayout
 				launchLinkInNewActivity(context, url);
 			}
 		}
+
 		private WeakReference<Context> _contextWeakReference;
 	}
 
