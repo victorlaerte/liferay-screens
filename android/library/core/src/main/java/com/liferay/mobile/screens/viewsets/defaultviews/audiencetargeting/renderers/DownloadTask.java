@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import com.liferay.mobile.android.callback.file.FileProgressCallback;
 import com.liferay.mobile.android.http.HttpUtil;
+import com.liferay.mobile.android.http.Response;
 import com.liferay.mobile.screens.context.LiferayScreensContext;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
@@ -37,14 +39,15 @@ public class DownloadTask implements Runnable {
 			final Activity activity = LiferayScreensContext.getActivityFromContext(_context.get());
 
 //			//TODO show progress in callback
-//			final FileProgressCallback callback = null;
+			//FIXME doesnt work
+			final FileProgressCallback callback = null;
 
 			File file = new File(Environment.getExternalStorageDirectory() + "/screens/");
 
-//			String url = constructUrl(jsonObject, LiferayServerContext.getServer());
+			String url = constructUrl(jsonObject, LiferayServerContext.getServer());
 //
-//			Response response = HttpUtil.download(SessionContext.createSessionFromCurrentSession(), url,
-//				callback);
+			Response response = HttpUtil.download(SessionContext.createSessionFromCurrentSession(), url,
+				callback);
 
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_VIEW);
