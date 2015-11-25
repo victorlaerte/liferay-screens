@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -23,9 +23,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.liferay.mobile.screens.R;
-import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.base.BaseScreenlet;
 import com.liferay.mobile.screens.cache.OfflinePolicy;
+import com.liferay.mobile.screens.consumerreports.ConsumerTrackingActions;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.ddl.form.interactor.DDLFormBaseInteractor;
@@ -134,7 +134,7 @@ public class DDLFormScreenlet
 		if (_listener != null) {
 			_listener.onDDLFormLoaded(record);
 
-			ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_VIEW, record.getRecordSetId());
+			ConsumerTrackingActions.ddlView(getContext(), record.getRecordSetId());
 		}
 
 		if (_loadRecordAfterForm) {
@@ -158,7 +158,7 @@ public class DDLFormScreenlet
 	public void onDDLFormRecordAdded(Record record) {
 		getViewModel().showFinishOperation(ADD_RECORD_ACTION, record);
 
-		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordSetId());
+		ConsumerTrackingActions.ddlSubmit(getContext(), record.getRecordSetId());
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordAdded(record);
@@ -196,7 +196,7 @@ public class DDLFormScreenlet
 	public void onDDLFormRecordUpdated(Record record) {
 		getViewModel().showFinishOperation(UPDATE_RECORD_ACTION, record);
 
-		ATTrackingActions.ddl(getContext(), ATTrackingActions.FORM_SUBMIT, record.getRecordId());
+		ConsumerTrackingActions.ddlSubmit(getContext(), record.getRecordSetId());
 
 		if (_listener != null) {
 			_listener.onDDLFormRecordUpdated(record);
@@ -429,7 +429,7 @@ public class DDLFormScreenlet
 			R.styleable.DDLFormScreenlet_showSubmitButton, true);
 
 		_groupId = castToLongOrUseDefault(typedArray.getString(
-				R.styleable.DDLFormScreenlet_groupId),
+			R.styleable.DDLFormScreenlet_groupId),
 			LiferayServerContext.getGroupId());
 
 		_structureId = castToLong(typedArray.getString(R.styleable.DDLFormScreenlet_structureId));
@@ -680,7 +680,6 @@ public class DDLFormScreenlet
 	private static final String _STATE_FOLDER_ID = "ddlform-folderId";
 	private static final String _STATE_FILE_PREFIX = "ddlform-filePrefixId";
 	private static final String _STATE_OFFLINE_POLICY = "ddlform-offlinePolicy";
-
 	private boolean _autoLoad;
 	private boolean _autoScrollOnValidation;
 	private boolean _showSubmitButton;
@@ -692,11 +691,8 @@ public class DDLFormScreenlet
 	private long _repositoryId;
 	private long _folderId;
 	private String _filePrefix;
-
 	private Record _record;
-
 	private DDLFormListener _listener;
-
 	private boolean _loadRecordAfterForm;
 	private OfflinePolicy _offlinePolicy;
 

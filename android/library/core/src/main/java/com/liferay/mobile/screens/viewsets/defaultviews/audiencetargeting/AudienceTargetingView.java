@@ -24,7 +24,6 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 	public AudienceTargetingView(Context context) {
 		super(context);
 	}
-
 	public AudienceTargetingView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 	}
@@ -44,7 +43,7 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 			AudienceTargetingRenderer renderer = new AudienceTargetingRendererFactory()
 				.getRenderer(event.getResult().getClassName(), event.getContent());
 			if (renderer != null) {
-				View view = renderer.render(event.getResult(), event.getContent(),  getContext());
+				View view = renderer.render(event.getResult(), event.getContent(), getContext());
 				if (view != null) {
 					addView(view);
 					return;
@@ -55,23 +54,6 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 			LiferayLogger.e("Error displaying audience targeting content", e);
 		}
 		showPlaceholder();
-	}
-
-	@Override
-	protected void onAttachedToWindow() {
-		super.onAttachedToWindow();
-
-		_timeOnScreen = new Date();
-	}
-
-	@Override
-	protected void onDetachedFromWindow() {
-		super.onDetachedFromWindow();
-
-		if (_result != null) {
-			long time = new Date().getTime() - _timeOnScreen.getTime();
-			ATTrackingActions.postATContent(getContext(), ATTrackingActions.AT_ON_SCREEN, _result, String.valueOf(time));
-		}
 	}
 
 	@Override
@@ -98,13 +80,29 @@ public class AudienceTargetingView extends LinearLayout implements AudienceTarge
 		showPlaceholder();
 	}
 
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+
+		_timeOnScreen = new Date();
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+
+		if (_result != null) {
+			long time = new Date().getTime() - _timeOnScreen.getTime();
+			ATTrackingActions.postATContent(getContext(), ATTrackingActions.AT_ON_SCREEN, _result, String.valueOf(time));
+		}
+	}
+
 	private void addPlaceholder() {
 		AudienceTargetingScreenlet screenlet = (AudienceTargetingScreenlet) getParent();
 		if (screenlet.getDefaultLayout() != 0) {
 			LayoutInflater.from(getContext()).inflate(screenlet.getDefaultLayout(), this);
 		}
 	}
-
 	private Date _timeOnScreen = new Date();
 	private AudienceTargetingResult _result;
 }

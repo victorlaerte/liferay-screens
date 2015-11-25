@@ -22,9 +22,8 @@ import android.view.ViewPropertyAnimator;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.liferay.mobile.screens.audiencetargeting.ATReferrer;
-import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
 import com.liferay.mobile.screens.audiencetargeting.AudienceListener;
+import com.liferay.mobile.screens.consumerreports.ConsumerTrackingActions;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordListener;
 import com.liferay.mobile.screens.auth.forgotpassword.ForgotPasswordScreenlet;
 import com.liferay.mobile.screens.auth.login.LoginListener;
@@ -48,8 +47,8 @@ public class MainActivity extends CardActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		ATTrackingActions.postInstallation(this);
-		ATTrackingActions.postSession(this);
+		ConsumerTrackingActions.postInstallation(this);
+		ConsumerTrackingActions.postSession(this);
 
 		_background = (ImageView) findViewById(R.id.background);
 		_background.setOnClickListener(this);

@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.liferay.mobile.screens.audiencetargeting.ATTrackingActions;
+import com.liferay.mobile.screens.consumerreports.ConsumerTrackingActions;
 import com.liferay.mobile.screens.bankofwesteros.R;
 import com.liferay.mobile.screens.bankofwesteros.audience.AudienceTargetingHelper;
 import com.liferay.mobile.screens.bankofwesteros.audience.ShowMoreInfoActivity;
@@ -269,7 +269,7 @@ public class IssuesActivity extends CardActivity implements View.OnClickListener
 	protected void onStop() {
 
 		long time = new Date().getTime() - timeOnScreen.getTime();
-		ATTrackingActions.postSessionOnScreen(this, time);
+		ConsumerTrackingActions.postSessionOnScreen(this, time);
 
 		super.onStop();
 	}
