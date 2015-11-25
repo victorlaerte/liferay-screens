@@ -1,10 +1,10 @@
 package com.liferay.mobile.screens.audiencetargeting;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.liferay.mobile.screens.audiencetargeting.interactor.AudienceTargetingResult;
+import com.liferay.mobile.screens.cache.executor.Executor;
 import com.liferay.mobile.screens.context.LiferayScreensContext;
 import com.liferay.mobile.screens.context.LiferayServerContext;
 import com.liferay.mobile.screens.context.SessionContext;
@@ -31,54 +31,9 @@ public class ATTrackingActions {
 	public static final String USER_AGENT = "Android AT";
 	public static final String ANALYTICS_SERVLET = "/o/analytics-processor/track";
 
-	public static final String INSTALLATION = "installation";
-	public static final String SESSION = "session";
 	public static final String VIEW = "view";
-	public static final String FORM_VIEW = "formView";
-	public static final String FORM_SUBMIT = "formSubmit";
 	public static final String CLICK = "click";
-	public static final String SESSION_ON_SCREEN = "sessionOnScreen";
 	public static final String AT_ON_SCREEN = "atOnScreen";
-
-	public static final String BUTTON_CLICK = "buttonClick";
-	public static final String FORM_INTERACTION = "formInteraction";
-
-	public static void postInstallation(Context context) {
-		SharedPreferences preferences = context.getSharedPreferences("AT_INSTALLATION", Context.MODE_PRIVATE);
-		String installed = "installed";
-		if (!preferences.contains(installed)) {
-			LiferayScreensContext.init(context);
-			long consumerId = LiferayServerContext.getConsumerId();
-
-			ATReferrer referrer = new ATReferrer(ATReferrer.CONSUMER, consumerId);
-			ATReferrer[] referrers = new ATReferrer[]{referrer};
-
-			post(INSTALLATION, new ATReferrer(INSTALLATION), referrers, "");
-
-			preferences.edit().putBoolean(installed, true).apply();
-		}
-	}
-
-	public static void postSession(Context context) {
-		//FIXME to server context
-		LiferayScreensContext.init(context);
-		long consumerId = LiferayServerContext.getConsumerId();
-
-		ATReferrer referrer = new ATReferrer(ATReferrer.CONSUMER, consumerId);
-		ATReferrer[] referrers = new ATReferrer[]{referrer};
-
-		post(SESSION, new ATReferrer(SESSION), referrers, "");
-	}
-
-	public static void postSessionOnScreen(Context context, long time) {
-		LiferayScreensContext.init(context);
-		long consumerId = LiferayServerContext.getConsumerId();
-
-		ATReferrer referrer = new ATReferrer(ATReferrer.CONSUMER, consumerId);
-		ATReferrer[] referrers = new ATReferrer[]{referrer};
-
-		post(ATTrackingActions.SESSION_ON_SCREEN, new ATReferrer(ATTrackingActions.SESSION_ON_SCREEN), referrers, String.valueOf(time));
-	}
 
 	public static void postATContent(Context context, String type, AudienceTargetingResult result, String additionalInfo) {
 		LiferayScreensContext.init(context);
@@ -95,17 +50,6 @@ public class ATTrackingActions {
 		post(type, origin, referrers, additionalInfo);
 	}
 
-	public static void ddl(Context context, String formAction, long recordId) {
-		LiferayScreensContext.init(context);
-
-		ATReferrer origin = new ATReferrer("com.liferay.portlet.dynamicdatalists.model.DDLRecordSet", recordId, formAction);
-
-		long consumerId = LiferayServerContext.getConsumerId();
-		ATReferrer consumer = new ATReferrer(ATReferrer.CONSUMER, consumerId);
-		ATReferrer[] referrers = new ATReferrer[]{consumer,};
-
-		post(formAction, origin, referrers, "");
-	}
 
 	public static void post(final String eventType, final ATReferrer origin,
 							final ATReferrer[] referrers, final String additionalInfo) {
