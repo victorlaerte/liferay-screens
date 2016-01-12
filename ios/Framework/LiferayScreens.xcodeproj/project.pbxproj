@@ -250,6 +250,8 @@
 		8879942D1C4508BD00B06D6C /* KeychainPasscodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8879942B1C4508BD00B06D6C /* KeychainPasscodeRepository.swift */; };
 		8879942F1C451C1C00B06D6C /* PasscodeLockConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8879942E1C451C1C00B06D6C /* PasscodeLockConfiguration.swift */; };
 		887994301C451C1C00B06D6C /* PasscodeLockConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8879942E1C451C1C00B06D6C /* PasscodeLockConfiguration.swift */; };
+		887994321C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887994311C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift */; };
+		887994331C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887994311C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift */; };
 		887F0D031B98973A0007AECE /* ServerReadOperationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887F0CFC1B98833D0007AECE /* ServerReadOperationInteractor.swift */; };
 		887F0D041B98973A0007AECE /* ServerReadOperationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887F0CFC1B98833D0007AECE /* ServerReadOperationInteractor.swift */; };
 		887F0D051B9897600007AECE /* ServerWriteOperationInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887F0CFF1B988EA60007AECE /* ServerWriteOperationInteractor.swift */; };
@@ -549,6 +551,7 @@
 		886FCCB21BA6D96E00494BB0 /* SyncManager+DDLForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyncManager+DDLForm.swift"; sourceTree = "<group>"; };
 		8879942B1C4508BD00B06D6C /* KeychainPasscodeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainPasscodeRepository.swift; sourceTree = "<group>"; };
 		8879942E1C451C1C00B06D6C /* PasscodeLockConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasscodeLockConfiguration.swift; sourceTree = "<group>"; };
+		887994311C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreensPasscodeLockPresenter.swift; sourceTree = "<group>"; };
 		887F0CFC1B98833D0007AECE /* ServerReadOperationInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerReadOperationInteractor.swift; sourceTree = "<group>"; };
 		887F0CFF1B988EA60007AECE /* ServerWriteOperationInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerWriteOperationInteractor.swift; sourceTree = "<group>"; };
 		887F0D081B999CD90007AECE /* CacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
@@ -1215,6 +1218,7 @@
 		8879942A1C4508BD00B06D6C /* Passlock */ = {
 			isa = PBXGroup;
 			children = (
+				887994311C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift */,
 				8879942B1C4508BD00B06D6C /* KeychainPasscodeRepository.swift */,
 				8879942E1C451C1C00B06D6C /* PasscodeLockConfiguration.swift */,
 			);
@@ -1796,6 +1800,7 @@
 				8892C6AF1ACBD89400192232 /* UIButton+Screens.swift in Sources */,
 				B2A8B1D61BBABE1F00AEC9D9 /* LRScreensjournalarticleService_v62.m in Sources */,
 				881E61891ACBEE0B00862B9E /* LiferayDDLListPageOperation.swift in Sources */,
+				887994321C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift in Sources */,
 				881E61471ACBEDC600862B9E /* AssetListPageLoadInteractor.swift in Sources */,
 				88A28EBA1B0DD1300040D7F6 /* NSBundle+Screens.swift in Sources */,
 				881E618F1ACBEE0B00862B9E /* DDLFieldDocument.swift in Sources */,
@@ -1919,6 +1924,7 @@
 				88DE25191AD2AB0A00714701 /* DDLListScreenlet_ParseFields_Tests.swift in Sources */,
 				88CA80601B25AF48004C1D59 /* OAuthWebViewController.swift in Sources */,
 				8839B8911B0CD5C4006C18F1 /* GetUserByUserIdOperation.swift in Sources */,
+				887994331C451D0E00B06D6C /* ScreensPasscodeLockPresenter.swift in Sources */,
 				881E63051ACC06B900862B9E /* BaseLoginScreenletTestCase.swift in Sources */,
 				881E61A81ACBF97000862B9E /* uBDD.swift in Sources */,
 				88DE25181AD2AB0A00714701 /* DDLFieldStringWithOptions_Tests.swift in Sources */,
