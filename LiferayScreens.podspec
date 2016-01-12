@@ -57,7 +57,7 @@ Pod::Spec.new do |s|
 	s.dependency 'SMXMLDocument', '1.1'
 	s.dependency 'ODRefreshControl', '1.2'
 	s.dependency 'YapDatabase', '2.6.5'
-	s.dependency 'Sugar', '~> 1.0.2'
+	#s.dependency 'Sugar', '1.0.2'
 
 	# Login & signup: save credentials
 	s.dependency 'KeychainAccess', '2.3.1'
@@ -71,5 +71,5 @@ Pod::Spec.new do |s|
 	s.dependency 'MDRadialProgress', '1.3.2'
 	
 	# EE
-	s.dependency 'PasscodeLock', :git => 'https://github.com/velikanov/SwiftPasscodeLock', :tag => '1.0.2'
+	#s.dependency 'PasscodeLock', :git => 'https://github.com/velikanov/SwiftPasscodeLock', :tag => '1.0.2'
 end
