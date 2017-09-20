@@ -26,6 +26,10 @@ open class WebView_default: BaseScreenletView, WebViewModel {
 
 	open var isLoggingEnabled = true
 
+	deinit {
+		print("deinit")
+	}
+
 	open var isScrollEnabled: Bool {
 		get {
 			return screensWebView?.isScrollEnabled ?? false
