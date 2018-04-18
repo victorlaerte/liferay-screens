@@ -29,6 +29,7 @@ public class MainActivity extends ThemeActivity implements View.OnClickListener 
 
 		findViewById(R.id.ddl_form).setOnClickListener(this);
 		findViewById(R.id.ddl_list).setOnClickListener(this);
+		findViewById(R.id.ddm_form).setOnClickListener(this);
 		findViewById(R.id.asset_list).setOnClickListener(this);
 		findViewById(R.id.get_user).setOnClickListener(this);
 		findViewById(R.id.web_content_list).setOnClickListener(this);
@@ -67,6 +68,9 @@ public class MainActivity extends ThemeActivity implements View.OnClickListener 
 				break;
 			case R.id.ddl_list:
 				start(DDLListActivity.class);
+				break;
+			case R.id.ddm_form:
+				start(DDMFormActivity.class);
 				break;
 			case R.id.asset_list:
 				start(SelectAssetActivity.class);

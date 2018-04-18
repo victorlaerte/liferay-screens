@@ -124,6 +124,12 @@
 				/>
 
 			<Button
+				android:id="@+id/ddm_form"
+				android:text="@string/ddm_form"
+				style="@style/test_app_button"
+				/>
+
+			<Button
 				android:id="@+id/gallery"
 				android:text="@string/image_gallery"
 				style="@style/test_app_button"
