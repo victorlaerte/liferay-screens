@@ -23,9 +23,6 @@ android {
 		}
 	}
 
-	buildTypes {
-		xamarin {}
-	}
 	sourceSets {
 		release {
 			java.srcDirs = ['src/debug/java']
@@ -47,6 +44,7 @@ dependencies {
 	}
 	api group: 'org.apache.cordova', name: 'framework', version: '6.2.3', classifier: 'debug', ext: 'aar'
 
+	api project(':android-sdk')
 	implementation libraries.appCompat
 	implementation libraries.design
 	implementation libraries.exif
