@@ -10,6 +10,7 @@ import com.liferay.mobile.screens.context.SessionContext;
 import com.liferay.mobile.screens.context.storage.CredentialsStorageBuilder;
 import com.liferay.mobile.screens.ddl.form.interactor.DDLFormEvent;
 import com.liferay.mobile.screens.testapp.fullview.LoginFullActivity;
+import com.liferay.mobile.screens.testapp.postings.activity.ThingMainActivity;
 import com.liferay.mobile.screens.util.LiferayLogger;
 import com.liferay.mobile.screens.viewsets.defaultviews.DefaultAnimation;
 
@@ -28,6 +29,7 @@ public class MainActivity extends ThemeActivity implements View.OnClickListener 
 			LiferayLogger.e("User already logged in: " + SessionContext.isLoggedIn());
 		}
 
+		findViewById(R.id.thing).setOnClickListener(this);
 		findViewById(R.id.ddl_form).setOnClickListener(this);
 		findViewById(R.id.ddl_list).setOnClickListener(this);
 		findViewById(R.id.ddm_form).setOnClickListener(this);
@@ -64,6 +66,9 @@ public class MainActivity extends ThemeActivity implements View.OnClickListener 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case R.id.thing:
+				start(ThingMainActivity.class);
+				break;
 			case R.id.ddl_form:
 				start(DDLFormActivity.class);
 				break;
