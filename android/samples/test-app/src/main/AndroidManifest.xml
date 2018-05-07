@@ -54,6 +54,8 @@
 		<activity
 			android:name=".DetailMediaGalleryActivity"
 			android:theme="@style/gallery_theme"/>
+		<activity android:name=".postings.activity.ThingMainActivity"/>
+		<activity android:name=".postings.activity.DetailActivity"/>
 	</application>
 
 </manifest>
