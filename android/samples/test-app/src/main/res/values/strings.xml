@@ -74,4 +74,5 @@
 	<string name="email">Email</string>
 	<string name="nickname">Nickname</string>
 	<string name="change_image_scale_type">Change Image Scale Type</string>
+	<string name="thing_screenlet">Thing screenlet</string>
 </resources>
