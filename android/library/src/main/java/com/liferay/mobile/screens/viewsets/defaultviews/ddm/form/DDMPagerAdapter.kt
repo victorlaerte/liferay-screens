@@ -55,7 +55,7 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
         linearLayout.findViewById<TextView>(R.id.headline_text_view)?.let {
             it.text = page.headline
 
-            if(page.headline.isEmpty()){
+            if (page.headline.isEmpty()) {
                 it.visibility = View.GONE
             }
         }
@@ -63,7 +63,7 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
         linearLayout.findViewById<TextView>(R.id.description_text_view)?.let {
             it.text = page.description
 
-            if(page.description.isEmpty()){
+            if (page.description.isEmpty()) {
                 it.visibility = View.GONE
             }
         }
