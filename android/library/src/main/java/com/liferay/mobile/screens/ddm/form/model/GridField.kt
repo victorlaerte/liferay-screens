@@ -80,7 +80,7 @@ class GridField : Field<Grid>, Parcelable {
 
                 keyValuePairs
                     .map { pair ->
-                        pair.split("=".toRegex())
+                        pair.replace("\"", "").split(":".toRegex())
                     }
                     .forEach { entry ->
                         map[entry[0].trim()] = entry[1].trim()
