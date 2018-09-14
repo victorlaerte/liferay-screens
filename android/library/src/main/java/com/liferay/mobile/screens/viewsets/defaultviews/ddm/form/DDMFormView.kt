@@ -55,6 +55,7 @@ import com.liferay.mobile.screens.viewsets.defaultviews.ddm.pager.WrapContentVie
 import com.liferay.mobile.screens.viewsets.defaultviews.util.ThemeUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.childrenSequence
 import rx.Observable
 import rx.Subscription
 import java.util.*
@@ -69,7 +70,8 @@ class DDMFormView @JvmOverloads constructor(
     RelativeLayout(context, attrs, defStyleAttr), DDLDocumentFieldView.UploadListener, IDDMFormView {
 
     val scrollView by bindNonNull<ScrollView>(R.id.multipage_scroll_view)
-    private val ddmFieldViewPages by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
+    private val ddmFieldViewPages
+        by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
     private val multipageProgress by bindNonNull<ProgressBar>(R.id.liferay_multipage_progress)
     private val backButton by bindNonNull<Button>(R.id.liferay_form_back)
     private val nextButton by bindNonNull<Button>(R.id.liferay_form_submit)
@@ -140,7 +142,7 @@ class DDMFormView @JvmOverloads constructor(
 
         val viewModel = view as DDLFieldViewModel<*>
         viewModel.field = field
-        view.tag = field
+        view.tag = field.name
 
         return view
     }
@@ -164,12 +166,14 @@ class DDMFormView @JvmOverloads constructor(
         fetchLatestDraftService.fetchLatestDraft(thing, {
             currentRecordThing = it
 
-            formInstanceRecord?.let {
-                updateFields(it.fieldValues)
+            formInstanceRecord?.let { formInstanceRecord ->
+                updateFields(formInstanceRecord.fieldValues)
             }
 
             evaluateContext()
+
         }, {
+            LiferayLogger.e(it.message)
             evaluateContext()
         })
     }
@@ -195,7 +199,7 @@ class DDMFormView @JvmOverloads constructor(
     }
 
     override fun startUploadField(field: DocumentField) {
-        val fieldView = findViewWithTag<DDLDocumentFieldView>(field)
+        val fieldView = findViewWithTag<DDLDocumentFieldView>(field.name)
 
         fieldView.let {
             field.moveToUploadInProgressState()
@@ -318,16 +322,16 @@ class DDMFormView @JvmOverloads constructor(
     private fun highLightInvalidFields(fieldResults: Map<Field<*>, String>, autoscroll: Boolean) {
         var scrolled = false
 
-        val fieldsContainerView = ddmFieldViewPages.findViewWithTag<LinearLayout>(ddmFieldViewPages.currentItem)
+        ddmFieldViewPages.currentView?.let { currentViewPage ->
 
-        for (i in 0 until fieldsContainerView.childCount) {
-            val fieldView = fieldsContainerView.getChildAt(i)
-            val fieldViewModel = fieldView as? DDLFieldViewModel<*>
+            for (i in 0 until currentViewPage.childCount) {
 
-            fieldViewModel?.let {
+                val fieldView = currentViewPage.getChildAt(i)
+                val fieldViewModel = fieldView as? DDLFieldViewModel<*>
 
-                fieldResults[fieldViewModel.field]?.let {
-
+                fieldViewModel?.let {
+                    fieldResults[fieldViewModel.field]
+                }?.let {
                     fieldView.clearFocus()
                     fieldViewModel.onPostValidation(false)
 
@@ -425,28 +429,6 @@ class DDMFormView @JvmOverloads constructor(
         })
     }
 
-    private fun updateFields(fieldValues: List<FieldValue>) {
-        val fieldsContainerView =
-            ddmFieldViewPages.findViewWithTag<LinearLayout>(ddmFieldViewPages.currentItem)
-
-        val fieldsMap = formInstance.ddmStructure.fields.map {
-            Pair(it.name, it)
-        }.toMap()
-
-        fieldValues.forEach { fieldValue ->
-            val field = fieldsMap[fieldValue.name]
-
-            field?.also {
-                field.setCurrentStringValue(fieldValue.value as String)
-
-                val fieldView = fieldsContainerView?.findViewWithTag<View>(field)
-                val fieldViewModel = fieldView as? DDLFieldViewModel<*>
-
-                fieldViewModel?.refresh()
-            }
-        }
-    }
-
     private fun updatePages(formContext: FormContext) {
         (ddmFieldViewPages.adapter as DDMPagerAdapter).let {
             for ((index, page) in it.pages.withIndex()) {
@@ -472,6 +454,52 @@ class DDMFormView @JvmOverloads constructor(
         }
     }
 
+    private fun updateFields(fieldValues: List<FieldValue>) {
+        updateFieldModels(fieldValues)
+
+        for (instantiatedPage in getInstantiatedPages()) {
+            for (view in instantiatedPage.childrenSequence()) {
+                (view as? DDLFieldViewModel<*>)?.refresh()
+            }
+        }
+    }
+
+    private fun getInstantiatedPages() : List<View> {
+        val pages = mutableListOf<View>()
+
+        val currentPos = ddmFieldViewPages.currentItem
+        val offset = ddmFieldViewPages.offscreenPageLimit
+
+        val start = if (currentPos - offset >= 0) currentPos - offset else 0
+        val end = currentPos + offset
+
+        for (pos in start..end) {
+            val view = ddmFieldViewPages.findViewWithTag<LinearLayout>(pos)
+
+            if (view != null) {
+                pages.add(view)
+            }
+        }
+
+        return pages
+    }
+
+    private fun updateFieldModels(fieldValues: List<FieldValue>) {
+        val fieldsMap = formInstance.ddmStructure.fields.map {
+            Pair(it.name, it)
+        }.toMap()
+
+        fieldValues.forEach { fieldValue ->
+            val field = fieldsMap[fieldValue.name]
+
+            field?.also {
+                if (!field.isTransient) {
+                    field.setCurrentStringValue(fieldValue.value as String)
+                }
+            }
+        }
+    }
+
     private fun updateFieldModel(fieldContext: FieldContext, field: Field<*>) {
         (field as? OptionsField<*>)?.let { optionsField ->
             setOptions(fieldContext, optionsField)
@@ -484,10 +512,9 @@ class DDMFormView @JvmOverloads constructor(
     }
 
     private fun updateFieldView(fieldContext: FieldContext, field: Field<*>) {
-        val fieldsContainerView =
-            ddmFieldViewPages.findViewWithTag<LinearLayout>(ddmFieldViewPages.currentItem)
+        val fieldsContainerView = ddmFieldViewPages.currentView
 
-        val fieldView = fieldsContainerView?.findViewWithTag<View>(field)
+        val fieldView = fieldsContainerView?.findViewWithTag<View>(field.name)
 
         fieldView?.let {
             val fieldViewModel = fieldView as? DDLFieldViewModel<*>

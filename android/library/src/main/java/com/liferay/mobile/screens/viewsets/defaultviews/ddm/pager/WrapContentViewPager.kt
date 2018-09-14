@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 
 /**
  * @author Victor Oliveira
@@ -29,16 +30,17 @@ class WrapContentViewPager : ViewPager {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    private var mCurrentView: View? = null
+    var currentView: ViewGroup? = null
+        private set
 
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var heightMeasureSpec = heightMeasureSpec
-        if (mCurrentView == null) {
+        if (currentView == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
 
-        mCurrentView?.let { currentView ->
+        currentView?.let { currentView ->
 
             val makeMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             currentView.measure(widthMeasureSpec, makeMeasureSpec)
@@ -52,8 +54,8 @@ class WrapContentViewPager : ViewPager {
         }
     }
 
-    fun measureCurrentView(currentView: View) {
-        mCurrentView = currentView
+    fun measureCurrentView(currentView: ViewGroup) {
+        this.currentView = currentView
         requestLayout()
     }
 

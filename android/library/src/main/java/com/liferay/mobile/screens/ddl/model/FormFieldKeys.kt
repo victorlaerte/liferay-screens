@@ -30,7 +30,7 @@ abstract class FormFieldKeys {
     val optionsKey = "options"
     val placeHolderKey = "placeHolder"
     val predefinedValueKey = "predefinedValue"
-    val switcherKey = "switcher"
+    val switcherKey = "showAsSwitcher"
     val textKey = "text"
     val tipKey = "tip"
     val validationKey = "validation"
