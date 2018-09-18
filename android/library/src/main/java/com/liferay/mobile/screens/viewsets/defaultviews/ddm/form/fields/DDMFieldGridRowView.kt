@@ -32,6 +32,8 @@ open class DDMFieldGridRowView @JvmOverloads constructor(context: Context, attrs
     lateinit var rowLabelEditText: EditText
     lateinit var columnSelectView: DDLFieldSelectView
 
+    lateinit var rowOption: Option
+
     override fun onFinishInflate() {
         super.onFinishInflate()
 
@@ -39,9 +41,11 @@ open class DDMFieldGridRowView @JvmOverloads constructor(context: Context, attrs
         columnSelectView = findViewById(R.id.column_label_edit_text)
     }
 
-    fun setOptions(dialogLabel: String, options: ArrayList<Option>) {
-        val selectableOptionsField = SelectableOptionsField(options)
-        selectableOptionsField.label = dialogLabel
+    fun setOptions(rowOption: Option, columnOptions: List<Option>) {
+        val selectableOptionsField = SelectableOptionsField(columnOptions as ArrayList<Option>?)
+        selectableOptionsField.label = rowOption.label
         columnSelectView.field = selectableOptionsField
+
+        this.rowOption = rowOption
     }
 }

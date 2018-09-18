@@ -46,3 +46,7 @@ class Grid @JvmOverloads constructor(
         }
     }
 }
+
+operator fun Grid.get(key: String): String? {
+    return this.rawValues[key]
+}

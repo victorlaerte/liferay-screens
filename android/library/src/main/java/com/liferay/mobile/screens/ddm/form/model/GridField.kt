@@ -110,8 +110,8 @@ class GridField : Field<Grid>, Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }
 
-
-
+operator fun List<Option>.get(value: String): Option? {
+    return this.firstOrNull { it.value == value }
+}

@@ -25,15 +25,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
-import com.liferay.mobile.screens.ddl.model.Option
 import com.liferay.mobile.screens.ddm.form.model.Grid
 import com.liferay.mobile.screens.ddm.form.model.GridField
+import com.liferay.mobile.screens.ddm.form.model.get
 import com.liferay.mobile.screens.thingscreenlet.delegates.bindNonNull
 import com.liferay.mobile.screens.viewsets.defaultviews.util.ThemeUtil
+import org.jetbrains.anko.childrenSequence
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
-import java.util.*
 
 /**
  * @author Victor Oliveira
@@ -82,7 +82,7 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
 
             TooltipCompat.setTooltipText(ddmFieldGridRowView.rowLabelEditText, row.label)
             ddmFieldGridRowView.rowLabelEditText.setText(row.label)
-            ddmFieldGridRowView.setOptions(row.label, gridField.columns as ArrayList<Option>)
+            ddmFieldGridRowView.setOptions(row, gridField.columns)
 
             ddmFieldGridRowView.columnSelectView.setOnValueChangedListener { _, which ->
                 val option = this.gridField.columns[which]
@@ -126,6 +126,19 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
 
     override fun refresh() {
         setupLabelLayout()
+
+        gridLinearLayout.childrenSequence().mapNotNull {
+            it as? DDMFieldGridRowView
+        }.forEach { view ->
+            this.field.currentValue?.let {
+                it[view.rowOption.value]
+            }?.let { columnValue ->
+                gridField.columns[columnValue]
+            }?.run {
+                view.columnSelectView.field.selectOption(this)
+                view.columnSelectView.refresh()
+            }
+        }
     }
 
     override fun onPostValidation(valid: Boolean) {
