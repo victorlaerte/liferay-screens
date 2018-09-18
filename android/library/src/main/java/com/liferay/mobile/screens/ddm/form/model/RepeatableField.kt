@@ -17,6 +17,7 @@ package com.liferay.mobile.screens.ddm.form.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.liferay.mobile.screens.ddl.model.Field
+import com.liferay.mobile.screens.ddl.model.FormFieldKeys
 import java.io.Serializable
 
 /**
@@ -82,7 +83,7 @@ class RepeatableField @JvmOverloads constructor(
     override fun setReadOnly(readOnly: Boolean) {
         super.setReadOnly(readOnly)
 
-        baseField.attributes[formFieldKeys.isReadOnlyKey] = readOnly
+        baseField.attributes[FormFieldKeys.IS_READ_ONLY_KEY] = readOnly
     }
 
     override fun isValid(): Boolean {
@@ -96,7 +97,7 @@ class RepeatableField @JvmOverloads constructor(
     override fun setRequired(required: Boolean) {
         super.setRequired(required)
 
-        baseField.attributes[formFieldKeys.isRequiredKey] = required
+        baseField.attributes[FormFieldKeys.IS_REQUIRED_KEY] = required
     }
 
     override fun setCurrentStringValue(value: String?) {

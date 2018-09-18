@@ -14,38 +14,49 @@
 
 package com.liferay.mobile.screens.ddl.model
 
+import java.util.jar.Attributes
+
 /**
  * @author Victor Oliveira
  */
-abstract class FormFieldKeys {
-    val dataSourceTypeKey = "dataSourceType"
-    val dataTypeKey = "dataType"
-    val ddmDataProviderInstanceKey = "ddmDataProviderInstance"
-    val displayStyleKey = "displayStyle"
-    val labelKey = "label"
-    val gridKey = "grid"
-    val hasFormRulesKey = "hasFormRules"
-    val isTransientKey = "transient"
-    val nameKey = "name"
-    val optionsKey = "options"
-    val placeHolderKey = "placeHolder"
-    val predefinedValueKey = "predefinedValue"
-    val switcherKey = "showAsSwitcher"
-    val textKey = "text"
-    val tipKey = "tip"
-    val validationKey = "validation"
-    val visibilityExpressionKey = "visibilityExpression"
-    open val additionalTypeKey = "type"
-    open val isInlineKey = "inline"
-    open val isMultipleKey = "multiple"
-    open val isReadOnlyKey = "readOnly"
-    open val isRepeatableKey = "repeatable"
-    open val isRequiredKey = "required"
-    open val isShowLabelKey = "showLabel"
-}
+class FormFieldKeys {
 
-class DDLFormFieldKeys : FormFieldKeys()
+    companion object {
+        const val DATA_SOURCE_TYPE_KEY = "dataSourceType"
+        const val DATA_TYPE_KEY = "dataType"
+        const val DDM_DATA_PROVIDER_INSTANCE_KEY = "ddmDataProviderInstance"
+        const val DISPLAY_STYLE_KEY = "displayStyle"
+        const val LABEL_KEY = "label"
+        const val GRID_KEY = "grid"
+        const val HAS_FORM_RULES_KEY = "hasFormRules"
+        const val IS_TRANSIENT_KEY = "transient"
+        const val NAME_KEY = "name"
+        const val OPTIONS_KEY = "options"
+        const val PLACE_HOLDER_KEY = "placeHolder"
+        const val PREDEFINED_VALUE_KEY = "predefinedValue"
+        const val SWITCHER_KEY = "showAsSwitcher"
+        const val TEXT_KEY = "text"
+        const val TIP_KEY = "tip"
+        const val VALIDATION_KEY = "validation"
+        const val VISIBILITY_EXPRESSION_KEY = "visibilityExpression"
+        @JvmField val ADDITIONAL_TYPE_KEY = arrayOf("additionalType", "type")
+        const val IS_INLINE_KEY = "inline"
+        const val IS_MULTIPLE_KEY = "multiple"
+        const val IS_READ_ONLY_KEY = "readOnly"
+        const val IS_REPEATABLE_KEY = "repeatable"
+        const val IS_REQUIRED_KEY = "required"
+        const val IS_SHOW_LABEL_KEY = "showLabel"
 
-class DDMFormFieldsKeys : FormFieldKeys() {
-    override val additionalTypeKey = "additionalType"
+        @JvmStatic fun getValueFromArrayKey(attributes: Map<String, Any>, arrayKey: Array<String>) : Any? {
+            for (additionalType in arrayKey) {
+                val mapValue = attributes[additionalType]
+
+                if (mapValue != null) {
+                    return mapValue
+                }
+            }
+
+            return null
+        }
+    }
 }

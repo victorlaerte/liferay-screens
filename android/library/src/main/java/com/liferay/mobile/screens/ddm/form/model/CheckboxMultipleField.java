@@ -50,7 +50,7 @@ public class CheckboxMultipleField extends SelectableOptionsField {
 	public CheckboxMultipleField(Map<String, Object> attributes, Locale locale, Locale defaultLocale) {
 		super(attributes, locale, defaultLocale);
 
-		isShowAsSwitcher = Boolean.valueOf(getAttributeStringValue(attributes, Field.formFieldKeys.getSwitcherKey()));
+		isShowAsSwitcher = Boolean.valueOf(getAttributeStringValue(attributes, FormFieldKeys.SWITCHER_KEY));
 	}
 
 	public CheckboxMultipleField(Parcel in, ClassLoader loader) {

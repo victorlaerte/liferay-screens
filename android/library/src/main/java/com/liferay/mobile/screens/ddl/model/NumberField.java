@@ -54,7 +54,7 @@ public class NumberField extends Field<Number> {
 	public NumberField(Map<String, Object> attributes, Locale locale, Locale defaultLocale) {
 		super(attributes, locale, defaultLocale);
 
-		Object validationObj = attributes.get(Field.formFieldKeys.getValidationKey());
+		Object validationObj = attributes.get(FormFieldKeys.VALIDATION_KEY);
 
 		if (validationObj != null && validationObj instanceof Map) {
 			Map<String, String> validation = (Map<String, String>) validationObj;
