@@ -10,7 +10,6 @@ android {
 		versionCode rootProject.ext.versionCode
 		versionName rootProject.ext.versionName
 		applicationId "com.liferay.mobile.pushnotifications"
-		multiDexEnabled true
 	}
 
 	buildTypes {
@@ -30,8 +29,6 @@ dependencies {
 	implementation libraries.appCompat
 	implementation libraries.design
 	implementation libraries.picasso
-
-	api libraries.support_multidex
 
 	implementation project(':liferay-material-viewset')
 }
