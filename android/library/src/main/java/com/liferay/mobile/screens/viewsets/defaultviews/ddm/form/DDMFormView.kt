@@ -35,13 +35,7 @@ import com.liferay.mobile.screens.context.LiferayScreensContext
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.Field
-import com.liferay.mobile.screens.ddl.model.Option
-import com.liferay.mobile.screens.ddl.model.OptionsField
 import com.liferay.mobile.screens.ddm.form.model.*
-import com.liferay.mobile.screens.ddm.form.service.APIOEvaluateService
-import com.liferay.mobile.screens.ddm.form.service.APIOFetchLatestDraftService
-import com.liferay.mobile.screens.ddm.form.service.APIOSubmitService
-import com.liferay.mobile.screens.ddm.form.service.APIOUploadService
 import com.liferay.mobile.screens.ddm.form.view.SuccessPageActivity
 import com.liferay.mobile.screens.thingscreenlet.delegates.bindNonNull
 import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet
@@ -50,6 +44,7 @@ import com.liferay.mobile.screens.util.AndroidUtil
 import com.liferay.mobile.screens.util.LiferayLogger
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.BaseDDLFieldTextView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.DDLDocumentFieldView
+import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.adapters.DDMPagerAdapter
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.fields.DDMFieldRepeatableView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.pager.WrapContentViewPager
 import com.liferay.mobile.screens.viewsets.defaultviews.util.ThemeUtil
@@ -58,7 +53,6 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.childrenSequence
 import rx.Observable
 import rx.Subscription
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -67,36 +61,24 @@ import java.util.concurrent.TimeUnit
  */
 class DDMFormView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : BaseView,
-    RelativeLayout(context, attrs, defStyleAttr), DDLDocumentFieldView.UploadListener, IDDMFormView {
+    RelativeLayout(context, attrs, defStyleAttr), DDLDocumentFieldView.UploadListener, DDMFormViewContract.DDMFormView {
 
-    val scrollView by bindNonNull<ScrollView>(R.id.multipage_scroll_view)
-    private val ddmFieldViewPages
-        by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
-    private val multipageProgress by bindNonNull<ProgressBar>(R.id.liferay_multipage_progress)
-    private val backButton by bindNonNull<Button>(R.id.liferay_form_back)
-    private val nextButton by bindNonNull<Button>(R.id.liferay_form_submit)
+    private val presenter = DDMFormPresenter(this)
+
     private val layoutIds = mutableMapOf<Field.EditorType, Int>()
-    private val dirtyFieldNames: MutableList<String> = mutableListOf()
-
-    private val evaluateService = APIOEvaluateService()
-    private val fetchLatestDraftService = APIOFetchLatestDraftService()
-    private val submitService = APIOSubmitService()
-    private val uploadService = APIOUploadService()
-
+    override var screenlet: ThingScreenlet? = null
     private var subscription: Subscription? = null
 
-    private var formInstanceRecord: FormInstanceRecord? = null
+    private val backButton by bindNonNull<Button>(R.id.liferay_form_back)
+    private val nextButton by bindNonNull<Button>(R.id.liferay_form_submit)
+
+    private val ddmFieldViewPages by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
+    private val scrollView by bindNonNull<ScrollView>(R.id.multipage_scroll_view)
+    private val multipageProgress by bindNonNull<ProgressBar>(R.id.liferay_multipage_progress)
+
     private lateinit var formInstance: FormInstance
-
-    private var currentRecordThing: Thing? by converter<FormInstanceRecord> {
-        formInstanceRecord = it
-    }
-
-    override var screenlet: ThingScreenlet? = null
-
     override var thing: Thing? by converter<FormInstance> {
         formInstance = it
-
         onFormLoaded(formInstance)
     }
 
@@ -111,26 +93,11 @@ class DDMFormView @JvmOverloads constructor(
         }
     }
 
-    override fun subscribeToValueChanged(observable: Observable<Field<*>>) {
-        subscription = observable
-            // TODO: Remove magic number
-            .skip(3)
-            .debounce(4, TimeUnit.SECONDS)
-            .subscribe({ field ->
-                onFieldValueChanged(field)
-                formInstanceRecord?.let {
-                    it.fieldValues[field.name] = field.toData()
-                }
-            }) {
-                LiferayLogger.e(it.message)
-            }
+    override fun hasConnectivity(): Boolean {
+        return AndroidUtil.isConnected(context.applicationContext)
     }
 
-    override fun scrollToTop() {
-        scrollView.scrollTo(0, 0)
-    }
-
-    override fun inflateField(inflater: LayoutInflater, parentView: ViewGroup, field: Field<*>): View {
+    override fun inflateFieldView(inflater: LayoutInflater, parentView: ViewGroup, field: Field<*>): View {
         val layoutId = layoutIds[field.editorType]
         val view = inflater.inflate(layoutId!!, parentView, false)
 
@@ -150,98 +117,6 @@ class DDMFormView @JvmOverloads constructor(
     override fun onDestroy() {
         super.onDestroy()
         subscription?.unsubscribe()
-    }
-
-    private fun getIdentifier(fieldNamePrefix: String, themeName: String): Int {
-        return context.resources.getIdentifier(
-            "${fieldNamePrefix}_$themeName", "layout", context.packageName)
-    }
-
-    private fun onFormLoaded(formInstance: FormInstance) {
-        val thing = thing ?: throw Exception("No thing found")
-
-        setActivityTitle(formInstance)
-        initPageAdapter(formInstance.ddmStructure.pages)
-
-        fetchLatestDraftService.fetchLatestDraft(thing, {
-            currentRecordThing = it
-
-            formInstanceRecord?.let { formInstanceRecord ->
-                updateFields(formInstanceRecord.fieldValues)
-            }
-
-            evaluateContext()
-
-        }, {
-            LiferayLogger.e(it.message)
-            evaluateContext()
-        })
-    }
-
-    private fun initPageAdapter(pages: List<FormPage>) {
-        val ddmPagerAdapter = DDMPagerAdapter(pages, this)
-        ddmFieldViewPages.adapter = ddmPagerAdapter
-
-        if (pages.size > 1) {
-            multipageProgress.visibility = View.VISIBLE
-            multipageProgress.progress = getFormProgress()
-        } else {
-            multipageProgress.visibility = View.GONE
-        }
-
-        if (pages.size == 1)
-            nextButton.text = context.getString(R.string.submit)
-    }
-
-    private fun setActivityTitle(formInstance: FormInstance) {
-        val activityFromContext = LiferayScreensContext.getActivityFromContext(context)
-        activityFromContext?.title = formInstance.name
-    }
-
-    override fun startUploadField(field: DocumentField) {
-        val fieldView = findViewWithTag<DDLDocumentFieldView>(field.name)
-
-        fieldView.let {
-            field.moveToUploadInProgressState()
-            fieldView.refresh()
-
-            val thing = thing ?: throw Exception("No thing found")
-
-            uploadService.uploadFileToRootFolder(context, thing, field, {
-                field.currentValue = it
-
-                field.moveToUploadCompleteState()
-                fieldView.refresh()
-            }, {
-                field.moveToUploadFailureState()
-                fieldView.refresh()
-            })
-        }
-    }
-
-    override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putParcelable("superState", super.onSaveInstanceState())
-
-        formInstanceRecord.let {
-            bundle.putParcelable("formInstanceRecord", it)
-        }
-
-        return bundle
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        if (state is Bundle) {
-            formInstanceRecord = state.getParcelable("formInstanceRecord")
-
-            formInstanceRecord?.let {
-                updateFields(it.fieldValues)
-            }
-
-            super.onRestoreInstanceState(state.getParcelable("superState"))
-        } else {
-            super.onRestoreInstanceState(state)
-        }
     }
 
     override fun onFinishInflate() {
@@ -276,7 +151,14 @@ class DDMFormView @JvmOverloads constructor(
                         nextButton.text = context.getString(R.string.submit)
                     }
                 } else {
-                    submit()
+
+                    if (!AndroidUtil.isConnected(context.applicationContext)) {
+                        showNoInternetErrorMessage()
+                    } else {
+                        val thing = thing ?: throw Exception("No thing found")
+                        presenter.submit(thing, formInstance)
+                    }
+
                 }
             } else {
                 highLightInvalidFields(invalidFields, true)
@@ -289,25 +171,158 @@ class DDMFormView @JvmOverloads constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isConnectedToInternet ->
                 if (!isConnectedToInternet) {
-                    showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
+                    showNoInternetErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
                 }
             }
     }
 
-    private fun getPreviousEnabledPage(): Number {
-        (ddmFieldViewPages.adapter as DDMPagerAdapter).let {
-            val dropPages = it.pages.size - ddmFieldViewPages.currentItem
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is Bundle) {
+            val formInstanceRecord = state.getParcelable<FormInstanceRecord>("formInstanceRecord")
+            presenter.restore(formInstanceRecord, formInstance.ddmStructure.fields)
 
-            return it.pages.dropLast(dropPages).indexOfLast { it.isEnabled }
+            super.onRestoreInstanceState(state.getParcelable("superState"))
+        } else {
+            super.onRestoreInstanceState(state)
         }
     }
 
-    private fun getNextEnabledPage(): Number {
-        (ddmFieldViewPages.adapter as DDMPagerAdapter).let {
-            val dropPages = ddmFieldViewPages.currentItem + 1
+    override fun onSaveInstanceState(): Parcelable {
+        val bundle = Bundle()
+        bundle.putParcelable("superState", super.onSaveInstanceState())
 
-            return it.pages.drop(dropPages).indexOfFirst { it.isEnabled } + dropPages
+        presenter.formInstanceRecord?.let {
+            bundle.putParcelable("formInstanceRecord", it)
         }
+
+        return bundle
+    }
+
+    override fun refreshVisibleFields() {
+        for (instantiatedPage in getInstantiatedPages()) {
+            for (view in instantiatedPage.childrenSequence()) {
+                (view as? DDLFieldViewModel<*>)?.refresh()
+            }
+        }
+    }
+
+    override fun scrollToTop() {
+        scrollView.scrollTo(0, 0)
+    }
+
+    override fun showCantLoadSomeFieldsOfflineErrorMessage() {
+        showNoInternetErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
+    }
+
+    override fun showErrorMessage(exception: Exception?) {
+        val icon = R.drawable.default_error_icon
+        val backgroundColor = ContextCompat.getColor(context, R.color.lightRed)
+        val textColor = ContextCompat.getColor(context, android.R.color.white)
+        val message =
+            exception?.message ?: context.getString(R.string.submit_failed_contact_administrator)
+
+        AndroidUtil.showCustomSnackbar(
+            this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
+    }
+
+    override fun showSuccessMessage() {
+        val icon = R.drawable.default_check_icon
+        val backgroundColor = ContextCompat.getColor(context, R.color.success_green_default)
+        val textColor = ContextCompat.getColor(context, android.R.color.white)
+        val message = context.getString(R.string.information_successfully_received)
+
+        AndroidUtil.showCustomSnackbar(
+            this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
+    }
+
+    override fun showSuccessPage(successPage: SuccessPage) {
+        val intent = Intent(context, SuccessPageActivity::class.java)
+        intent.putExtra("successPage", successPage)
+        context.startActivity(intent)
+    }
+
+    override fun startUpload(field: DocumentField) {
+        val fieldView = findViewWithTag<DDLDocumentFieldView>(field.name)
+
+        fieldView.let { ddlDocumentFieldView ->
+            field.moveToUploadInProgressState()
+            ddlDocumentFieldView.refresh()
+
+            val thing = thing ?: throw Exception("No thing found")
+
+            presenter.uploadField(context, thing, field, {
+                field.currentValue = it
+                field.moveToUploadCompleteState()
+
+                ddlDocumentFieldView.refresh()
+            }, {
+                field.moveToUploadFailureState()
+                ddlDocumentFieldView.refresh()
+            })
+        }
+    }
+
+    override fun subscribeToValueChanged(observable: Observable<Field<*>>) {
+        subscription = observable
+            // TODO: Remove magic number
+            .skip(3)
+            .debounce(4, TimeUnit.SECONDS)
+            .subscribe({ field ->
+                thing?.let {
+                    presenter.onFieldValueChanged(it, formInstance, field)
+                }
+            }) {
+                LiferayLogger.e(it.message)
+            }
+    }
+
+    override fun updateFieldView(fieldContext: FieldContext, field: Field<*>) {
+        val fieldsContainerView = ddmFieldViewPages.currentView
+
+        val fieldView = fieldsContainerView?.findViewWithTag<View>(field.name)
+
+        fieldView?.let {
+            val fieldViewModel = fieldView as? DDLFieldViewModel<*>
+            val fieldTextView = fieldView as? BaseDDLFieldTextView<*>
+
+            setFieldVisibility(fieldContext, fieldView)
+            fieldTextView?.setupFieldLayout()
+            fieldViewModel?.refresh()
+
+            presenter.checkIsDirty(field, fieldContext, fieldViewModel)
+        }
+    }
+
+    override fun updatePageEnabled(formContext: FormContext) {
+        (ddmFieldViewPages.adapter as DDMPagerAdapter).let {
+            for ((index, page) in it.pages.withIndex()) {
+                page.isEnabled = formContext.pages[index].isEnabled
+            }
+        }
+    }
+
+    private fun getFormProgress(): Int {
+        return (ddmFieldViewPages.currentItem + 1) * 100 / formInstance.ddmStructure.pages.size
+    }
+
+    private fun getInstantiatedPages(): List<View> {
+        val pages = mutableListOf<View>()
+
+        val currentPos = ddmFieldViewPages.currentItem
+        val offset = ddmFieldViewPages.offscreenPageLimit
+
+        val start = if (currentPos - offset >= 0) currentPos - offset else 0
+        val end = currentPos + offset
+
+        for (pos in start..end) {
+            val view = ddmFieldViewPages.findViewWithTag<LinearLayout>(pos)
+
+            if (view != null) {
+                pages.add(view)
+            }
+        }
+
+        return pages
     }
 
     private fun getInvalidFields(): Map<Field<*>, String> {
@@ -316,9 +331,22 @@ class DDMFormView @JvmOverloads constructor(
         return page.fields.filter { !it.isValid }.associateBy({ it }, { "Error Msg Goes Here" })
     }
 
-    /*
-     * XXX Copied code
-     */
+    private fun getNextEnabledPage(): Number {
+        (ddmFieldViewPages.adapter as DDMPagerAdapter).let { ddmPagerAdapter ->
+            val dropPages = ddmFieldViewPages.currentItem + 1
+
+            return ddmPagerAdapter.pages.drop(dropPages).indexOfFirst { it.isEnabled } + dropPages
+        }
+    }
+
+    private fun getPreviousEnabledPage(): Number {
+        (ddmFieldViewPages.adapter as DDMPagerAdapter).let { ddmPagerAdapter ->
+            val dropPages = ddmPagerAdapter.pages.size - ddmFieldViewPages.currentItem
+
+            return ddmPagerAdapter.pages.dropLast(dropPages).indexOfLast { it.isEnabled }
+        }
+    }
+
     private fun highLightInvalidFields(fieldResults: Map<Field<*>, String>, autoscroll: Boolean) {
         var scrolled = false
 
@@ -345,39 +373,45 @@ class DDMFormView @JvmOverloads constructor(
         }
     }
 
-    fun submit(isDraft: Boolean = false) {
-        if (!AndroidUtil.isConnected(context.applicationContext) && !isDraft) {
-            showConnectivityErrorMessage()
-            return
+    private fun initPageAdapter(pages: List<FormPage>) {
+        val ddmPagerAdapter = DDMPagerAdapter(pages,
+            this)
+        ddmFieldViewPages.adapter = ddmPagerAdapter
+
+        if (pages.size > 1) {
+            multipageProgress.visibility = View.VISIBLE
+            multipageProgress.progress = getFormProgress()
+        } else {
+            multipageProgress.visibility = View.GONE
         }
 
+        if (pages.size == 1)
+            nextButton.text = context.getString(R.string.submit)
+    }
+
+    private fun onFormLoaded(formInstance: FormInstance) {
         val thing = thing ?: throw Exception("No thing found")
-        val fields = formInstance.ddmStructure.fields
 
-        submitService.submit(thing, currentRecordThing, fields, isDraft, { recordThing ->
-            currentRecordThing = recordThing
+        setActivityTitle(formInstance)
+        initPageAdapter(formInstance.ddmStructure.pages)
 
-            if (!isDraft) {
-                formInstance.ddmStructure.successPage?.let {
-                    showSuccessPage(formInstance.ddmStructure.successPage)
-                } ?: run {
-                    showSuccessMessage()
-                }
-            }
-        }, { exception ->
-            LiferayLogger.e(exception.message)
-
-            if (!isDraft) {
-                showErrorMessage(exception)
-            }
-        })
+        presenter.syncFormInstance(thing, formInstance.ddmStructure.fields)
     }
 
-    private fun getFormProgress(): Int {
-        return (ddmFieldViewPages.currentItem + 1) * 100 / formInstance.ddmStructure.pages.size
+    private fun setActivityTitle(formInstance: FormInstance) {
+        val activityFromContext = LiferayScreensContext.getActivityFromContext(context)
+        activityFromContext?.title = formInstance.name
     }
 
-    private fun showConnectivityErrorMessage(@ColorRes backgroundColorResource: Int = R.color.midGray,
+    private fun setFieldVisibility(fieldContext: FieldContext, fieldView: View) {
+        if (fieldContext.isVisible != false) {
+            fieldView.visibility = View.VISIBLE
+        } else {
+            fieldView.visibility = View.GONE
+        }
+    }
+
+    private fun showNoInternetErrorMessage(@ColorRes backgroundColorResource: Int = R.color.midGray,
         @StringRes messageStringRes: Int = R.string.no_internet_connection) {
 
         val icon = R.drawable.default_error_icon
@@ -386,205 +420,6 @@ class DDMFormView @JvmOverloads constructor(
         val textColor = ContextCompat.getColor(context, android.R.color.white)
 
         AndroidUtil.showCustomSnackbar(this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
-    }
-
-    private fun showErrorMessage(exception: Exception?) {
-        val icon = R.drawable.default_error_icon
-        val backgroundColor = ContextCompat.getColor(context, R.color.lightRed)
-        val textColor = ContextCompat.getColor(context, android.R.color.white)
-        val message =
-            exception?.message ?: context.getString(R.string.submit_failed_contact_administrator)
-
-        AndroidUtil.showCustomSnackbar(
-            this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
-    }
-
-    private fun showSuccessMessage() {
-        val icon = R.drawable.default_check_icon
-        val backgroundColor = ContextCompat.getColor(context, R.color.success_green_default)
-        val textColor = ContextCompat.getColor(context, android.R.color.white)
-        val message = context.getString(R.string.information_successfully_received)
-
-        AndroidUtil.showCustomSnackbar(
-            this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
-    }
-
-    private fun showSuccessPage(successPage: SuccessPage) {
-        val intent = Intent(context, SuccessPageActivity::class.java)
-        intent.putExtra("successPage", successPage)
-        context.startActivity(intent)
-    }
-
-    private fun evaluateContext() {
-        val thing = thing ?: throw Exception("No thing found")
-        val fields = formInstance.ddmStructure.fields
-
-        evaluateService.evaluateContext(thing, fields, {
-            val formContext = FormContext.converter(it)
-
-            updatePages(formContext)
-            updateFields(formContext)
-        }, {
-            showErrorMessage(it)
-        })
-    }
-
-    private fun updatePages(formContext: FormContext) {
-        (ddmFieldViewPages.adapter as DDMPagerAdapter).let {
-            for ((index, page) in it.pages.withIndex()) {
-                page.isEnabled = formContext.pages[index].isEnabled
-            }
-        }
-    }
-
-    private fun updateFields(formContext: FormContext) {
-        val fieldContexts = formContext.pages.flatMap(FormContextPage::fields)
-
-        val fieldsMap = formInstance.ddmStructure.fields.map {
-            Pair(it.name, it)
-        }.toMap()
-
-        fieldContexts.forEach { fieldContext ->
-            val field = fieldsMap[fieldContext.name]
-
-            field?.let {
-                updateFieldModel(fieldContext, field)
-                updateFieldView(fieldContext, field)
-            }
-        }
-    }
-
-    private fun updateFields(fieldValues: List<FieldValue>) {
-        updateFieldModels(fieldValues)
-
-        for (instantiatedPage in getInstantiatedPages()) {
-            for (view in instantiatedPage.childrenSequence()) {
-                (view as? DDLFieldViewModel<*>)?.refresh()
-            }
-        }
-    }
-
-    private fun getInstantiatedPages() : List<View> {
-        val pages = mutableListOf<View>()
-
-        val currentPos = ddmFieldViewPages.currentItem
-        val offset = ddmFieldViewPages.offscreenPageLimit
-
-        val start = if (currentPos - offset >= 0) currentPos - offset else 0
-        val end = currentPos + offset
-
-        for (pos in start..end) {
-            val view = ddmFieldViewPages.findViewWithTag<LinearLayout>(pos)
-
-            if (view != null) {
-                pages.add(view)
-            }
-        }
-
-        return pages
-    }
-
-    private fun updateFieldModels(fieldValues: List<FieldValue>) {
-        val fieldsMap = formInstance.ddmStructure.fields.map {
-            Pair(it.name, it)
-        }.toMap()
-
-        fieldValues.forEach { fieldValue ->
-            val field = fieldsMap[fieldValue.name]
-
-            field?.also {
-                if (!field.isTransient) {
-                    field.setCurrentStringValue(fieldValue.value as String)
-                }
-            }
-        }
-    }
-
-    private fun updateFieldModel(fieldContext: FieldContext, field: Field<*>) {
-        (field as? OptionsField<*>)?.let { optionsField ->
-            setOptions(fieldContext, optionsField)
-        }
-
-        setValue(fieldContext, field)
-
-        field.isReadOnly = fieldContext.isReadOnly ?: field.isReadOnly
-        field.isRequired = fieldContext.isRequired ?: field.isRequired
-    }
-
-    private fun updateFieldView(fieldContext: FieldContext, field: Field<*>) {
-        val fieldsContainerView = ddmFieldViewPages.currentView
-
-        val fieldView = fieldsContainerView?.findViewWithTag<View>(field.name)
-
-        fieldView?.let {
-            val fieldViewModel = fieldView as? DDLFieldViewModel<*>
-            val fieldTextView = fieldView as? BaseDDLFieldTextView<*>
-
-            setVisibility(fieldContext, fieldView)
-
-            fieldTextView?.setupFieldLayout()
-            fieldViewModel?.refresh()
-
-            if (dirtyFieldNames.contains(field.name)) {
-                val isValid = fieldContext.isValid ?: true
-
-                field.lastValidationResult = isValid
-                fieldViewModel?.onPostValidation(isValid)
-            }
-        }
-    }
-
-    private fun setOptions(fieldContext: FieldContext, optionsField: OptionsField<*>) {
-        val availableOptions = fieldContext.options as? List<Map<String, String>>
-
-        availableOptions?.let {
-            optionsField.availableOptions = ArrayList(availableOptions.map { Option(it) })
-        }
-    }
-
-    private fun setValue(fieldContext: FieldContext, field: Field<*>) {
-        if (fieldContext.isValueChanged == true) {
-            addToDirtyFields(field)
-
-            fieldContext.value?.toString()?.let {
-                field.setCurrentStringValue(it)
-            }
-        }
-    }
-
-    private fun setVisibility(fieldContext: FieldContext, fieldView: View) {
-        if (fieldContext.isVisible != false) {
-            fieldView.visibility = View.VISIBLE
-        } else {
-            fieldView.visibility = View.GONE
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        subscription?.unsubscribe()
-    }
-
-    private fun onFieldValueChanged(field: Field<*>) {
-        addToDirtyFields(field)
-
-        if (!AndroidUtil.isConnected(context.applicationContext)) {
-            showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
-
-            return
-        }
-
-        submit(true)
-
-        if (field.hasFormRules()) {
-            evaluateContext()
-        }
-    }
-
-    private fun addToDirtyFields(field: Field<*>) {
-        if (!dirtyFieldNames.contains(field.name)) {
-            dirtyFieldNames.add(field.name)
-        }
     }
 
     companion object {

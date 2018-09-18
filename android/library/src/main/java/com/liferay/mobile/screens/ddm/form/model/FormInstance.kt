@@ -85,7 +85,7 @@ data class FormInstance @JvmOverloads constructor(
 
         private fun getPages(mapper: Map<String, Any>, locale: Locale): List<FormPage> {
 
-            return (mapper["member"] as List<Map<String, Any>>).mapTo(mutableListOf(), {
+            return (mapper["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
                 val headlinePage = it["headline"] as? String ?: ""
                 val textPage = it["text"] as? String ?: ""
@@ -94,7 +94,7 @@ data class FormInstance @JvmOverloads constructor(
                 }.toMutableList()
 
                 FormPage(headlinePage, textPage, fields)
-            })
+            }
         }
 
         private fun getFields(map: Map<String, Any>, locale: Locale): List<Field<*>> {
@@ -103,7 +103,7 @@ data class FormInstance @JvmOverloads constructor(
                 return mutableListOf()
             }
 
-            return (map["member"] as List<Map<String, Any>>).mapTo(mutableListOf(), {
+            return (map["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
                 val dataType = it["dataType"] as? String
                 val options = (it["options"] as? Map<String, Any>)?.let {
@@ -120,7 +120,7 @@ data class FormInstance @JvmOverloads constructor(
 
                 val fieldDataType = Field.DataType.assignDataTypeFromString(dataType)
                 fieldDataType.createField(attributes, locale, locale)
-            })
+            }
         }
     }
 }

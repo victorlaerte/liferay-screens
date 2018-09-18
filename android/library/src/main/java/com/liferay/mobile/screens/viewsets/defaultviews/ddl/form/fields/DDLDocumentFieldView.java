@@ -53,7 +53,7 @@ public class DDLDocumentFieldView extends BaseDDLFieldTextView<DocumentField>
 	implements DDLFieldViewModel<DocumentField>, View.OnClickListener {
 
 	public interface UploadListener {
-		void startUploadField(DocumentField field);
+		void startUpload(DocumentField field);
 	}
 
 	protected ProgressBar progressBar;
@@ -249,6 +249,6 @@ public class DDLDocumentFieldView extends BaseDDLFieldTextView<DocumentField>
 		getField().createLocalFile(uri.toString());
 		getTextEditText().setText(uri.getPath());
 
-		uploadListener.startUploadField(getField());
+		uploadListener.startUpload(getField());
 	}
 }

@@ -245,7 +245,7 @@ public class DDLFormView extends ScrollView implements DDLFormViewModel, View.On
 		}
 	}
 
-	public void startUploadField(DocumentField field) {
+	public void startUpload(DocumentField field) {
 		getDDLFormScreenlet().startUpload(field);
 	}
 

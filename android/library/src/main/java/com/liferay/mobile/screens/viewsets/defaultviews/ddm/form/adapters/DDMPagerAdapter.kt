@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form
+package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.adapters
 
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
@@ -24,14 +24,20 @@ import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.model.FormPage
+import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.DDMFormViewContract
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.pager.WrapContentViewPager
 import rx.Observable
 
 /**
  * @author Victor Oliveira
  */
-class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFormView) : PagerAdapter() {
+class DDMPagerAdapter(val pages: List<FormPage>,
+    private val ddmFormView: DDMFormViewContract.DDMFormView) : PagerAdapter() {
     private var mCurrentPosition = -1
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View)
+    }
 
     override fun getCount(): Int {
         return pages.size
@@ -39,10 +45,6 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
 
     override fun getItemPosition(obj: Any): Int {
         return pages.indexOf(obj)
-    }
-
-    override fun isViewFromObject(view: View, obj: Any): Boolean {
-        return view == obj
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -72,7 +74,7 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
 
         for (field in page.fields) {
 
-            val view = ddmFormView.inflateField(inflater, linearLayout, field)
+            val view = ddmFormView.inflateFieldView(inflater, linearLayout, field)
 
             linearLayout.addView(view)
 
@@ -88,6 +90,10 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
         return linearLayout
     }
 
+    override fun isViewFromObject(view: View, obj: Any): Boolean {
+        return view == obj
+    }
+
     override fun setPrimaryItem(container: ViewGroup, position: Int, instantiatedItem: Any) {
         super.setPrimaryItem(container, position, instantiatedItem)
 
@@ -101,9 +107,5 @@ class DDMPagerAdapter(val pages: List<FormPage>, private val ddmFormView: IDDMFo
                 ddmFormView.scrollToTop()
             }
         }
-    }
-
-    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-        container.removeView(obj as View)
     }
 }
