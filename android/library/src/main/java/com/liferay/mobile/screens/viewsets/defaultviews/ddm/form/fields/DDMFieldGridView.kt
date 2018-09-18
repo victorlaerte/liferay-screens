@@ -126,19 +126,7 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
 
     override fun refresh() {
         setupLabelLayout()
-
-        gridLinearLayout.childrenSequence().mapNotNull {
-            it as? DDMFieldGridRowView
-        }.forEach { view ->
-            this.field.currentValue?.let {
-                it[view.rowOption.value]
-            }?.let { columnValue ->
-                gridField.columns[columnValue]
-            }?.run {
-                view.columnSelectView.field.selectOption(this)
-                view.columnSelectView.refresh()
-            }
-        }
+        refreshGridRows()
     }
 
     override fun onPostValidation(valid: Boolean) {
@@ -164,14 +152,25 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
         this.isEnabled = enabled
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
         changeValuesSubscription?.unsubscribe()
+    }
+
+    private fun refreshGridRows() {
+        gridLinearLayout.childrenSequence().mapNotNull {
+            it as? DDMFieldGridRowView
+        }.forEach { view ->
+            this.field.currentValue?.let {
+                it[view.rowOption.value]
+            }?.let { columnValue ->
+                gridField.columns[columnValue]
+            }?.run {
+                view.columnSelectView.field.selectOption(this)
+                view.columnSelectView.refresh()
+            }
+        }
     }
 
 }
