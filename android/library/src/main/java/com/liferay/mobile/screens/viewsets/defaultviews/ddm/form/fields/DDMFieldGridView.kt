@@ -167,8 +167,7 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
             }?.let { columnValue ->
                 gridField.columns[columnValue]
             }?.run {
-                view.columnSelectView.field.selectOption(this)
-                view.columnSelectView.refresh()
+                view.selectOption(this)
             }
         }
     }

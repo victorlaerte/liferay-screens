@@ -15,6 +15,7 @@
 package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.fields
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.widget.*
 import com.liferay.mobile.screens.R
@@ -39,6 +40,18 @@ open class DDMFieldGridRowView @JvmOverloads constructor(context: Context, attrs
 
         rowLabelEditText = findViewById(R.id.row_label_edit_text)
         columnSelectView = findViewById(R.id.column_label_edit_text)
+    }
+
+    fun refresh() {
+        columnSelectView.refresh()
+
+        val columnEditText = columnSelectView.textEditText
+        columnEditText.setTypeface(columnEditText.typeface, Typeface.BOLD)
+    }
+
+    fun selectOption(option: Option) {
+        columnSelectView.field.selectOption(option)
+        refresh()
     }
 
     fun setOptions(rowOption: Option, columnOptions: List<Option>) {
