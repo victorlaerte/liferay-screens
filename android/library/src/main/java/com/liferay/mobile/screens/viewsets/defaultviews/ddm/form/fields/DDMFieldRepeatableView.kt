@@ -35,7 +35,7 @@ import rx.Subscription
 open class DDMFieldRepeatableView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : LinearLayout(context, attrs, defStyleAttr), DDLFieldViewModel<RepeatableField>,
-        RepeatableActionListener {
+    RepeatableActionListener {
 
     private lateinit var field: RepeatableField
     private lateinit var parentView: View

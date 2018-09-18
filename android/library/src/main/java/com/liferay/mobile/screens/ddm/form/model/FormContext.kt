@@ -28,7 +28,7 @@ class FormContext @JvmOverloads constructor(
 
         private fun getPages(mapper: Map<String, Any>): List<FormContextPage> {
 
-            return (mapper["member"] as List<Map<String, Any>>).mapTo(mutableListOf(), {
+            return (mapper["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
                 val headline = it["headline"] as? String ?: ""
                 val text = it["text"] as? String ?: ""
@@ -41,7 +41,7 @@ class FormContext @JvmOverloads constructor(
                 val isShowRequiredFieldsWarning = it["isShowRequiredFieldsWarning"] as Boolean
 
                 FormContextPage(headline, text, fields, isEnabled, isShowRequiredFieldsWarning)
-            })
+            }
         }
 
         private fun getFields(map: Map<String, Any>): List<FieldContext> {
@@ -50,7 +50,7 @@ class FormContext @JvmOverloads constructor(
                 return mutableListOf()
             }
 
-            return (map["member"] as List<Map<String, Any>>).mapTo(mutableListOf(), {
+            return (map["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
                 val name = it["name"] as String
                 val value = it["value"]
@@ -68,8 +68,8 @@ class FormContext @JvmOverloads constructor(
                 val isVisible = it["isVisible"] as? Boolean
 
                 FieldContext(name, value, errorMessage, options, isEvaluable, isReadOnly,
-                        isRequired, isValid, isValueChanged, isVisible)
-            })
+                    isRequired, isValid, isValueChanged, isVisible)
+            }
         }
     }
 }

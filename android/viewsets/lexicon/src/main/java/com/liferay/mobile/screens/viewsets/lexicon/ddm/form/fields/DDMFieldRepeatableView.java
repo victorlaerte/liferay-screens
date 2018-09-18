@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.liferay.mobile.screens.viewsets.lexicon.R;
-import com.liferay.mobile.screens.viewsets.lexicon.util.FormViewUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
