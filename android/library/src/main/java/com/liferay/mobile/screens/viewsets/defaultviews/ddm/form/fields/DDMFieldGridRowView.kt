@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.fields
 
 import android.content.Context
 import android.graphics.Typeface
+import android.support.v7.widget.TooltipCompat
 import android.util.AttributeSet
 import android.widget.*
 import com.liferay.mobile.screens.R
@@ -30,16 +31,16 @@ import java.util.ArrayList
 open class DDMFieldGridRowView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
-    lateinit var rowLabelEditText: EditText
     lateinit var columnSelectView: DDLFieldSelectView
+    lateinit var rowLabelEditText: EditText
 
     lateinit var rowOption: Option
 
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        rowLabelEditText = findViewById(R.id.row_label_edit_text)
         columnSelectView = findViewById(R.id.column_label_edit_text)
+        rowLabelEditText = findViewById(R.id.row_label_edit_text)
     }
 
     fun refresh() {
@@ -55,10 +56,14 @@ open class DDMFieldGridRowView @JvmOverloads constructor(context: Context, attrs
     }
 
     fun setOptions(rowOption: Option, columnOptions: List<Option>) {
+        this.rowOption = rowOption
+
         val selectableOptionsField = SelectableOptionsField(columnOptions as ArrayList<Option>?)
         selectableOptionsField.label = rowOption.label
+
         columnSelectView.field = selectableOptionsField
 
-        this.rowOption = rowOption
+        rowLabelEditText.setText(rowOption.label)
+        TooltipCompat.setTooltipText(rowLabelEditText, rowOption.label)
     }
 }

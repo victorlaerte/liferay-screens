@@ -25,6 +25,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
+import com.liferay.mobile.screens.ddl.model.Option
 import com.liferay.mobile.screens.ddm.form.model.Grid
 import com.liferay.mobile.screens.ddm.form.model.GridField
 import com.liferay.mobile.screens.ddm.form.model.get
@@ -68,36 +69,36 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
         }
     }
 
+    private fun onColumnValueChanged(which: Int, row: Option, ddmFieldGridRowView: DDMFieldGridRowView) {
+        val option = this.gridField.columns[which]
+
+        if (this.gridField.currentValue == null) {
+            this.gridField.currentValue = Grid(mutableMapOf(row.value to option.value))
+        } else {
+            this.gridField.currentValue.rawValues[row.value] = option.value
+        }
+
+        val columnEditText = ddmFieldGridRowView.columnSelectView.textEditText
+        columnEditText.setTypeface(columnEditText.typeface, Typeface.BOLD)
+
+        changeValuesSubscriber?.onNext(field.isValid)
+        changeValuesGridSubscriber?.onNext(field)
+    }
+
     private fun setupFieldLayout() {
+        val inflater = LayoutInflater.from(context)
+        val layoutIdentifier = ThemeUtil.getLayoutIdentifier(context, "ddmfield_grid_row")
+
         this.gridField.rows.forEach { row ->
+            val ddmFieldGridRowView =
+                inflater.inflate(layoutIdentifier, gridLinearLayout, false) as DDMFieldGridRowView
 
-            val inflater = LayoutInflater.from(context)
-            val layoutIdentifier = ThemeUtil.getLayoutIdentifier(context, "ddmfield_grid_row")
+            gridLinearLayout.addView(ddmFieldGridRowView)
 
-            val view = inflater.inflate(layoutIdentifier, gridLinearLayout, false)
-
-            gridLinearLayout.addView(view)
-
-            val ddmFieldGridRowView = view as DDMFieldGridRowView
-
-            TooltipCompat.setTooltipText(ddmFieldGridRowView.rowLabelEditText, row.label)
-            ddmFieldGridRowView.rowLabelEditText.setText(row.label)
             ddmFieldGridRowView.setOptions(row, gridField.columns)
 
             ddmFieldGridRowView.columnSelectView.setOnValueChangedListener { _, which ->
-                val option = this.gridField.columns[which]
-
-                if (this.gridField.currentValue == null) {
-                    this.gridField.currentValue = Grid(mutableMapOf(row.value to option.value))
-                } else {
-                    this.gridField.currentValue.rawValues[row.value] = option.value
-                }
-
-                val columnEditText = ddmFieldGridRowView.columnSelectView.textEditText
-                columnEditText.setTypeface(columnEditText.typeface, Typeface.BOLD)
-
-                changeValuesSubscriber?.onNext(field.isValid)
-                changeValuesGridSubscriber?.onNext(field)
+                onColumnValueChanged(which, row, ddmFieldGridRowView)
             }
         }
 
@@ -105,6 +106,8 @@ open class DDMFieldGridView @JvmOverloads constructor(context: Context, attrs: A
                 .filter { it }
                 .distinctUntilChanged()
                 .subscribe(::onPostValidation)
+
+        refreshGridRows()
     }
 
     private fun setupLabelLayout() {
