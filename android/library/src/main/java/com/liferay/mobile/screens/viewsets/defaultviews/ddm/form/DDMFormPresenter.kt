@@ -70,7 +70,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         }
 
         if (!view.hasConnectivity()) {
-            view.showCantLoadSomeFieldsOfflineErrorMessage()
+            view.showOfflineWarningMessage()
 
             return
         }

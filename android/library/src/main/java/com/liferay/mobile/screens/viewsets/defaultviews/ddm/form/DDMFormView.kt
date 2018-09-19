@@ -123,47 +123,8 @@ class DDMFormView @JvmOverloads constructor(
         super.onFinishInflate()
         isSaveEnabled = true
 
-        backButton.setOnClickListener {
-            if (ddmFieldViewPages.currentItem >= 1) {
-                ddmFieldViewPages.currentItem = getPreviousEnabledPage().toInt()
-
-                nextButton.text = context.getString(R.string.next)
-                multipageProgress.progress = getFormProgress()
-
-                if (ddmFieldViewPages.currentItem == 0) {
-                    backButton.visibility = View.GONE
-                }
-            }
-        }
-
-        nextButton.setOnClickListener {
-            val size = ddmFieldViewPages.adapter!!.count - 1
-            val invalidFields = getInvalidFields()
-
-            if (invalidFields.isEmpty()) {
-                if (ddmFieldViewPages.currentItem < size) {
-                    ddmFieldViewPages.currentItem = getNextEnabledPage().toInt()
-
-                    backButton.visibility = View.VISIBLE
-                    multipageProgress.progress = getFormProgress()
-
-                    if (ddmFieldViewPages.currentItem == size) {
-                        nextButton.text = context.getString(R.string.submit)
-                    }
-                } else {
-
-                    if (!AndroidUtil.isConnected(context.applicationContext)) {
-                        showNoInternetErrorMessage()
-                    } else {
-                        val thing = thing ?: throw Exception("No thing found")
-                        presenter.submit(thing, formInstance)
-                    }
-
-                }
-            } else {
-                highLightInvalidFields(invalidFields, true)
-            }
-        }
+        backButton.setOnClickListener { backButtonListener() }
+        nextButton.setOnClickListener { nextOrSubmitButtonListener() }
 
         ReactiveNetwork
             .observeInternetConnectivity()
@@ -171,7 +132,7 @@ class DDMFormView @JvmOverloads constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { isConnectedToInternet ->
                 if (!isConnectedToInternet) {
-                    showNoInternetErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
+                    showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
                 }
             }
     }
@@ -210,8 +171,8 @@ class DDMFormView @JvmOverloads constructor(
         scrollView.scrollTo(0, 0)
     }
 
-    override fun showCantLoadSomeFieldsOfflineErrorMessage() {
-        showNoInternetErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
+    override fun showOfflineWarningMessage() {
+        showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
     }
 
     override fun showErrorMessage(exception: Exception?) {
@@ -298,6 +259,19 @@ class DDMFormView @JvmOverloads constructor(
             for ((index, page) in it.pages.withIndex()) {
                 page.isEnabled = formContext.pages[index].isEnabled
             }
+        }
+    }
+
+    private fun backButtonListener() {
+        val currentItem = ddmFieldViewPages.currentItem
+
+        if (currentItem >= 1) {
+            ddmFieldViewPages.currentItem = getPreviousEnabledPage().toInt()
+
+            nextButton.text = context.getString(R.string.next)
+            multipageProgress.progress = getFormProgress()
+
+            if (currentItem == 0) backButton.visibility = View.GONE
         }
     }
 
@@ -389,6 +363,37 @@ class DDMFormView @JvmOverloads constructor(
             nextButton.text = context.getString(R.string.submit)
     }
 
+    private fun nextButtonListener(currentItem: Int, size: Int) {
+        ddmFieldViewPages.currentItem = getNextEnabledPage().toInt()
+
+        backButton.visibility = View.VISIBLE
+        multipageProgress.progress = getFormProgress()
+
+        if (currentItem == size) {
+            nextButton.text = context.getString(R.string.submit)
+        }
+    }
+
+    private fun nextOrSubmitButtonListener() {
+        ddmFieldViewPages.adapter?.also {
+            val size = it.count - 1
+            val invalidFields = getInvalidFields()
+
+            if (invalidFields.isEmpty()) {
+                val currentItem = ddmFieldViewPages.currentItem
+                val hasNext = currentItem < size
+
+                if (hasNext) {
+                    nextButtonListener(currentItem, size)
+                } else {
+                    submitButtonListener()
+                }
+            } else {
+                highLightInvalidFields(invalidFields, true)
+            }
+        }
+    }
+
     private fun onFormLoaded(formInstance: FormInstance) {
         val thing = thing ?: throw Exception("No thing found")
 
@@ -411,7 +416,7 @@ class DDMFormView @JvmOverloads constructor(
         }
     }
 
-    private fun showNoInternetErrorMessage(@ColorRes backgroundColorResource: Int = R.color.midGray,
+    private fun showConnectivityErrorMessage(@ColorRes backgroundColorResource: Int = R.color.midGray,
         @StringRes messageStringRes: Int = R.string.no_internet_connection) {
 
         val icon = R.drawable.default_error_icon
@@ -420,6 +425,15 @@ class DDMFormView @JvmOverloads constructor(
         val textColor = ContextCompat.getColor(context, android.R.color.white)
 
         AndroidUtil.showCustomSnackbar(this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
+    }
+
+    private fun submitButtonListener() {
+        if (!AndroidUtil.isConnected(context.applicationContext)) {
+            showConnectivityErrorMessage()
+        } else {
+            val thing = thing ?: throw Exception("No thing found")
+            presenter.submit(thing, formInstance)
+        }
     }
 
     companion object {

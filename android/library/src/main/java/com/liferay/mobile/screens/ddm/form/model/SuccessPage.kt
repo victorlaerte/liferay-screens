@@ -20,7 +20,6 @@ import android.os.Parcelable
 /**
  * @author Victor Oliveira
  */
-
 class SuccessPage(val headline: String, val text: String) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

@@ -40,7 +40,7 @@ interface DDMFormViewContract {
 
         fun scrollToTop()
 
-        fun showCantLoadSomeFieldsOfflineErrorMessage()
+        fun showOfflineWarningMessage()
 
         fun showErrorMessage(exception: Exception?)
 
