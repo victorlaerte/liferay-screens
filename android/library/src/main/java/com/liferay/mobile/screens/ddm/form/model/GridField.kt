@@ -25,8 +25,8 @@ import java.util.*
  * @author Victor Oliveira
  */
 class GridField : Field<Grid>, Parcelable {
-    lateinit var rows: List<Option>
-    lateinit var columns: List<Option>
+    var rows: List<Option>
+    var columns: List<Option>
 
     override fun convertToData(value: Grid?): String {
         return value?.rawValues.toString()
@@ -37,8 +37,8 @@ class GridField : Field<Grid>, Parcelable {
     }
 
     constructor(parcel: Parcel, classLoader: ClassLoader) : super(parcel, classLoader) {
-        parcel.createTypedArrayList(Option.CREATOR)
-        parcel.createTypedArrayList(Option.CREATOR)
+        rows = parcel.createTypedArrayList(Option.CREATOR)
+        columns = parcel.createTypedArrayList(Option.CREATOR)
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
