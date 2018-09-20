@@ -42,6 +42,7 @@ import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet
 import com.liferay.mobile.screens.thingscreenlet.screens.views.BaseView
 import com.liferay.mobile.screens.util.AndroidUtil
 import com.liferay.mobile.screens.util.LiferayLogger
+import com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.BaseDDLFieldTextView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.DDLDocumentFieldView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.adapters.DDMPagerAdapter
@@ -75,6 +76,7 @@ class DDMFormView @JvmOverloads constructor(
     private val ddmFieldViewPages by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
     private val scrollView by bindNonNull<ScrollView>(R.id.multipage_scroll_view)
     private val multipageProgress by bindNonNull<ProgressBar>(R.id.liferay_multipage_progress)
+    private val modalProgress by bindNonNull<ModalProgress>(R.id.liferay_modal_progress)
 
     private lateinit var formInstance: FormInstance
     override var thing: Thing? by converter<FormInstance> {
@@ -95,6 +97,10 @@ class DDMFormView @JvmOverloads constructor(
 
     override fun hasConnectivity(): Boolean {
         return AndroidUtil.isConnected(context.applicationContext)
+    }
+
+    override fun hideModalLoading() {
+        modalProgress.hide()
     }
 
     override fun inflateFieldView(inflater: LayoutInflater, parentView: ViewGroup, field: Field<*>): View {
@@ -171,10 +177,6 @@ class DDMFormView @JvmOverloads constructor(
         scrollView.scrollTo(0, 0)
     }
 
-    override fun showOfflineWarningMessage() {
-        showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
-    }
-
     override fun showErrorMessage(exception: Exception?) {
         val icon = R.drawable.default_error_icon
         val backgroundColor = ContextCompat.getColor(context, R.color.lightRed)
@@ -184,6 +186,18 @@ class DDMFormView @JvmOverloads constructor(
 
         AndroidUtil.showCustomSnackbar(
             this, message, Snackbar.LENGTH_LONG, backgroundColor, textColor, icon)
+    }
+
+    override fun showModalEvaluateContextLoading() {
+        modalProgress.show(context.getString(R.string.validating_rules))
+    }
+
+    override fun showModalSyncFormLoading() {
+        modalProgress.show(context.getString(R.string.synchronizing_form))
+    }
+
+    override fun showOfflineWarningMessage() {
+        showConnectivityErrorMessage(R.color.orange, R.string.cant_load_some_fields_offline)
     }
 
     override fun showSuccessMessage() {

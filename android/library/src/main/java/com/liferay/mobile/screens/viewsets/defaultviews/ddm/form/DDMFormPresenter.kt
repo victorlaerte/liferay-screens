@@ -52,12 +52,17 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     }
 
     override fun evaluateContext(thing: Thing, fields: MutableList<Field<*>>) {
-        interactor.evaluateContext(thing, fields, {
-            val formContext = FormContext.converter(it)
+        view.showModalEvaluateContextLoading()
 
+        interactor.evaluateContext(thing, fields, {
+            view.hideModalLoading()
+
+            val formContext = FormContext.converter(it)
             view.updatePageEnabled(formContext)
+
             updateFields(formContext, fields)
         }, {
+            view.hideModalLoading()
             view.showErrorMessage(it)
         })
     }
@@ -91,6 +96,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
     override fun submit(thing: Thing, formInstance: FormInstance, isDraft: Boolean) {
         val fields = formInstance.ddmStructure.fields
+        //TODO DISABLE button
 
         interactor.submit(thing, currentRecordThing, fields, isDraft, { recordThing ->
             currentRecordThing = recordThing
@@ -112,7 +118,10 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     }
 
     override fun syncFormInstance(thing: Thing, fields: MutableList<Field<*>>) {
+        view.showModalSyncFormLoading()
+
         interactor.fetchLatestDraft(thing, {
+            view.hideModalLoading()
             currentRecordThing = it
 
             formInstanceRecord?.let { formInstanceRecord ->
@@ -123,6 +132,8 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
         }, {
             LiferayLogger.e(it.message)
+
+            view.hideModalLoading()
             evaluateContext(thing, fields)
         })
     }

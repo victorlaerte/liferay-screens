@@ -34,15 +34,21 @@ interface DDMFormViewContract {
 
         fun hasConnectivity(): Boolean
 
+        fun hideModalLoading()
+
         fun inflateFieldView(inflater: LayoutInflater, parentView: ViewGroup, field: Field<*>): View
 
         fun refreshVisibleFields()
 
         fun scrollToTop()
 
-        fun showOfflineWarningMessage()
-
         fun showErrorMessage(exception: Exception?)
+
+        fun showModalEvaluateContextLoading()
+
+        fun showModalSyncFormLoading()
+
+        fun showOfflineWarningMessage()
 
         fun showSuccessMessage()
 

@@ -90,5 +90,7 @@
 	<string name="information_successfully_received">Your information was successfully received.</string>
 	<string name="submit_failed_contact_administrator">Submit failed. Contact the administrator.</string>
 	<string name="cant_load_some_fields_offline">Can’t load some fields offline. Try to reconnect.</string>
+	<string name="synchronizing_form">Synchronizing Form</string>
+	<string name="validating_rules">Validating Rules</string>
 
 </resources>

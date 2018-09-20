@@ -34,14 +34,6 @@
 				android:layout_height="wrap_content"
 				/>
 
-			<ProgressBar
-				android:id="@+id/ddmform_loading_screen_progress_bar"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:visibility="gone"
-				/>
-
 		</LinearLayout>
 
 	</ScrollView>
@@ -109,5 +101,14 @@
 		</LinearLayout>
 
 	</LinearLayout>
+
+	<com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress
+		android:id="@+id/liferay_modal_progress"
+		android:layout_height="match_parent"
+		android:layout_width="match_parent"
+		android:visibility="gone"
+		android:elevation="@dimen/field_padding"
+		>
+	</com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress>
 
 </com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.DDMFormView>
