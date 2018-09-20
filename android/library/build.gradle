@@ -57,7 +57,6 @@ dependencies {
 	implementation libraries.recyclerView
 	implementation libraries.gms
 	implementation libraries.picasso
-    implementation libraries.reactive_network
 	implementation libraries.rxjava
 	implementation libraries.rxpermissions
 	implementation libraries.rxbinding

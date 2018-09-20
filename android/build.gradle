@@ -70,8 +70,7 @@ ext.libraries = [apio_consumer      : 'com.liferay.mobile:apio-consumer-android:
                  okhttp             : 'com.squareup.okhttp3:okhttp:3.10.0',
                  circle_image_view  : 'de.hdodenhof:circleimageview:2.2.0',
                  kotlin             : 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:' + ext.kotlin_version,
-                 espresso           : 'com.android.support.test.espresso:espresso-core:3.0.1',
-				 reactive_network   : 'com.github.pwittchen:reactivenetwork-rx2:2.1.0']
+                 espresso           : 'com.android.support.test.espresso:espresso-core:3.0.1']
 
 subprojects {
 	repositories {

@@ -68,22 +68,23 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     }
 
     override fun onFieldValueChanged(thing: Thing, formInstance: FormInstance, field: Field<*>) {
-        addToDirtyFields(field)
+        if (!field.isTransient) {
+            addToDirtyFields(field)
 
-        formInstanceRecord?.let {
-            it.fieldValues[field.name] = field.toData()
-        }
+            formInstanceRecord?.let {
+                it.fieldValues[field.name] = field.toData()
+            }
 
-        if (!view.hasConnectivity()) {
-            view.showOfflineWarningMessage()
+            if (!view.hasConnectivity()) {
+                view.showOfflineWarningMessage()
+                return
+            }
 
-            return
-        }
+            submit(thing, formInstance, true)
 
-        submit(thing, formInstance, true)
-
-        if (field.hasFormRules()) {
-            evaluateContext(thing, formInstance.ddmStructure.fields)
+            if (field.hasFormRules()) {
+                evaluateContext(thing, formInstance.ddmStructure.fields)
+            }
         }
     }
 
