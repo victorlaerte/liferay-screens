@@ -171,6 +171,8 @@ class DDMFormView @JvmOverloads constructor(
                 (view as? DDLFieldViewModel<*>)?.refresh()
             }
         }
+
+        restoreActionButtonsState()
     }
 
     override fun scrollToTop() {
@@ -277,15 +279,15 @@ class DDMFormView @JvmOverloads constructor(
     }
 
     private fun backButtonListener() {
-        val currentItem = ddmFieldViewPages.currentItem
-
-        if (currentItem >= 1) {
+        if (ddmFieldViewPages.currentItem >= 1) {
             ddmFieldViewPages.currentItem = getPreviousEnabledPage().toInt()
 
             nextButton.text = context.getString(R.string.next)
             multipageProgress.progress = getFormProgress()
 
-            if (currentItem == 0) backButton.visibility = View.GONE
+            if (ddmFieldViewPages.currentItem == 0) {
+                backButton.visibility = View.GONE
+            }
         }
     }
 
@@ -377,13 +379,13 @@ class DDMFormView @JvmOverloads constructor(
             nextButton.text = context.getString(R.string.submit)
     }
 
-    private fun nextButtonListener(currentItem: Int, size: Int) {
+    private fun nextButtonListener(size: Int) {
         ddmFieldViewPages.currentItem = getNextEnabledPage().toInt()
 
         backButton.visibility = View.VISIBLE
         multipageProgress.progress = getFormProgress()
 
-        if (currentItem == size) {
+        if (ddmFieldViewPages.currentItem == size) {
             nextButton.text = context.getString(R.string.submit)
         }
     }
@@ -394,11 +396,10 @@ class DDMFormView @JvmOverloads constructor(
             val invalidFields = getInvalidFields()
 
             if (invalidFields.isEmpty()) {
-                val currentItem = ddmFieldViewPages.currentItem
-                val hasNext = currentItem < size
+                val hasNext = ddmFieldViewPages.currentItem < size
 
                 if (hasNext) {
-                    nextButtonListener(currentItem, size)
+                    nextButtonListener(size)
                 } else {
                     submitButtonListener()
                 }
@@ -415,6 +416,18 @@ class DDMFormView @JvmOverloads constructor(
         initPageAdapter(formInstance.ddmStructure.pages)
 
         presenter.syncFormInstance(thing, formInstance.ddmStructure.fields)
+    }
+
+    private fun restoreActionButtonsState() {
+        if (ddmFieldViewPages.currentItem != 0) {
+            backButton.visibility = View.VISIBLE
+        }
+
+        ddmFieldViewPages.adapter?.let {
+            if (ddmFieldViewPages.currentItem == it.count - 1) {
+                nextButton.text = context.getString(R.string.submit)
+            }
+        }
     }
 
     private fun setActivityTitle(formInstance: FormInstance) {
