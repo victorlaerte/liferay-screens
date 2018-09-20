@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.liferay.apio.consumer.ApioConsumerKt;
 import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet;
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail;
+import com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -20,7 +20,7 @@ public class DDMFormActivity extends ThemeActivity {
     public static final String FORM_INSTANCE_ID_KEY = "formInstanceId";
 
     private ThingScreenlet screenlet;
-    private ProgressBar progressBar;
+    private ModalProgress modalProgress;
 
     private long formInstanceId = 36465;
 
@@ -29,8 +29,8 @@ public class DDMFormActivity extends ThemeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ddm_form);
 
-        progressBar = findViewById(R.id.form_progress_bar);
         screenlet = findViewById(R.id.ddm_form_screenlet);
+        modalProgress = findViewById(R.id.liferay_modal_progress);
 
         if (savedInstanceState == null) {
             loadResource();
@@ -53,9 +53,8 @@ public class DDMFormActivity extends ThemeActivity {
     private void loadResource() {
         String url = getResourcePath();
 
-        progressBar.setVisibility(View.VISIBLE);
+        modalProgress.show("Loading Form");
         screenlet.setVisibility(View.GONE);
-
         screenlet.load(url, Detail.INSTANCE, ApioConsumerKt.getCredentials(), onLoadCompleted);
     }
 
@@ -63,7 +62,7 @@ public class DDMFormActivity extends ThemeActivity {
         new Function1<ThingScreenlet, Unit>() {
             @Override
             public Unit invoke(ThingScreenlet thingScreenlet) {
-                progressBar.setVisibility(View.GONE);
+                modalProgress.hide();
                 screenlet.setVisibility(View.VISIBLE);
 
                 return null;
