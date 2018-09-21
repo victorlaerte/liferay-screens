@@ -72,7 +72,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
             addToDirtyFields(field)
 
             formInstanceRecord?.let {
-                it.fieldValues[field.name] = field.toData()
+                it.fieldValues[field.name] = field.toData() ?: ""
             }
 
             if (!view.hasConnectivity()) {
