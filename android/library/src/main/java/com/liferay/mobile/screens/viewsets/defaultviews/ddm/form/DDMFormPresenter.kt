@@ -14,13 +14,13 @@
 
 package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form
 
-import android.content.Context
 import com.liferay.apio.consumer.delegates.converter
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.*
 import com.liferay.mobile.screens.ddm.form.model.*
 import com.liferay.mobile.screens.util.LiferayLogger
+import java.io.InputStream
 import java.util.*
 
 /**
@@ -139,11 +139,11 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         })
     }
 
-    override fun uploadField(
-        context: Context, thing: Thing, field: DocumentField, onSuccess: (DocumentRemoteFile) -> Unit,
+    override fun uploadFile(
+        thing: Thing, field: DocumentField, inputStream: InputStream, onSuccess: (DocumentRemoteFile) -> Unit,
         onError: (Exception) -> Unit) {
 
-        interactor.uploadFileToRootFolder(context, thing, field, onSuccess, onError)
+        interactor.uploadFile(thing, field, inputStream, onSuccess, onError)
     }
 
     private fun setOptions(fieldContext: FieldContext, optionsField: OptionsField<*>) {

@@ -23,6 +23,7 @@ import com.liferay.mobile.screens.ddm.form.service.APIOEvaluateService
 import com.liferay.mobile.screens.ddm.form.service.APIOFetchLatestDraftService
 import com.liferay.mobile.screens.ddm.form.service.APIOSubmitService
 import com.liferay.mobile.screens.ddm.form.service.APIOUploadService
+import java.io.InputStream
 
 /**
  * @author Victor Oliveira
@@ -46,10 +47,10 @@ class DDMFormInteractor {
         APIOSubmitService().submit(formThing, currentRecordThing, fields, isDraft, onSuccess, onError)
     }
 
-    fun uploadFileToRootFolder(context: Context, formThing: Thing, field: DocumentField,
+    fun uploadFile(formThing: Thing, field: DocumentField, inputStream: InputStream,
         onSuccess: (DocumentRemoteFile) -> Unit,
         onError: (Exception) -> Unit) {
 
-        APIOUploadService().uploadFileToRootFolder(context, formThing, field, onSuccess, onError)
+        APIOUploadService().uploadFile(formThing, field, inputStream, onSuccess, onError)
     }
 }

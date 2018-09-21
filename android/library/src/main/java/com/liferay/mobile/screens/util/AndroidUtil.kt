@@ -15,6 +15,7 @@ package com.liferay.mobile.screens.util
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
 import android.support.design.widget.Snackbar
@@ -23,6 +24,8 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.View
 import android.widget.TextView
 import com.liferay.mobile.screens.R
+import com.liferay.mobile.screens.ddl.model.DocumentLocalFile
+import java.io.InputStream
 
 /**
  * @author Victor Oliveira
@@ -30,6 +33,16 @@ import com.liferay.mobile.screens.R
 class AndroidUtil {
 
     companion object {
+
+        @JvmStatic
+        fun getUriFromString(uriString: String): Uri {
+            return Uri.parse(uriString)
+        }
+
+        @JvmStatic
+        fun getFileNameFromPath(uriString: String): String {
+            return getUriFromString(uriString).lastPathSegment
+        }
 
         @JvmStatic
         fun isConnected(applicationContext: Context): Boolean {
@@ -41,6 +54,13 @@ class AndroidUtil {
             }
 
             return false
+        }
+
+        @JvmStatic
+        fun openLocalFileInputStream(applicationContext: Context, documentLocalFile: DocumentLocalFile): InputStream {
+            val fileUri = AndroidUtil.getUriFromString(documentLocalFile.toString())
+
+            return applicationContext.contentResolver.openInputStream(fileUri)
         }
 
         @JvmStatic

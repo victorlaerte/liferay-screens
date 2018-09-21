@@ -14,7 +14,6 @@
 
 package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.model.*
 import rx.Observable
+import java.io.InputStream
 
 /**
  * @author Victor Oliveira
@@ -77,8 +77,8 @@ interface DDMFormViewContract {
 
         fun syncFormInstance(thing: Thing, fields: MutableList<Field<*>>)
 
-        fun uploadField(
-            context: Context, thing: Thing, field: DocumentField, onSuccess: (DocumentRemoteFile) -> Unit,
+        fun uploadFile(
+            thing: Thing, field: DocumentField, inputStream: InputStream, onSuccess: (DocumentRemoteFile) -> Unit,
             onError: (Exception) -> Unit)
     }
 }

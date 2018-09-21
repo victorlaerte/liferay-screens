@@ -33,6 +33,7 @@ import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.context.LiferayScreensContext
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.DocumentField
+import com.liferay.mobile.screens.ddl.model.DocumentLocalFile
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.model.*
 import com.liferay.mobile.screens.ddm.form.view.SuccessPageActivity
@@ -153,10 +154,12 @@ class DDMFormView @JvmOverloads constructor(
     }
 
     override fun refreshVisibleFields() {
-        for (instantiatedPage in getInstantiatedPages()) {
-            for (view in instantiatedPage.childrenSequence()) {
-                (view as? DDLFieldViewModel<*>)?.refresh()
-            }
+        getInstantiatedPages().flatMap {
+            it.childrenSequence().asIterable()
+        }.mapNotNull {
+            it as? DDLFieldViewModel<*>
+        }.forEach {
+            it.refresh()
         }
 
         restoreActionButtonsState()
@@ -214,7 +217,9 @@ class DDMFormView @JvmOverloads constructor(
 
             val thing = thing ?: throw Exception("No thing found")
 
-            presenter.uploadField(context, thing, field, {
+            val inputStream = AndroidUtil.openLocalFileInputStream(context, field.currentValue as DocumentLocalFile)
+
+            presenter.uploadFile(thing, field, inputStream, {
                 field.currentValue = it
                 field.moveToUploadCompleteState()
 

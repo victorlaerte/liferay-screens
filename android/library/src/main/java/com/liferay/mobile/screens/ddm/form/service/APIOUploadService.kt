@@ -14,39 +14,36 @@
 
 package com.liferay.mobile.screens.ddm.form.service
 
-import android.content.Context
-import android.net.Uri
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.getOperation
 import com.liferay.apio.consumer.performParseOperation
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
+import com.liferay.mobile.screens.util.AndroidUtil
+import java.io.InputStream
 
 /**
  * @author Paulo Cruz
  */
 class APIOUploadService : IUploadService {
 
-    fun uploadFileToRootFolder(context: Context, formThing: Thing, field: DocumentField,
-                               onSuccess: (DocumentRemoteFile) -> Unit,
-                               onError: (Exception) -> Unit) {
+    fun uploadFile(formThing: Thing, field: DocumentField, inputStream: InputStream,
+        onSuccess: (DocumentRemoteFile) -> Unit,
+                   onError: (Exception) -> Unit) {
 
-        formThing.getOperation("upload-file-to-root-folder")?.let { operation ->
-            uploadFile(context, formThing.id, operation.id, field, onSuccess, onError)
+        formThing.getOperation("upload-file")?.let { operation ->
+            uploadFile(formThing.id, operation.id, field, inputStream, onSuccess, onError)
         }
     }
 
-    override fun uploadFile(context: Context, thingId: String, operationId: String,
-                            field: DocumentField, onSuccess: (DocumentRemoteFile) -> Unit,
+    override fun uploadFile(thingId: String, operationId: String, field: DocumentField, inputStream: InputStream,
+                            onSuccess: (DocumentRemoteFile) -> Unit,
                             onError: (Exception) -> Unit) {
 
         val filePath = field.currentValue?.toString()
 
-        filePath?.let {
-            val fileUri = Uri.parse(filePath)
-            val fileName = fileUri.lastPathSegment
-
-            val inputStream = context.contentResolver.openInputStream(fileUri)
+        filePath?.run {
+            val fileName = AndroidUtil.getFileNameFromPath(filePath)
 
             performParseOperation(thingId, operationId, {
                 mapOf(
