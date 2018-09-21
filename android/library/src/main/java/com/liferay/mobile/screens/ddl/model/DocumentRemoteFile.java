@@ -1,5 +1,6 @@
 package com.liferay.mobile.screens.ddl.model;
 
+import com.liferay.mobile.screens.util.AndroidUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,11 @@ public class DocumentRemoteFile extends DocumentFile {
 			// this is empty if we're retrieving the record
 			title = jsonObject.optString("title");
 		}
+	}
+
+	public DocumentRemoteFile(String url, String title) {
+		this.url = url;
+		this.title = title;
 	}
 
 	@Override
@@ -74,6 +80,19 @@ public class DocumentRemoteFile extends DocumentFile {
 	@Override
 	public boolean isValid() {
 		return url != null || uuid != null;
+	}
+
+	@Override
+	public String getFileName() {
+		if(title != null) {
+			return title;
+		}
+
+		if(url != null) {
+			return AndroidUtil.getFileNameFromPath(url);
+		}
+
+		return "";
 	}
 
 	private static final String EMPTY_STRING = "";

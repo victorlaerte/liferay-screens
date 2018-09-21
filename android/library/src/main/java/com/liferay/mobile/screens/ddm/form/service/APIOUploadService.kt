@@ -57,7 +57,7 @@ class APIOUploadService : IUploadService {
                 val (resultThing, exception) = it
 
                 exception?.let(onError) ?: resultThing?.let {
-                    onSuccess(DocumentRemoteFile(resultThing.id))
+                    onSuccess(DocumentRemoteFile(resultThing.id, fileName))
                 }
             }
         }
