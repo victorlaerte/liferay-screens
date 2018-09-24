@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.liferay.apio.consumer.ApioConsumerKt;
 import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet;
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail;
 import com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress;
@@ -55,7 +54,7 @@ public class DDMFormActivity extends ThemeActivity {
 
         modalProgress.show("Loading Form");
         screenlet.setVisibility(View.GONE);
-        screenlet.load(url, Detail.INSTANCE, ApioConsumerKt.getCredentials(), onLoadCompleted);
+        screenlet.load(url, Detail.INSTANCE, null, onLoadCompleted);
     }
 
     private Function1<ThingScreenlet, Unit> onLoadCompleted =
