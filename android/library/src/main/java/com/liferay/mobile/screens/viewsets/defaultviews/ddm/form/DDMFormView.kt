@@ -42,7 +42,7 @@ import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet
 import com.liferay.mobile.screens.thingscreenlet.screens.views.BaseView
 import com.liferay.mobile.screens.util.AndroidUtil
 import com.liferay.mobile.screens.util.LiferayLogger
-import com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress
+import com.liferay.mobile.screens.base.ModalProgressBarWithLabel
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.BaseDDLFieldTextView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.DDLDocumentFieldView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.adapters.DDMPagerAdapter
@@ -74,7 +74,7 @@ class DDMFormView @JvmOverloads constructor(
     private val ddmFieldViewPages by bindNonNull<WrapContentViewPager>(R.id.ddmfields_container)
     private val scrollView by bindNonNull<ScrollView>(R.id.multipage_scroll_view)
     private val multipageProgress by bindNonNull<ProgressBar>(R.id.liferay_multipage_progress)
-    private val modalProgress by bindNonNull<ModalProgress>(R.id.liferay_modal_progress)
+    private val modalProgress by bindNonNull<ModalProgressBarWithLabel>(R.id.liferay_modal_progress)
 
     private lateinit var formInstance: FormInstance
     override var thing: Thing? by converter<FormInstance> {

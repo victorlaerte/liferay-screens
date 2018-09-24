@@ -102,13 +102,13 @@
 
 	</LinearLayout>
 
-	<com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress
+	<com.liferay.mobile.screens.base.ModalProgressBarWithLabel
 		android:id="@+id/liferay_modal_progress"
 		android:layout_height="match_parent"
 		android:layout_width="match_parent"
 		android:visibility="gone"
 		android:elevation="@dimen/field_padding"
 		>
-	</com.liferay.mobile.screens.viewsets.defaultviews.ModalProgress>
+	</com.liferay.mobile.screens.base.ModalProgressBarWithLabel>
 
 </com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.DDMFormView>

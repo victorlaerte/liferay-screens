@@ -11,21 +11,21 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-package com.liferay.mobile.screens.viewsets.defaultviews
+package com.liferay.mobile.screens.base
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.thingscreenlet.delegates.bindNonNull
 
 /**
+ * TODO: Merge this class with ModalProgressBar
  * @author Victor Oliveira
  */
-class ModalProgress @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
+class ModalProgressBarWithLabel @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val progressLabel by bindNonNull<TextView>(R.id.progress_text_view)
@@ -34,7 +34,7 @@ class ModalProgress @JvmOverloads constructor(context: Context, attrs: Attribute
         inflate(context, R.layout.progress_default, this)
     }
 
-    fun show(message: String?) {
+    @JvmOverloads fun show(message: String? = null) {
         if (message.isNullOrEmpty()) {
             progressLabel.visibility = View.GONE
         } else {
