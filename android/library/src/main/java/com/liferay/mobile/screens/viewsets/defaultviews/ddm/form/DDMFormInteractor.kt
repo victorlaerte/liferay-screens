@@ -14,7 +14,6 @@
 
 package com.liferay.mobile.screens.viewsets.defaultviews.ddm.form
 
-import android.content.Context
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
