@@ -30,6 +30,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     private val interactor = DDMFormInteractor()
 
     private val dirtyFieldNames: MutableList<String> = mutableListOf()
+    private var isSyncing = false
 
     private var currentRecordThing: Thing? by converter<FormInstanceRecord> {
         formInstanceRecord = it
@@ -51,7 +52,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         }
     }
 
-    override fun evaluateContext(thing: Thing, fields: MutableList<Field<*>>) {
+    override fun evaluateContext(thing: Thing, fields: MutableList<Field<*>>, onComplete: (() -> Unit)?) {
         view.showModalEvaluateContextLoading()
 
         interactor.evaluateContext(thing, fields, {
@@ -61,9 +62,12 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
             view.updatePageEnabled(formContext)
 
             updateFields(formContext, fields)
+            onComplete?.invoke()
+
         }, {
             view.hideModalLoading()
             view.showErrorMessage(it)
+            onComplete?.invoke()
         })
     }
 
@@ -80,10 +84,12 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
                 return
             }
 
-            submit(thing, formInstance, true)
+            if (!isSyncing) {
+                submit(thing, formInstance, true)
 
-            if (field.hasFormRules()) {
-                evaluateContext(thing, formInstance.ddmStructure.fields)
+                if (field.hasFormRules()) {
+                    evaluateContext(thing, formInstance.ddmStructure.fields)
+                }
             }
         }
     }
@@ -119,6 +125,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     }
 
     override fun syncFormInstance(thing: Thing, fields: MutableList<Field<*>>) {
+        isSyncing = true
         view.showModalSyncFormLoading()
 
         interactor.fetchLatestDraft(thing, {
@@ -129,13 +136,13 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
                 updateFields(formInstanceRecord.fieldValues, fields)
             }
 
-            evaluateContext(thing, fields)
+            evaluateContext(thing, fields) { isSyncing = false }
 
         }, {
             LiferayLogger.e(it.message)
 
             view.hideModalLoading()
-            evaluateContext(thing, fields)
+            evaluateContext(thing, fields) { isSyncing = false }
         })
     }
 

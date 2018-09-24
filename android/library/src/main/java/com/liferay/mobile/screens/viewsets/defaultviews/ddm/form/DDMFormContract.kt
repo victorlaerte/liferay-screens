@@ -67,7 +67,7 @@ interface DDMFormViewContract {
 
         fun checkIsDirty(field: Field<*>, fieldContext: FieldContext, fieldViewModel: DDLFieldViewModel<*>?)
 
-        fun evaluateContext(thing: Thing, fields: MutableList<Field<*>>)
+        fun evaluateContext(thing: Thing, fields: MutableList<Field<*>>, onComplete: (() -> Unit)? = null)
 
         fun onFieldValueChanged(thing: Thing, formInstance: FormInstance, field: Field<*>)
 
