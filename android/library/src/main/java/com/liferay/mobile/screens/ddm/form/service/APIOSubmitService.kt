@@ -14,13 +14,12 @@
 
 package com.liferay.mobile.screens.ddm.form.service
 
-import com.liferay.apio.consumer.ApioException
-import com.liferay.apio.consumer.fetch
+import com.liferay.apio.consumer.exception.ThingNotFoundException
+import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Relation
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.getOperation
-import com.liferay.apio.consumer.performParseOperation
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.serializer.FieldValueSerializer
 import okhttp3.HttpUrl
@@ -28,7 +27,7 @@ import okhttp3.HttpUrl
 /**
  * @author Paulo Cruz
  */
-class APIOSubmitService : ISubmitService {
+class APIOSubmitService : ISubmitService, BaseAPIOService() {
 
     fun submit(formThing: Thing, currentRecordThing: Thing?, fields: MutableList<Field<*>>,
                isDraft: Boolean = false, onSuccess: (Thing) -> Unit, onError: (Exception) -> Unit) {
@@ -39,7 +38,7 @@ class APIOSubmitService : ISubmitService {
             submit(it.id, "update", fields, isDraft, onSuccess, onError)
         } ?: recordsRelation?.let {
             submit(it.id, "create", fields, isDraft, onSuccess, onError)
-        }
+        } ?: onError(ThingNotFoundException())
     }
 
     override fun submit(thingId: String, operationId: String,
@@ -49,7 +48,7 @@ class APIOSubmitService : ISubmitService {
         getThing(thingId, { thing ->
             thing.getOperation(operationId)?.let { operation ->
                 performSubmit(thing, operation, fields, isDraft, onSuccess, onError)
-            }
+            } ?: onError(ThingWithoutOperationException(thing.id, operationId))
         }, onError)
     }
 
@@ -57,31 +56,19 @@ class APIOSubmitService : ISubmitService {
                          onError: (Exception) -> Unit) {
 
         HttpUrl.parse(thingId)?.let { httpUrl ->
-            fetch(httpUrl) { result ->
-                val (thing, exception) = result
-
-                thing?.let {
-                    onSuccess(it)
-                } ?: exception?.let{
-                    onError(it)
-                }
-            }
-        } ?: onError(ApioException("No thing found"))
+            apioConsumer.fetch(httpUrl, onSuccess = onSuccess, onError = onError)
+        } ?: onError(ThingNotFoundException())
     }
 
     private fun performSubmit(thing: Thing, operation: Operation, fields: MutableList<Field<*>>,
                               isDraft: Boolean = false, onSuccess: (Thing) -> Unit,
                               onError: (Exception) -> Unit) {
 
-        performParseOperation(thing.id, operation.id, {
+        apioConsumer.performOperation(thing.id, operation.id, {
             mapOf(
                 Pair("isDraft", isDraft),
                 Pair("fieldValues", FieldValueSerializer.serialize(fields) { !it.isTransient })
             )
-        }) {
-            val (resultThing, exception) = it
-
-            resultThing?.let(onSuccess) ?: exception?.let(onError)
-        }
+        }, onSuccess, onError)
     }
 }

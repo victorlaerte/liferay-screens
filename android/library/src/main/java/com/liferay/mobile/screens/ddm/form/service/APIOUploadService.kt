@@ -16,7 +16,6 @@ package com.liferay.mobile.screens.ddm.form.service
 
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.getOperation
-import com.liferay.apio.consumer.performParseOperation
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
 import com.liferay.mobile.screens.util.AndroidUtil
@@ -25,7 +24,7 @@ import java.io.InputStream
 /**
  * @author Paulo Cruz
  */
-class APIOUploadService : IUploadService {
+class APIOUploadService : IUploadService, BaseAPIOService() {
 
     fun uploadFile(formThing: Thing, field: DocumentField, inputStream: InputStream,
         onSuccess: (DocumentRemoteFile) -> Unit,
@@ -45,21 +44,19 @@ class APIOUploadService : IUploadService {
         filePath?.run {
             val fileName = AndroidUtil.getFileNameFromPath(filePath)
 
-            performParseOperation(thingId, operationId, {
+            apioConsumer.performOperation(thingId, operationId, {
                 mapOf(
                         Pair("binaryFile", inputStream),
                         Pair("name", fileName),
                         Pair("title", fileName)
                 )
-            }) {
+            }, {
                 inputStream.close()
-
-                val (resultThing, exception) = it
-
-                exception?.let(onError) ?: resultThing?.let {
-                    onSuccess(DocumentRemoteFile(resultThing.id, fileName))
-                }
-            }
+                onSuccess(DocumentRemoteFile(it.id, fileName))
+            }, {
+                inputStream.close()
+                onError(it)
+            })
         }
     }
 }

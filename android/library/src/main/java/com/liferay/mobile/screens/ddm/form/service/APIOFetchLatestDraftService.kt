@@ -1,33 +1,30 @@
 package com.liferay.mobile.screens.ddm.form.service
 
+import com.liferay.apio.consumer.exception.ApioException
+import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.getOperation
-import com.liferay.apio.consumer.performParseOperation
-import com.liferay.mobile.screens.ddm.form.model.FormInstanceRecord
 
 /**
  * @author Paulo Cruz
  */
-class APIOFetchLatestDraftService : IFetchLatestDraftService {
+class APIOFetchLatestDraftService : IFetchLatestDraftService, BaseAPIOService() {
+
+    private val operationId = "fetch-latest-draft"
 
     override fun fetchLatestDraft(formThing: Thing, onSuccess: (Thing) -> Unit,
                                   onError: (Exception) -> Unit) {
 
-        formThing.getOperation("fetch-latest-draft")?.let {
+        formThing.getOperation(operationId)?.let {
             performFetch(formThing, it, onSuccess, onError)
-        }
+        } ?: onError(ThingWithoutOperationException(formThing.id, operationId))
     }
 
     private fun performFetch(thing: Thing, operation: Operation, onSuccess: (Thing) -> Unit,
                              onError: (Exception) -> Unit) {
 
-        performParseOperation(thing.id, operation.id) {
-            val (resultThing, exception) = it
-
-            resultThing?.let(onSuccess) ?: exception?.let(onError)
-        }
-
+        apioConsumer.performOperation(thing.id, operation.id, { emptyMap() }, onSuccess, onError)
     }
 
 }
