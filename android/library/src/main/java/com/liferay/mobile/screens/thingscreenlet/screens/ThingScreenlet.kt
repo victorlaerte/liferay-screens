@@ -19,9 +19,9 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import com.github.kittinunf.result.failure
+import com.liferay.apio.consumer.ApioConsumer
+import com.liferay.apio.consumer.authenticator.BasicAuthenticator
 import com.liferay.apio.consumer.delegates.observe
-import com.liferay.apio.consumer.fetch
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.context.SessionContext
@@ -93,20 +93,20 @@ class ThingScreenlet @JvmOverloads constructor(
 		onComplete: ((ThingScreenlet) -> Unit)? = null) {
 
 		val credentials = credentials ?: SessionContext.getCredentialsFromCurrentSession()
+		val apioConsumer = ApioConsumer(BasicAuthenticator(credentials))
 
 		HttpUrl.parse(thingId)?.let {
-			fetch(it, credentials) {
-
+			apioConsumer.fetch(it, onSuccess = {
 				if (scenario != null) {
 					this.scenario = scenario
 				}
 
-				thing = it.component1()
-
-				it.failure { baseView?.showError(it.message) }
-
+				thing = it
 				onComplete?.invoke(this)
-			}
+			}, onError = {
+				baseView?.showError(it.message)
+				onComplete?.invoke(this)
+			})
 		}
 	}
 

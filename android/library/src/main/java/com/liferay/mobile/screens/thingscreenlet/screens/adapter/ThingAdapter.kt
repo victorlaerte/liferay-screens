@@ -17,13 +17,13 @@ package com.liferay.mobile.screens.thingscreenlet.screens.adapter
 import android.support.v7.widget.RecyclerView.Adapter
 import android.view.View
 import android.view.ViewGroup
+import com.liferay.apio.consumer.ApioConsumer
 import com.liferay.mobile.screens.thingscreenlet.extensions.inflate
 import com.liferay.mobile.screens.thingscreenlet.model.Collection
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.thingscreenlet.screens.views.BaseView
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Scenario
 import com.liferay.apio.consumer.delegates.convert
-import com.liferay.apio.consumer.fetch
 import com.liferay.apio.consumer.model.Thing
 import okhttp3.HttpUrl
 
@@ -46,20 +46,14 @@ class ThingAdapter(collection: Collection, val listener: Listener) :
 		} else {
 			nextPage.let {
 				HttpUrl.parse(nextPage)?.let {
-					fetch(it) {
-						it.fold(
-							success = {
-								convert<Collection>(it)?.let {
-									val moreMembers = it.members
-									merge(members, moreMembers)
-									notifyDataSetChanged()
-								}
-							},
-							failure = {}
-						)
-					}
+					ApioConsumer().fetch(it, onSuccess = {
+						convert<Collection>(it)?.let {
+							val moreMembers = it.members
+							merge(members, moreMembers)
+							notifyDataSetChanged()
+						}
+					}, onError = { })
 				}
-
 			}
 		}
 	}
