@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import com.liferay.mobile.screens.ddl.model.StringField;
@@ -48,6 +49,7 @@ public class ParagraphFieldTextView extends BaseDDLFieldTextView<StringField> {
 
 		textEditText.setBackground(null);
 		textEditText.setMovementMethod(LinkMovementMethod.getInstance());
+		textEditText.setInputType(textEditText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 	}
 
 	@Override
