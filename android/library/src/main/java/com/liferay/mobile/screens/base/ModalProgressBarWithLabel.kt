@@ -14,8 +14,11 @@
 package com.liferay.mobile.screens.base
 
 import android.content.Context
+import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.liferay.mobile.screens.R
@@ -28,6 +31,7 @@ import com.liferay.mobile.screens.thingscreenlet.delegates.bindNonNull
 class ModalProgressBarWithLabel @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
+    private val progressContainer by bindNonNull<FrameLayout>(R.id.progress_modal_container)
     private val progressLabel by bindNonNull<TextView>(R.id.progress_text_view)
 
     init {
@@ -47,5 +51,9 @@ class ModalProgressBarWithLabel @JvmOverloads constructor(context: Context, attr
 
     fun hide() {
         this.visibility = View.GONE
+    }
+
+    fun disableDimBackground() {
+        progressContainer.setBackgroundColor(ContextCompat.getColor(context, android.R.color.white))
     }
 }
