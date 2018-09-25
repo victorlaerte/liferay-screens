@@ -1,6 +1,5 @@
 package com.liferay.mobile.screens.ddm.form.service
 
-import com.liferay.apio.consumer.exception.ApioException
 import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Thing

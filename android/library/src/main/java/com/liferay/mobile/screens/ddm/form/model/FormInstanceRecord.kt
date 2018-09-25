@@ -25,7 +25,7 @@ class FormInstanceRecord(
     }
 
     companion object {
-        val converter: (Thing) -> FormInstanceRecord = { it: Thing ->
+        @JvmStatic val converter: (Thing) -> FormInstanceRecord = { it: Thing ->
 
             val id = it.id
 
@@ -41,12 +41,12 @@ class FormInstanceRecord(
                 return mutableListOf()
             }
 
-            return (map["member"] as List<Map<String, String>>).mapTo(mutableListOf(), {
+            return (map["member"] as List<Map<String, String>>).mapTo(mutableListOf()) {
                 val name = it["name"] ?: ""
                 val value = it["value"] ?: ""
 
                 FieldValue(name, value)
-            })
+            }
         }
 
         object CREATOR : Parcelable.Creator<FormInstanceRecord> {
