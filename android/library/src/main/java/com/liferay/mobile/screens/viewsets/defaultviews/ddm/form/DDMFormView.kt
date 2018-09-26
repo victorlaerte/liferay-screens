@@ -43,8 +43,10 @@ import com.liferay.mobile.screens.thingscreenlet.screens.views.BaseView
 import com.liferay.mobile.screens.util.AndroidUtil
 import com.liferay.mobile.screens.util.LiferayLogger
 import com.liferay.mobile.screens.base.ModalProgressBarWithLabel
+import com.liferay.mobile.screens.thingscreenlet.screens.events.Event
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.BaseDDLFieldTextView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.DDLDocumentFieldView
+import com.liferay.mobile.screens.viewsets.defaultviews.ddm.events.FormEvents
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.adapters.DDMPagerAdapter
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.form.fields.DDMFieldRepeatableView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.pager.WrapContentViewPager
@@ -118,6 +120,10 @@ class DDMFormView @JvmOverloads constructor(
         return view
     }
 
+    override fun isSubmitEnabled(isEnabled: Boolean) {
+        nextButton.isEnabled = isEnabled
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         subscription?.unsubscribe()
@@ -167,6 +173,10 @@ class DDMFormView @JvmOverloads constructor(
 
     override fun scrollToTop() {
         scrollView.scrollTo(0, 0)
+    }
+
+    override fun sendCustomEvent(customEvent: FormEvents, thing: Thing) {
+        sendEvent(Event.CustomEvent(customEvent.name, this, thing))
     }
 
     override fun showErrorMessage(exception: Exception?) {

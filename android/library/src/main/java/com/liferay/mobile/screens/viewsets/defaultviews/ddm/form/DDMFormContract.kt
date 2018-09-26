@@ -23,6 +23,7 @@ import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.model.*
+import com.liferay.mobile.screens.viewsets.defaultviews.ddm.events.FormEvents
 import rx.Observable
 import java.io.InputStream
 
@@ -31,6 +32,8 @@ import java.io.InputStream
  */
 interface DDMFormViewContract {
     interface DDMFormView {
+
+        fun isSubmitEnabled(isEnabled : Boolean)
 
         fun hasConnectivity(): Boolean
 
@@ -41,6 +44,8 @@ interface DDMFormViewContract {
         fun refreshVisibleFields()
 
         fun scrollToTop()
+
+        fun sendCustomEvent(customEvent: FormEvents, thing: Thing)
 
         fun showErrorMessage(exception: Exception?)
 

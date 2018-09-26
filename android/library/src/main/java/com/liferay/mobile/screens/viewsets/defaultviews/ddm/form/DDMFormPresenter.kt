@@ -20,6 +20,7 @@ import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.*
 import com.liferay.mobile.screens.ddm.form.model.*
 import com.liferay.mobile.screens.util.LiferayLogger
+import com.liferay.mobile.screens.viewsets.defaultviews.ddm.events.FormEvents
 import java.io.InputStream
 import java.util.*
 
@@ -105,7 +106,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
     override fun submit(thing: Thing, formInstance: FormInstance, isDraft: Boolean) {
         val fields = formInstance.ddmStructure.fields
-        //TODO DISABLE button
+        view.isSubmitEnabled(isDraft)
 
         interactor.submit(thing, currentRecordThing, fields, isDraft, { recordThing ->
             currentRecordThing = recordThing
@@ -116,12 +117,16 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
                 } ?: run {
                     view.showSuccessMessage()
                 }
+                view.isSubmitEnabled(true)
+                view.sendCustomEvent(FormEvents.SUBMIT_SUCCESS, thing)
             }
         }, { exception ->
             LiferayLogger.e(exception.message)
 
             if (!isDraft) {
+                view.isSubmitEnabled(false)
                 view.showErrorMessage(exception)
+                view.sendCustomEvent(FormEvents.SUBMIT_FAILED, thing)
             }
         })
     }
