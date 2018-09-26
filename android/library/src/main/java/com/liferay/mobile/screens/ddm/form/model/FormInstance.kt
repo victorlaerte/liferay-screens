@@ -29,15 +29,12 @@ import java.util.*
  * @author Sarai Díaz García
  * @author Victor Oliveira
  */
-data class FormInstance @JvmOverloads constructor(
+data class FormInstance(
     val name: String,
     val description: String?,
     val defaultLanguage: String,
     val ddmStructure: DDMStructure,
-    val hasFormRules: Boolean,
-    val isRequiredAuthentication: Boolean = false,
-    val isRequiredCaptcha: Boolean = false,
-    val redirectURL: String? = null) {
+    val isEvaluable: Boolean) {
 
     companion object {
         val DEFAULT_VIEWS: MutableMap<Scenario, Int> =
@@ -59,11 +56,11 @@ data class FormInstance @JvmOverloads constructor(
                 getStructure(it, locale)
             }
 
-            val hasFormRules = ddmStructure.fields.any {
-                it.hasFormRules()
+            val isEvaluable = ddmStructure.fields.any {
+                it.hasFormRules() || it.dataSourceType == "data-provider"
             }
 
-            FormInstance(name, description, defaultLanguage, ddmStructure, hasFormRules)
+            FormInstance(name, description, defaultLanguage, ddmStructure, isEvaluable)
         }
 
         private fun getStructure(relation: Relation, locale: Locale): DDMStructure {

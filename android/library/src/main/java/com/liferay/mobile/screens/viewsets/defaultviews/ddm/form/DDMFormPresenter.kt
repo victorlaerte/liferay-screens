@@ -156,7 +156,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
     }
 
     private fun onCompleteFetch(thing: Thing, formInstance: FormInstance, fields: MutableList<Field<*>>) {
-        if(formInstance.hasFormRules) {
+        if(formInstance.isEvaluable) {
             evaluateContext(thing, fields) {
                 isSyncing = false
             }
