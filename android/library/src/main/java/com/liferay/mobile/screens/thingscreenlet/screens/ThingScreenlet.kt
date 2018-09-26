@@ -38,7 +38,6 @@ import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Row
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Scenario
 import com.liferay.mobile.screens.util.LiferayLogger
-import kotlinx.android.parcel.Parcelize
 import okhttp3.HttpUrl
 
 open class BaseScreenlet @JvmOverloads constructor(
@@ -92,7 +91,7 @@ class ThingScreenlet @JvmOverloads constructor(
 
 	@JvmOverloads
 	fun load(thingId: String, scenario: Scenario? = null, credentials: String? = null,
-		onComplete: ((ThingScreenlet) -> Unit)? = null) {
+		onSuccess: ((ThingScreenlet) -> Unit)? = null, onError: ((Exception) -> Unit)? = null) {
 
 		val apioConsumer = initApioConsumer(credentials)
 
@@ -103,11 +102,11 @@ class ThingScreenlet @JvmOverloads constructor(
 				}
 
 				thing = it
-				onComplete?.invoke(this)
+				onSuccess?.invoke(this)
 			}, onError = {
 				LiferayLogger.e(it.stackTrace.toString())
 				baseView?.showError(it.message)
-				onComplete?.invoke(this)
+				onError?.invoke(it)
 			})
 		}
 	}
