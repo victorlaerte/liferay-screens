@@ -34,6 +34,7 @@ data class FormInstance @JvmOverloads constructor(
     val description: String?,
     val defaultLanguage: String,
     val ddmStructure: DDMStructure,
+    val hasFormRules: Boolean,
     val isRequiredAuthentication: Boolean = false,
     val isRequiredCaptcha: Boolean = false,
     val redirectURL: String? = null) {
@@ -58,7 +59,11 @@ data class FormInstance @JvmOverloads constructor(
                 getStructure(it, locale)
             }
 
-            FormInstance(name, description, defaultLanguage, ddmStructure)
+            val hasFormRules = ddmStructure.fields.any {
+                it.hasFormRules()
+            }
+
+            FormInstance(name, description, defaultLanguage, ddmStructure, hasFormRules)
         }
 
         private fun getStructure(relation: Relation, locale: Locale): DDMStructure {

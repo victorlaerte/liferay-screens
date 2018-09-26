@@ -124,9 +124,11 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         })
     }
 
-    override fun syncFormInstance(thing: Thing, fields: MutableList<Field<*>>) {
+    override fun syncFormInstance(thing: Thing, formInstance: FormInstance) {
         isSyncing = true
         view.showModalSyncFormLoading()
+
+        val fields = formInstance.ddmStructure.fields
 
         interactor.fetchLatestDraft(thing, {
             view.hideModalLoading()
@@ -136,13 +138,13 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
                 updateFields(formInstanceRecord.fieldValues, fields)
             }
 
-            evaluateContext(thing, fields) { isSyncing = false }
-
+            onCompleteFetch(thing, formInstance, fields)
         }, {
             LiferayLogger.e(it.message)
 
             view.hideModalLoading()
-            evaluateContext(thing, fields) { isSyncing = false }
+
+            onCompleteFetch(thing, formInstance, fields)
         })
     }
 
@@ -151,6 +153,16 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         onError: (Exception) -> Unit) {
 
         interactor.uploadFile(thing, field, inputStream, onSuccess, onError)
+    }
+
+    private fun onCompleteFetch(thing: Thing, formInstance: FormInstance, fields: MutableList<Field<*>>) {
+        if(formInstance.hasFormRules) {
+            evaluateContext(thing, fields) {
+                isSyncing = false
+            }
+        } else {
+            isSyncing = false
+        }
     }
 
     private fun setOptions(fieldContext: FieldContext, optionsField: OptionsField<*>) {

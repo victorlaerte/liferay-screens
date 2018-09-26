@@ -75,7 +75,7 @@ interface DDMFormViewContract {
 
         fun submit(thing: Thing, formInstance: FormInstance, isDraft: Boolean = false)
 
-        fun syncFormInstance(thing: Thing, fields: MutableList<Field<*>>)
+        fun syncFormInstance(thing: Thing, formInstance: FormInstance)
 
         fun uploadFile(
             thing: Thing, field: DocumentField, inputStream: InputStream, onSuccess: (DocumentRemoteFile) -> Unit,

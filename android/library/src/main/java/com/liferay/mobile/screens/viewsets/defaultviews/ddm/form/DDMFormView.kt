@@ -407,7 +407,7 @@ class DDMFormView @JvmOverloads constructor(
         setActivityTitle(formInstance)
         initPageAdapter(formInstance.ddmStructure.pages)
 
-        presenter.syncFormInstance(thing, formInstance.ddmStructure.fields)
+        presenter.syncFormInstance(thing, formInstance)
     }
 
     private fun restoreActionButtonsState() {
