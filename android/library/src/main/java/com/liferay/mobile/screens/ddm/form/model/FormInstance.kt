@@ -34,6 +34,7 @@ data class FormInstance(
     val description: String?,
     val defaultLanguage: String,
     val ddmStructure: DDMStructure,
+    val hasDataProvider: Boolean,
     val isEvaluable: Boolean) {
 
     companion object {
@@ -56,11 +57,15 @@ data class FormInstance(
                 getStructure(it, locale)
             }
 
+            val hasDataProvider = ddmStructure.fields.any {
+                it.dataSourceType == "data-provider"
+            }
+
             val isEvaluable = ddmStructure.fields.any {
                 it.hasFormRules() || it.dataSourceType == "data-provider"
             }
 
-            FormInstance(name, description, defaultLanguage, ddmStructure, isEvaluable)
+            FormInstance(name, description, defaultLanguage, ddmStructure, hasDataProvider, isEvaluable)
         }
 
         private fun getStructure(relation: Relation, locale: Locale): DDMStructure {

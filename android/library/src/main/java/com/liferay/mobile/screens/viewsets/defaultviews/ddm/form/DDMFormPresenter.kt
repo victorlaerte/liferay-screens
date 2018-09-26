@@ -63,10 +63,12 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
             updateFields(formContext, fields)
             onComplete?.invoke()
-
         }, {
+            LiferayLogger.e(it.message)
+
             view.hideModalLoading()
             view.showErrorMessage(it)
+
             onComplete?.invoke()
         })
     }
@@ -130,22 +132,17 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
         val fields = formInstance.ddmStructure.fields
 
-        interactor.fetchLatestDraft(thing, {
-            view.hideModalLoading()
-            currentRecordThing = it
-
-            formInstanceRecord?.let { formInstanceRecord ->
-                updateFields(formInstanceRecord.fieldValues, fields)
+        if (formInstance.hasDataProvider) {
+            fetchDataProviders(thing, fields) {
+                fetchLatestDraft(thing, fields) {
+                    onCompleteFetch(thing, formInstance, fields)
+                }
             }
-
-            onCompleteFetch(thing, formInstance, fields)
-        }, {
-            LiferayLogger.e(it.message)
-
-            view.hideModalLoading()
-
-            onCompleteFetch(thing, formInstance, fields)
-        })
+        } else {
+            fetchLatestDraft(thing, fields) {
+                onCompleteFetch(thing, formInstance, fields)
+            }
+        }
     }
 
     override fun uploadFile(
@@ -163,6 +160,47 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         } else {
             isSyncing = false
         }
+    }
+
+    private fun fetchDataProviders(thing: Thing, fields: MutableList<Field<*>>, onComplete: (() -> Unit)?) {
+        view.showModalEvaluateContextLoading()
+
+        interactor.evaluateContext(thing, fields, {
+            val formContext = FormContext.converter(it)
+            view.updatePageEnabled(formContext)
+
+            updateFields(formContext, fields)
+
+            onComplete?.invoke()
+        }, {
+            LiferayLogger.e(it.message)
+
+            view.hideModalLoading()
+            view.showErrorMessage(it)
+
+            onComplete?.invoke()
+        })
+    }
+
+    private fun fetchLatestDraft(thing: Thing, fields: MutableList<Field<*>>, onComplete: (() -> Unit)?) {
+        interactor.fetchLatestDraft(thing, {
+            view.hideModalLoading()
+
+            currentRecordThing = it
+
+            formInstanceRecord?.let { formInstanceRecord ->
+                updateFields(formInstanceRecord.fieldValues, fields)
+            }
+
+            onComplete?.invoke()
+        }, {
+            LiferayLogger.e(it.message)
+
+            view.hideModalLoading()
+            view.showErrorMessage(it)
+
+            onComplete?.invoke()
+        })
     }
 
     private fun setOptions(fieldContext: FieldContext, optionsField: OptionsField<*>) {
