@@ -37,6 +37,8 @@ import com.liferay.mobile.screens.thingscreenlet.screens.views.Custom
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Row
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Scenario
+import com.liferay.mobile.screens.util.LiferayLogger
+import kotlinx.android.parcel.Parcelize
 import okhttp3.HttpUrl
 
 open class BaseScreenlet @JvmOverloads constructor(
@@ -92,8 +94,7 @@ class ThingScreenlet @JvmOverloads constructor(
 	fun load(thingId: String, scenario: Scenario? = null, credentials: String? = null,
 		onComplete: ((ThingScreenlet) -> Unit)? = null) {
 
-		val credentials = credentials ?: SessionContext.getCredentialsFromCurrentSession()
-		val apioConsumer = ApioConsumer(BasicAuthenticator(credentials))
+		val apioConsumer = initApioConsumer(credentials)
 
 		HttpUrl.parse(thingId)?.let {
 			apioConsumer.fetch(it, onSuccess = {
@@ -104,6 +105,7 @@ class ThingScreenlet @JvmOverloads constructor(
 				thing = it
 				onComplete?.invoke(this)
 			}, onError = {
+				LiferayLogger.e(it.stackTrace.toString())
 				baseView?.showError(it.message)
 				onComplete?.invoke(this)
 			})
@@ -168,4 +170,14 @@ class ThingScreenlet @JvmOverloads constructor(
 			super.onRestoreInstanceState(state)
 		}
 	}
+
+    private fun initApioConsumer(credentials: String? = null): ApioConsumer {
+        val credentials = credentials ?: SessionContext.getCredentialsFromCurrentSession()
+
+        val authenticator = credentials?.let {
+            BasicAuthenticator(credentials)
+        }
+
+        return ApioConsumer(authenticator)
+    }
 }
