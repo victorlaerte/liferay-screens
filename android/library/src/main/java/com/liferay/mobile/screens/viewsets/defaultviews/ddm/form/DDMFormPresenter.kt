@@ -192,7 +192,6 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
             LiferayLogger.e(it.message)
 
             view.hideModalLoading()
-            view.showErrorMessage(it)
 
             onComplete?.invoke()
         })
