@@ -35,9 +35,14 @@ data class FormInstance(
     val defaultLanguage: String,
     val ddmStructure: DDMStructure,
     val hasDataProvider: Boolean,
-    val isEvaluable: Boolean) {
+    val hasFormRules: Boolean) {
+
+    val isEvaluable: Boolean = hasDataProvider || hasFormRules
 
     companion object {
+        private const val DATA_PROVIDER_KEY: String = "data-provider"
+        private const val FROM_AUTOFILL_KEY: String = "from-autofill"
+
         val DEFAULT_VIEWS: MutableMap<Scenario, Int> =
             mutableMapOf(
                 Detail to R.layout.ddm_form_default
@@ -58,14 +63,14 @@ data class FormInstance(
             }
 
             val hasDataProvider = ddmStructure.fields.any {
-                it.dataSourceType == "data-provider"
+                it.dataSourceType == DATA_PROVIDER_KEY || it.dataSourceType == FROM_AUTOFILL_KEY
             }
 
-            val isEvaluable = ddmStructure.fields.any {
-                it.hasFormRules() || it.dataSourceType == "data-provider"
+            val hasFormRules = ddmStructure.fields.any {
+                it.hasFormRules()
             }
 
-            FormInstance(name, description, defaultLanguage, ddmStructure, hasDataProvider, isEvaluable)
+            FormInstance(name, description, defaultLanguage, ddmStructure, hasDataProvider, hasFormRules)
         }
 
         private fun getStructure(relation: Relation, locale: Locale): DDMStructure {

@@ -157,16 +157,6 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
         interactor.uploadFile(thing, field, inputStream, onSuccess, onError)
     }
 
-    private fun onCompleteFetch(thing: Thing, formInstance: FormInstance, fields: MutableList<Field<*>>) {
-        if(formInstance.isEvaluable) {
-            evaluateContext(thing, fields) {
-                isSyncing = false
-            }
-        } else {
-            isSyncing = false
-        }
-    }
-
     private fun fetchDataProviders(thing: Thing, fields: MutableList<Field<*>>, onComplete: (() -> Unit)?) {
         view.showModalEvaluateContextLoading()
 
@@ -206,6 +196,16 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
 
             onComplete?.invoke()
         })
+    }
+
+    private fun onCompleteFetch(thing: Thing, formInstance: FormInstance, fields: MutableList<Field<*>>) {
+        if (formInstance.isEvaluable) {
+            evaluateContext(thing, fields) {
+                isSyncing = false
+            }
+        } else {
+            isSyncing = false
+        }
     }
 
     private fun setOptions(fieldContext: FieldContext, optionsField: OptionsField<*>) {
