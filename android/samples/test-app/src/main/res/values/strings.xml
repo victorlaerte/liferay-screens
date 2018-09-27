@@ -18,7 +18,6 @@
 	<string name="ddl_form">DDL Form</string>
 	<string name="ddl_list">DDL List</string>
 	<string name="ddm_form">DDM Form</string>
-	<string name="ddm_form_custom">DDM Form Custom</string>
 	<string name="clear_cache_forms">Clear Cache Forms</string>
 	<string name="clear_cache_and_login">Clear Cache and Login</string>
 	<string name="sync_cache">Sync Cache</string>
