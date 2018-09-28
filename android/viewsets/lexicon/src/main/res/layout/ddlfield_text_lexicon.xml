@@ -15,11 +15,12 @@
 		android:visibility="gone"
 		/>
 
-	<EditText
+	<AutoCompleteTextView
 		android:id="@+id/liferay_ddl_edit_text"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:inputType="text"
+		android:popupBackground="@drawable/lexicon_autocomplete_popup_drawable"
 		/>
 
 	<include android:id="@+id/error_view"
@@ -27,6 +28,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/error_view_margin_top"
-		android:visibility="gone" />
+		android:visibility="gone"
+		/>
 
 </com.liferay.mobile.screens.viewsets.lexicon.ddl.form.fields.DDLFieldTextView>
