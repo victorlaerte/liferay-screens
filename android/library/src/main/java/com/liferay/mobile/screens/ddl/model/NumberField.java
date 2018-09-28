@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.ddl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys;
 import com.liferay.mobile.screens.ddm.form.model.NumberValidator;
 import java.text.NumberFormat;
 import java.text.ParsePosition;

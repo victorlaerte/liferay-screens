@@ -18,6 +18,8 @@ import com.liferay.apio.consumer.model.Relation
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.get
 import com.liferay.mobile.screens.R
+import com.liferay.mobile.screens.ddl.form.util.FormConstants
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys
 import com.liferay.mobile.screens.ddl.model.DDMStructure
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail
@@ -40,9 +42,6 @@ data class FormInstance(
     val isEvaluable: Boolean = hasDataProvider || hasFormRules
 
     companion object {
-        private const val DATA_PROVIDER_KEY: String = "data-provider"
-        private const val FROM_AUTOFILL_KEY: String = "from-autofill"
-
         val DEFAULT_VIEWS: MutableMap<Scenario, Int> =
             mutableMapOf(
                 Detail to R.layout.ddm_form_default
@@ -50,20 +49,20 @@ data class FormInstance(
 
         val converter: (Thing) -> FormInstance = { it: Thing ->
 
-            val name = it["name"] as String
+            val name = it[FormConstants.NAME] as String
 
-            val description = it["description"] as? String
+            val description = it[FormConstants.DESCRIPTION] as? String
 
-            val defaultLanguage = it["defaultLanguage"] as String
+            val defaultLanguage = it[FormConstants.DEFAULT_LANGUAGE] as String
 
             val locale = Locale(defaultLanguage)
 
-            val ddmStructure = (it["structure"] as Relation).let {
+            val ddmStructure = (it[FormConstants.STRUCTURE] as Relation).let {
                 getStructure(it, locale)
             }
 
             val hasDataProvider = ddmStructure.fields.any {
-                it.dataSourceType == DATA_PROVIDER_KEY || it.dataSourceType == FROM_AUTOFILL_KEY
+                it.dataSourceType == FormConstants.DATA_PROVIDER_KEY || it.dataSourceType == FormConstants.FROM_AUTOFILL_KEY
             }
 
             val hasFormRules = ddmStructure.fields.any {
@@ -75,19 +74,19 @@ data class FormInstance(
 
         private fun getStructure(relation: Relation, locale: Locale): DDMStructure {
 
-            val name = relation["name"] as String
+            val name = relation[FormConstants.NAME] as String
 
-            val description = relation["description"] as? String
+            val description = relation[FormConstants.DESCRIPTION] as? String
 
-            val pages = (relation["formPages"] as Map<String, Any>).let {
+            val pages = (relation[FormConstants.PAGES] as Map<String, Any>).let {
                 getPages(it, locale)
             }
 
-            val successPage = relation["successPage"]?.let {
+            val successPage = relation[FormConstants.SUCCESS_PAGE]?.let {
                 val successMap = it as Map<*, *>
 
-                val headline = successMap["headline"] as String
-                val text = successMap["text"] as String
+                val headline = successMap[FormConstants.HEADLINE] as String
+                val text = successMap[FormConstants.DESCRIPTION] as String
 
                 SuccessPage(headline, text)
             }
@@ -99,9 +98,9 @@ data class FormInstance(
 
             return (mapper["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
-                val headlinePage = it["headline"] as? String ?: ""
-                val textPage = it["text"] as? String ?: ""
-                val fields = (it["fields"] as Map<String, Any>).let {
+                val headlinePage = it[FormConstants.HEADLINE] as? String ?: ""
+                val textPage = it[FormConstants.TEXT] as? String ?: ""
+                val fields = (it[FormConstants.FIELDS] as Map<String, Any>).let {
                     getFields(it, locale)
                 }.toMutableList()
 
@@ -117,16 +116,16 @@ data class FormInstance(
 
             return (map["member"] as List<Map<String, Any>>).mapTo(mutableListOf()) {
 
-                val dataType = it["dataType"] as? String
-                val options = (it["options"] as? Map<String, Any>)?.let {
+                val dataType = it[FormFieldKeys.DATA_TYPE_KEY] as? String
+                val options = (it[FormFieldKeys.OPTIONS_KEY] as? Map<String, Any>)?.let {
                     it["member"] as? List<Map<String, Any>>
                 }
 
                 val attributes = it.toMutableMap()
-                attributes.remove("options")
+                attributes.remove(FormFieldKeys.OPTIONS_KEY)
 
                 options?.let {
-                    attributes["options"] = options
+                    attributes[FormFieldKeys.OPTIONS_KEY] = options
                 }
 
                 val fieldDataType = Field.DataType.assignDataTypeFromString(dataType)

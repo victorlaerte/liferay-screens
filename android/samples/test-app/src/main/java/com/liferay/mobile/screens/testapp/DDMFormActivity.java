@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.liferay.mobile.screens.base.ModalProgressBarWithLabel;
+import com.liferay.mobile.screens.ddl.form.util.FormConstants;
 import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet;
 import com.liferay.mobile.screens.thingscreenlet.screens.views.Detail;
 import kotlin.Unit;
@@ -21,7 +22,7 @@ public class DDMFormActivity extends ThemeActivity {
     private ThingScreenlet screenlet;
     private ModalProgressBarWithLabel modalProgress;
 
-    private long formInstanceId = 37605;
+    private long formInstanceId = 36806;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,9 +45,7 @@ public class DDMFormActivity extends ThemeActivity {
 
     private String getResourcePath() {
         String serverUrl = "http://10.0.2.2:8080";
-        String formEndpoint = "/o/api/p/form-instance/%d?embedded=structure";
-
-        return serverUrl + String.format(formEndpoint, formInstanceId);
+        return serverUrl + String.format(FormConstants.URL_TEMPLATE, formInstanceId);
     }
 
     private void loadResource() {
@@ -54,7 +53,7 @@ public class DDMFormActivity extends ThemeActivity {
 
         modalProgress.show("Loading Form");
         screenlet.setVisibility(View.GONE);
-        screenlet.load(url, Detail.INSTANCE, null, onLoadCompleted);
+        screenlet.load(url, Detail.INSTANCE, null, onLoadCompleted, onError);
     }
 
     private Function1<ThingScreenlet, Unit> onLoadCompleted =
@@ -64,7 +63,18 @@ public class DDMFormActivity extends ThemeActivity {
                 modalProgress.hide();
                 screenlet.setVisibility(View.VISIBLE);
 
-                return null;
+                return Unit.INSTANCE;
+            }
+        };
+
+    private Function1<Exception, Unit> onError =
+        new Function1<Exception, Unit>() {
+            @Override
+            public Unit invoke(Exception e) {
+                modalProgress.hide();
+                screenlet.setVisibility(View.VISIBLE);
+
+                return Unit.INSTANCE;
             }
         };
 

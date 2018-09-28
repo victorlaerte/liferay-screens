@@ -60,7 +60,7 @@ class ThingScreenlet @JvmOverloads constructor(
 			"BlogPosting" to BlogPosting.DEFAULT_VIEWS,
 			"Collection" to Collection.DEFAULT_VIEWS,
 			"Person" to Person.DEFAULT_VIEWS,
-			"FormInstance" to FormInstance.DEFAULT_VIEWS
+			"Form" to FormInstance.DEFAULT_VIEWS
 		)
 	}
 
