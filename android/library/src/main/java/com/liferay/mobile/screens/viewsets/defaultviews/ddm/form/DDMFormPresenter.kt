@@ -124,7 +124,7 @@ class DDMFormPresenter(val view: DDMFormViewContract.DDMFormView) : DDMFormViewC
             LiferayLogger.e(exception.message)
 
             if (!isDraft) {
-                view.isSubmitEnabled(false)
+                view.isSubmitEnabled(true)
                 view.showErrorMessage(exception)
                 view.sendCustomEvent(FormEvents.SUBMIT_FAILED, thing)
             }
