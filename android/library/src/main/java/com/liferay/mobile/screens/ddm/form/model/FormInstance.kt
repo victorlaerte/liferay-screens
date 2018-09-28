@@ -125,7 +125,6 @@ data class FormInstance(
                 val attributes = it.toMutableMap()
                 attributes.remove("options")
 
-                attributes["isDDM"] = true
                 options?.let {
                     attributes["options"] = options
                 }
