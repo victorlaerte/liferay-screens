@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/error_view_text_padding_left"
         android:layout_height="wrap_content"
         android:textSize="@dimen/error_view_text_size"
-        android:text="This field is required"
+        android:text="@string/this_field_is_required"
         android:gravity="center_vertical"
         android:lineSpacingExtra="0dp"
         android:textColor="@color/redError_lexicon"/>

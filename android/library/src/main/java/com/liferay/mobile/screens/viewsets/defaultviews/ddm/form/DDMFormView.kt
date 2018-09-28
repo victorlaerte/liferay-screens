@@ -30,6 +30,7 @@ import android.widget.*
 import com.liferay.apio.consumer.delegates.converter
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.R
+import com.liferay.mobile.screens.base.ModalProgressBarWithLabel
 import com.liferay.mobile.screens.context.LiferayScreensContext
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.DocumentField
@@ -39,11 +40,10 @@ import com.liferay.mobile.screens.ddm.form.model.*
 import com.liferay.mobile.screens.ddm.form.view.SuccessPageActivity
 import com.liferay.mobile.screens.thingscreenlet.delegates.bindNonNull
 import com.liferay.mobile.screens.thingscreenlet.screens.ThingScreenlet
+import com.liferay.mobile.screens.thingscreenlet.screens.events.Event
 import com.liferay.mobile.screens.thingscreenlet.screens.views.BaseView
 import com.liferay.mobile.screens.util.AndroidUtil
 import com.liferay.mobile.screens.util.LiferayLogger
-import com.liferay.mobile.screens.base.ModalProgressBarWithLabel
-import com.liferay.mobile.screens.thingscreenlet.screens.events.Event
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.BaseDDLFieldTextView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddl.form.fields.DDLDocumentFieldView
 import com.liferay.mobile.screens.viewsets.defaultviews.ddm.events.FormEvents
