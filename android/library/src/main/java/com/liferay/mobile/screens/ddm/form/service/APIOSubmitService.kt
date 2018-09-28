@@ -20,6 +20,7 @@ import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Relation
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.getOperation
+import com.liferay.mobile.screens.ddl.form.util.FormConstants
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.serializer.FieldValueSerializer
 import okhttp3.HttpUrl
@@ -32,7 +33,7 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
     fun submit(formThing: Thing, currentRecordThing: Thing?, fields: MutableList<Field<*>>,
                isDraft: Boolean = false, onSuccess: (Thing) -> Unit, onError: (Exception) -> Unit) {
 
-        val recordsRelation = formThing.attributes["formInstanceRecords"] as? Relation
+        val recordsRelation = formThing.attributes["formRecords"] as? Relation
 
         currentRecordThing?.let {
             submit(it.id, "update", fields, isDraft, onSuccess, onError)
@@ -67,7 +68,7 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
         apioConsumer.performOperation(thing.id, operation.id, {
             mapOf(
                 Pair("isDraft", isDraft),
-                Pair("fieldValues", FieldValueSerializer.serialize(fields) { !it.isTransient })
+                Pair(FormConstants.FIELD_VALUES, FieldValueSerializer.serialize(fields) { !it.isTransient })
             )
         }, onSuccess, onError)
     }

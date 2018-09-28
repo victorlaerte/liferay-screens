@@ -12,9 +12,7 @@
  * details.
  */
 
-package com.liferay.mobile.screens.ddl.model
-
-import java.util.jar.Attributes
+package com.liferay.mobile.screens.ddl.form.util
 
 /**
  * @author Victor Oliveira
@@ -36,7 +34,7 @@ class FormFieldKeys {
         const val PREDEFINED_VALUE_KEY = "predefinedValue"
         const val SWITCHER_KEY = "showAsSwitcher"
         const val TEXT_KEY = "text"
-        const val TIP_KEY = "tip"
+        @JvmField val TIP_KEY = arrayOf("tooltip", "tip")
         const val VALIDATION_KEY = "validation"
         const val VISIBILITY_EXPRESSION_KEY = "visibilityExpression"
         @JvmField val ADDITIONAL_TYPE_KEY = arrayOf("additionalType", "type")

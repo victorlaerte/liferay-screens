@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.ddl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys;
 import com.liferay.mobile.screens.ddm.form.model.CheckboxMultipleField;
 import com.liferay.mobile.screens.ddm.form.model.GridField;
 import com.liferay.mobile.screens.ddm.form.model.RepeatableField;
@@ -37,7 +38,6 @@ public abstract class Field<T extends Serializable> implements Parcelable {
 	private String text;
 	private String dataSourceType;
 	private DataType dataType;
-	//additionalType
 	private EditorType editorType;
 	private String name;
 	private String label;
@@ -80,7 +80,8 @@ public abstract class Field<T extends Serializable> implements Parcelable {
 
 		name = getAttributeStringValue(attributes, FormFieldKeys.NAME_KEY);
 		label = getAttributeStringValue(attributes, FormFieldKeys.LABEL_KEY);
-		tip = getAttributeStringValue(attributes, FormFieldKeys.TIP_KEY);
+		Object tipValue = FormFieldKeys.getValueFromArrayKey(attributes, FormFieldKeys.TIP_KEY);
+		tip = (tipValue != null) ? tipValue.toString() : "";
 		placeHolder = getAttributeStringValue(attributes, FormFieldKeys.PLACE_HOLDER_KEY);
 
 		readOnly = Boolean.valueOf(getAttributeStringValue(attributes, FormFieldKeys.IS_READ_ONLY_KEY));

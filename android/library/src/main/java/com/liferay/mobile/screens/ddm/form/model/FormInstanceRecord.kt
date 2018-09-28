@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.apio.consumer.model.get
+import com.liferay.mobile.screens.ddl.form.util.FormConstants
 import com.liferay.mobile.screens.ddl.model.Field
 import java.util.*
 
@@ -29,7 +30,7 @@ class FormInstanceRecord(
 
             val id = it.id
 
-            val fieldValues = (it["fieldValues"] as? Map<String, Any>)?.let {
+            val fieldValues = (it[FormConstants.FIELD_VALUES] as? Map<String, Any>)?.let {
                 getFieldValues(it)
             } ?: emptyList()
 

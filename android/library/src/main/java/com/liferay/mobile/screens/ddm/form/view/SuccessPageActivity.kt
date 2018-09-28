@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
 import android.widget.TextView
 import com.liferay.mobile.screens.R
+import com.liferay.mobile.screens.ddl.form.util.FormConstants
 import com.liferay.mobile.screens.ddm.form.model.SuccessPage
 
 /**
@@ -26,7 +27,7 @@ class SuccessPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ddm_form_success_page_default)
 
-        val successPage = intent.extras["successPage"] as? SuccessPage
+        val successPage = intent.extras[FormConstants.SUCCESS_PAGE] as? SuccessPage
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = window

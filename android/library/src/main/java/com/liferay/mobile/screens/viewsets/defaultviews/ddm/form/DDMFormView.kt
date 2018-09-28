@@ -32,6 +32,7 @@ import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.R
 import com.liferay.mobile.screens.base.ModalProgressBarWithLabel
 import com.liferay.mobile.screens.context.LiferayScreensContext
+import com.liferay.mobile.screens.ddl.form.util.FormConstants
 import com.liferay.mobile.screens.ddl.form.view.DDLFieldViewModel
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentLocalFile
@@ -214,7 +215,7 @@ class DDMFormView @JvmOverloads constructor(
 
     override fun showSuccessPage(successPage: SuccessPage) {
         val intent = Intent(context, SuccessPageActivity::class.java)
-        intent.putExtra("successPage", successPage)
+        intent.putExtra(FormConstants.SUCCESS_PAGE, successPage)
         context.startActivity(intent)
     }
 

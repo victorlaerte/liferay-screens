@@ -17,7 +17,7 @@ package com.liferay.mobile.screens.ddm.form.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.liferay.mobile.screens.ddl.model.Field
-import com.liferay.mobile.screens.ddl.model.FormFieldKeys
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys
 import com.liferay.mobile.screens.ddl.model.Option
 import java.util.*
 

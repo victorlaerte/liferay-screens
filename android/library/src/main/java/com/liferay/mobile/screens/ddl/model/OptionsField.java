@@ -1,6 +1,7 @@
 package com.liferay.mobile.screens.ddl.model;
 
 import android.os.Parcel;
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

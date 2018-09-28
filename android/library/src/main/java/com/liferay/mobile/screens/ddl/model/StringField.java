@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.ddl.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.liferay.mobile.screens.ddl.form.util.FormFieldKeys;
 import com.liferay.mobile.screens.ddm.form.model.StringValidation;
 import com.liferay.mobile.screens.ddm.form.model.StringValidatorParser;
 import java.util.HashMap;
