@@ -54,6 +54,8 @@ import com.liferay.mobile.screens.viewsets.defaultviews.util.ThemeUtil
 import org.jetbrains.anko.childrenSequence
 import rx.Observable
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 
 /**
@@ -68,7 +70,7 @@ class DDMFormView @JvmOverloads constructor(
 
     private val layoutIds = mutableMapOf<Field.EditorType, Int>()
     override var screenlet: ThingScreenlet? = null
-    private var subscription: Subscription? = null
+    private var subscription: CompositeSubscription = CompositeSubscription()
 
     private val backButton by bindNonNull<Button>(R.id.liferay_form_back)
     private val nextButton by bindNonNull<Button>(R.id.liferay_form_submit)
@@ -126,7 +128,7 @@ class DDMFormView @JvmOverloads constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        subscription?.unsubscribe()
+        subscription.unsubscribe()
     }
 
     override fun onFinishInflate() {
@@ -242,17 +244,13 @@ class DDMFormView @JvmOverloads constructor(
     }
 
     override fun subscribeToValueChanged(observable: Observable<Field<*>>) {
-        subscription = observable
-            // TODO: Remove magic number
-            .skip(3)
-            .debounce(4, TimeUnit.SECONDS)
-            .subscribe({ field ->
-                thing?.let {
-                    presenter.onFieldValueChanged(it, formInstance, field)
-                }
-            }) {
-                LiferayLogger.e(it.message)
+        val autoSaveSubscription = observable.subscribeOnChange(2) { field ->
+            thing?.let {
+                presenter.onFieldValueChanged(it, formInstance, field)
             }
+        }
+
+        subscription.add(autoSaveSubscription)
     }
 
     override fun updateFieldView(fieldContext: FieldContext, field: Field<*>) {
@@ -409,6 +407,17 @@ class DDMFormView @JvmOverloads constructor(
                 highLightInvalidFields(invalidFields, true)
             }
         }
+    }
+
+    private fun Observable<Field<*>>.subscribeOnChange(
+        debounceTimeout: Long, onNext: (Field<*>) -> Unit): Subscription {
+
+        return this
+            .debounce(debounceTimeout, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNext) {
+                LiferayLogger.e(it.message)
+            }
     }
 
     private fun onFormLoaded(formInstance: FormInstance) {
