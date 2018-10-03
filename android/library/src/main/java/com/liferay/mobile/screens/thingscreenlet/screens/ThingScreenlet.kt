@@ -84,6 +84,8 @@ class ThingScreenlet @JvmOverloads constructor(
 				screenlet = this@ThingScreenlet
 				thing = it
 			}
+		} else {
+			baseView?.thing = it
 		}
 	}
 
