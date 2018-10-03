@@ -106,7 +106,7 @@ class ThingScreenlet @JvmOverloads constructor(
 				thing = it
 				onSuccess?.invoke(this)
 			}, onError = {
-				LiferayLogger.e(it.stackTrace.toString())
+				LiferayLogger.e(it.message, it)
 				baseView?.showError(it.message)
 				onError?.invoke(it)
 			})
