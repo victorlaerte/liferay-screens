@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.viewsets.defaultviews.util
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -34,7 +35,7 @@ class ThemeUtil {
         fun getRequiredSpannable(context: Context): Spannable {
             val requiredAlert = SpannableString(" *")
 
-            val color = context.resources.getColor(R.color.colorRequiredField)
+            val color = ContextCompat.getColor(context,R.color.colorRequiredField)
             requiredAlert.setSpan(ForegroundColorSpan(color), 0, requiredAlert.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 

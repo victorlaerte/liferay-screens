@@ -14,7 +14,6 @@
 package com.liferay.mobile.screens.base
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View

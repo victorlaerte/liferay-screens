@@ -34,9 +34,9 @@ class WrapContentViewPager : ViewPager {
         private set
 
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var heightMeasureSpec = heightMeasureSpec
+        var heightMeasure = heightMeasureSpec
         if (currentView == null) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            super.onMeasure(widthMeasureSpec, heightMeasure)
             return
         }
 
@@ -48,8 +48,8 @@ class WrapContentViewPager : ViewPager {
             val measuredHeight = currentView.measuredHeight
 
             if (measuredHeight > 0) {
-                heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(measuredHeight, View.MeasureSpec.EXACTLY)
-                super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+                heightMeasure = View.MeasureSpec.makeMeasureSpec(measuredHeight, View.MeasureSpec.EXACTLY)
+                super.onMeasure(widthMeasureSpec, heightMeasure)
             }
         }
     }

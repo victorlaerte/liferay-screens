@@ -42,12 +42,12 @@ class ThingAdapter(collection: Collection, val listener: Listener) :
 
 	override fun onBindViewHolder(holder: ThingViewHolder, position: Int) {
 		if (members.size > position) {
-			holder?.thing = members[position]
+			holder.thing = members[position]
 		} else {
-			nextPage.let {
-				HttpUrl.parse(nextPage)?.let {
-					ApioConsumer().fetch(it, onSuccess = {
-						convert<Collection>(it)?.let {
+			nextPage?.let { nextPage ->
+				HttpUrl.parse(nextPage)?.let { httpUrl ->
+					ApioConsumer().fetch(httpUrl, onSuccess = { thing ->
+						convert<Collection>(thing)?.let {
 							val moreMembers = it.members
 							merge(members, moreMembers)
 							notifyDataSetChanged()
@@ -69,9 +69,7 @@ class ThingAdapter(collection: Collection, val listener: Listener) :
 	override fun getItemCount(): Int = totalItems ?: 0
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThingViewHolder {
-		return parent?.inflate(R.layout.thing_viewholder_default)?.let {
-			ThingViewHolder(it, this)
-		}
+		return ThingViewHolder(parent.inflate(R.layout.thing_viewholder_default), this)
 	}
 
 	interface Listener {

@@ -38,8 +38,8 @@ class StringValidatorParser {
             return DummyValidation()
         }
 
-        val errorMessage = validationMap["error"] as? String ?: ""
-        val expression = validationMap["expression"] as? String ?: ""
+        val errorMessage = validationMap["error"] ?: ""
+        val expression = validationMap["expression"] ?: ""
 
         if (expression.startsWith("isEmailAddress(")) {
             return IsEmailValidation(errorMessage)
