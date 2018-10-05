@@ -10,7 +10,7 @@ android {
 		targetSdkVersion rootProject.ext.targetSdkVersion
 		versionCode rootProject.ext.versionCode
 		versionName rootProject.ext.versionName
-		multiDexEnabled true
+		vectorDrawables.useSupportLibrary = true
 	}
 
 	buildTypes {
@@ -25,9 +25,6 @@ android {
 		}
 	}
 
-	buildTypes {
-		xamarin {}
-	}
 	sourceSets {
 		release {
 			java.srcDirs = ['src/debug/java']
@@ -78,17 +75,16 @@ dependencies {
 	// thingScreenlet
 	implementation libraries.gson
 	api libraries.okhttp
-	api libraries.result
-	api libraries.anko_commons
 	api libraries.circle_image_view
 
 	implementation libraries.kotlin
-	api libraries.coroutines_core
-	api libraries.coroutines_android
 
-	api libraries.support_multidex
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply from: '../bintray.gradle'
 apply from: '../install.gradle'
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
