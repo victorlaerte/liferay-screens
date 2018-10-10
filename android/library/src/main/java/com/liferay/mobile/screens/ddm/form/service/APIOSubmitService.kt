@@ -14,12 +14,12 @@
 
 package com.liferay.mobile.screens.ddm.form.service
 
+import com.liferay.apio.consumer.ApioConsumer
 import com.liferay.apio.consumer.exception.ThingNotFoundException
 import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Relation
 import com.liferay.apio.consumer.model.Thing
-import com.liferay.apio.consumer.model.getOperation
 import com.liferay.mobile.screens.ddl.form.util.FormConstants
 import com.liferay.mobile.screens.ddl.model.Field
 import com.liferay.mobile.screens.ddm.form.serializer.FieldValueSerializer
@@ -57,7 +57,7 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
                          onError: (Exception) -> Unit) {
 
         HttpUrl.parse(thingId)?.let { httpUrl ->
-            apioConsumer.fetch(httpUrl, onSuccess = onSuccess, onError = onError)
+            ApioConsumer.fetch(httpUrl, onSuccess = onSuccess, onError = onError)
         } ?: onError(ThingNotFoundException())
     }
 
@@ -65,7 +65,7 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
                               isDraft: Boolean = false, onSuccess: (Thing) -> Unit,
                               onError: (Exception) -> Unit) {
 
-        apioConsumer.performOperation(thing.id, operation.id, {
+        ApioConsumer.performOperation(thing.id, operation.id, {
             mapOf(
                 Pair("isDraft", isDraft),
                 Pair(FormConstants.FIELD_VALUES, FieldValueSerializer.serialize(fields) { !it.isTransient })

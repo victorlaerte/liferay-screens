@@ -1,9 +1,9 @@
 package com.liferay.mobile.screens.ddm.form.service
 
+import com.liferay.apio.consumer.ApioConsumer
 import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Operation
 import com.liferay.apio.consumer.model.Thing
-import com.liferay.apio.consumer.model.getOperation
 
 /**
  * @author Paulo Cruz
@@ -23,7 +23,7 @@ class APIOFetchLatestDraftService : IFetchLatestDraftService, BaseAPIOService() 
     private fun performFetch(thing: Thing, operation: Operation, onSuccess: (Thing) -> Unit,
                              onError: (Exception) -> Unit) {
 
-        apioConsumer.performOperation(thing.id, operation.id, { emptyMap() }, onSuccess, onError)
+        ApioConsumer.performOperation(thing.id, operation.id, { emptyMap() }, onSuccess, onError)
     }
 
 }
