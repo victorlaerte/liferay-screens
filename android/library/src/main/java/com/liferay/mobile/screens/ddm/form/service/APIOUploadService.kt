@@ -14,8 +14,8 @@
 
 package com.liferay.mobile.screens.ddm.form.service
 
+import com.liferay.apio.consumer.ApioConsumer
 import com.liferay.apio.consumer.model.Thing
-import com.liferay.apio.consumer.model.getOperation
 import com.liferay.mobile.screens.ddl.model.DocumentField
 import com.liferay.mobile.screens.ddl.model.DocumentRemoteFile
 import com.liferay.mobile.screens.util.AndroidUtil
@@ -44,7 +44,7 @@ class APIOUploadService : IUploadService, BaseAPIOService() {
         filePath?.run {
             val fileName = AndroidUtil.getFileNameFromPath(filePath)
 
-            apioConsumer.performOperation(thingId, operationId, {
+            ApioConsumer.performOperation(thingId, operationId, {
                 mapOf(
                         Pair("binaryFile", inputStream),
                         Pair("name", fileName),
