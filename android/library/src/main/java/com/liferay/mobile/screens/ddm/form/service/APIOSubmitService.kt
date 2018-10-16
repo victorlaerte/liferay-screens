@@ -57,7 +57,9 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
                          onError: (Exception) -> Unit) {
 
         HttpUrl.parse(thingId)?.let { httpUrl ->
-            ApioConsumer.fetch(httpUrl, onSuccess = onSuccess, onError = onError)
+            apioConsumer.fetch(httpUrl, onComplete = { result ->
+                result.fold(onSuccess, onError)
+            })
         } ?: onError(ThingNotFoundException())
     }
 
@@ -65,11 +67,13 @@ class APIOSubmitService : ISubmitService, BaseAPIOService() {
                               isDraft: Boolean = false, onSuccess: (Thing) -> Unit,
                               onError: (Exception) -> Unit) {
 
-        ApioConsumer.performOperation(thing.id, operation.id, {
+        apioConsumer.performOperation(thing.id, operation.id, fillFields = { _ ->
             mapOf(
                 Pair("isDraft", isDraft),
                 Pair(FormConstants.FIELD_VALUES, FieldValueSerializer.serialize(fields) { !it.isTransient })
             )
-        }, onSuccess, onError)
+        }, onComplete = { result ->
+            result.fold(onSuccess, onError)
+        })
     }
 }

@@ -22,7 +22,7 @@ public class DDMFormActivity extends ThemeActivity {
     private ThingScreenlet screenlet;
     private ModalProgressBarWithLabel modalProgress;
 
-    private long formInstanceId = 36806;
+    private long formInstanceId = 36205;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

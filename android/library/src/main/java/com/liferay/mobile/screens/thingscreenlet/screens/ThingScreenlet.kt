@@ -96,10 +96,11 @@ class ThingScreenlet @JvmOverloads constructor(
 	fun load(thingId: String, scenario: Scenario? = null, credentials: String? = null,
 		onSuccess: ((ThingScreenlet) -> Unit)? = null, onError: ((Exception) -> Unit)? = null) {
 
-		ApioConsumer.setAuthenticator(getApioAuthenticator())
+		val apioConsumer = ApioConsumer(getApioAuthenticator())
+
 
 		HttpUrl.parse(thingId)?.let {
-			ApioConsumer.fetch(it, onSuccess = {
+			apioConsumer.fetch(it, onSuccess = {
 				if (scenario != null) {
 					this.scenario = scenario
 				}

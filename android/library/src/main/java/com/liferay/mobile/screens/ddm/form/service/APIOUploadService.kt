@@ -41,21 +41,21 @@ class APIOUploadService : IUploadService, BaseAPIOService() {
 
         val filePath = field.currentValue?.toString()
 
-        filePath?.run {
+        filePath?.also {
             val fileName = AndroidUtil.getFileNameFromPath(filePath)
 
-            ApioConsumer.performOperation(thingId, operationId, {
+            apioConsumer.performOperation(thingId, operationId, fillFields = { _ ->
                 mapOf(
                         Pair("binaryFile", inputStream),
                         Pair("name", fileName),
                         Pair("title", fileName)
                 )
-            }, {
+            }, onComplete = { result ->
                 inputStream.close()
-                onSuccess(DocumentRemoteFile(it.id, fileName))
-            }, {
-                inputStream.close()
-                onError(it)
+
+                result.fold({ thing ->
+                    onSuccess(DocumentRemoteFile(thing.id, fileName))
+                }, onError)
             })
         }
     }

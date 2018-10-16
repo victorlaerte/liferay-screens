@@ -1,6 +1,5 @@
 package com.liferay.mobile.screens.ddm.form.service
 
-import com.liferay.apio.consumer.ApioConsumer
 import com.liferay.apio.consumer.exception.ThingWithoutOperationException
 import com.liferay.apio.consumer.model.Thing
 import com.liferay.mobile.screens.ddl.form.util.FormConstants
@@ -26,10 +25,12 @@ class APIOEvaluateService : IEvaluateService, BaseAPIOService() {
                                  fields: MutableList<Field<*>>, onSuccess: (Thing) -> Unit,
                                  onError: (Exception) -> Unit) {
 
-        ApioConsumer.performOperation(thingId, operationId, {
+        apioConsumer.performOperation(thingId, operationId, fillFields = { _ ->
             mapOf(
                 Pair(FormConstants.FIELD_VALUES, FieldValueSerializer.serialize(fields))
             )
-        }, onSuccess, onError)
+        }, onComplete = { result ->
+            result.fold(onSuccess, onError)
+        })
     }
 }
