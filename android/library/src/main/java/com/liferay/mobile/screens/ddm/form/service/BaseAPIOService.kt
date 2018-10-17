@@ -9,7 +9,8 @@ import com.liferay.mobile.screens.context.SessionContext
  */
 abstract class BaseAPIOService {
 
-    internal val apioConsumer: ApioConsumer
+    @JvmField
+    val apioConsumer: ApioConsumer
 
     init {
         val basicCredentials = SessionContext.getCredentialsFromCurrentSession()
