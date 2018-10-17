@@ -100,18 +100,20 @@ class ThingScreenlet @JvmOverloads constructor(
 
 
 		HttpUrl.parse(thingId)?.let {
-			apioConsumer.fetch(it, onSuccess = {
-				if (scenario != null) {
-					this.scenario = scenario
-				}
+			apioConsumer.fetch(it) { result ->
+				result.fold({
+					if (scenario != null) {
+						this.scenario = scenario
+					}
 
-				thing = it
-				onSuccess?.invoke(this)
-			}, onError = {
-				LiferayLogger.e(it.message, it)
-				baseView?.showError(it.message)
-				onError?.invoke(it)
-			})
+					thing = it
+					onSuccess?.invoke(this)
+				}, {
+					LiferayLogger.e(it.message, it)
+					baseView?.showError(it.message)
+					onError?.invoke(it)
+				})
+			}
 		}
 	}
 
