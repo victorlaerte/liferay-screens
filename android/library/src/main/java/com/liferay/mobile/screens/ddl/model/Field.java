@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Element;
 
@@ -67,6 +69,8 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
 
     private boolean isTransient = false;
     private String displayStyle;
+
+    private UUID uuid = UUID.randomUUID();
 
     public Field() {
         super();
@@ -171,6 +175,8 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
 
         isTransient = (in.readInt() == 1);
         dataSourceType = in.readString();
+
+        uuid = (UUID) in.readSerializable();
     }
 
     @Override
@@ -220,6 +226,10 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
 
     public String getText() {
         return text;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public boolean isTransient() {
@@ -376,6 +386,8 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
 
         destination.writeInt(isTransient ? 1 : 0);
         destination.writeString(dataSourceType);
+
+        destination.writeSerializable(uuid);
     }
 
     public List<Field> getFields() {
@@ -465,7 +477,7 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
         }
 
         public Field createField(Map<String, Object> attributes, Locale locale, Locale defaultLocale,
-            boolean repeatedField) {
+            boolean repeatableChild) {
 
             Field field = null;
 
@@ -505,7 +517,7 @@ public abstract class Field<T extends Serializable> implements Parcelable, Valid
                 }
             }
 
-            if (field != null && !repeatedField) {
+            if (field != null && !repeatableChild) {
                 boolean repeatable =
                     Boolean.valueOf(getAttributeStringValue(attributes, FormFieldKeys.IS_REPEATABLE_KEY));
 
