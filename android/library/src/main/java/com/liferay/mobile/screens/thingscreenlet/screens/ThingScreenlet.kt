@@ -16,6 +16,7 @@ package com.liferay.mobile.screens.thingscreenlet.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
@@ -38,10 +39,10 @@ import com.liferay.mobile.screens.thingscreenlet.screens.views.*
 import okhttp3.HttpUrl
 
 open class BaseScreenlet @JvmOverloads constructor(
-	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
-	FrameLayout(context, attrs, defStyleAttr) {
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
-	var layout: View? = null
+    var layout: View? = null
 }
 
 open class ThingScreenlet @JvmOverloads constructor(
@@ -163,30 +164,9 @@ open class ThingScreenlet @JvmOverloads constructor(
 	}
 
 	override fun onFinishInflate() {
-		super.onFinishInflate()
-		isSaveEnabled = true
-	}
-
-	override fun onSaveInstanceState(): Parcelable {
-		thing?.let {
-			val bundle = Bundle()
-			bundle.putParcelable("superState", super.onSaveInstanceState())
-			bundle.putParcelable("thing", it)
-			return bundle
-		}
-
-		return super.onSaveInstanceState()
-	}
-
-	override fun onRestoreInstanceState(state: Parcelable?) {
-		if (state is Bundle) {
-			savedInstanceState = state
-			thing = state.getParcelable("thing")
-			super.onRestoreInstanceState(state.getParcelable("superState"))
-		} else {
-			super.onRestoreInstanceState(state)
-		}
-	}
+        super.onFinishInflate()
+        isSaveEnabled = true
+    }
 
 	private fun getApioAuthenticator(credentials: String? = null): ApioAuthenticator? {
 		val credentials = credentials ?: SessionContext.getCredentialsFromCurrentSession()
@@ -196,4 +176,21 @@ open class ThingScreenlet @JvmOverloads constructor(
 		}
 	}
 
+    override fun onSaveInstanceState(): Parcelable {
+        var savedState = ThingScreenletSavedState(super.onSaveInstanceState())
+
+        thing?.let {
+            savedState.thing = it
+        }
+
+        return savedState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var savedState: ThingScreenletSavedState = state as ThingScreenletSavedState
+        thing = savedState.thing
+        super.onRestoreInstanceState(state)
+    }
 }
+
+
