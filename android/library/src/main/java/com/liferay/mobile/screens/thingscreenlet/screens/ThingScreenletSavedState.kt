@@ -24,28 +24,28 @@ import com.liferay.apio.consumer.model.Thing
  */
 class ThingScreenletSavedState : View.BaseSavedState {
 
-    lateinit var thing: Thing
+	lateinit var thing: Thing
 
-    constructor(superState: Parcelable) : super(superState)
+	constructor(superState: Parcelable) : super(superState)
 
-    internal constructor(parcel: Parcel) : super(parcel) {
-        thing = parcel.readParcelable(Thing::class.java.classLoader)
-    }
+	internal constructor(parcel: Parcel) : super(parcel) {
+		thing = parcel.readParcelable(Thing::class.java.classLoader)
+	}
 
-    override fun writeToParcel(out: Parcel, flags: Int) {
-        super.writeToParcel(out, flags)
-        out.writeParcelable(thing, flags)
-    }
+	override fun writeToParcel(out: Parcel, flags: Int) {
+		super.writeToParcel(out, flags)
+		out.writeParcelable(thing, flags)
+	}
 
-    object CREATOR : Parcelable.Creator<ThingScreenletSavedState> {
-        override fun createFromParcel(parcel: Parcel): ThingScreenletSavedState {
-            return ThingScreenletSavedState(parcel)
-        }
+	object CREATOR : Parcelable.Creator<ThingScreenletSavedState> {
+		override fun createFromParcel(parcel: Parcel): ThingScreenletSavedState {
+			return ThingScreenletSavedState(parcel)
+		}
 
-        override fun newArray(size: Int): Array<ThingScreenletSavedState?> {
-            return arrayOfNulls(size)
-        }
-    }
+		override fun newArray(size: Int): Array<ThingScreenletSavedState?> {
+			return arrayOfNulls(size)
+		}
+	}
 
-    override fun describeContents(): Int = 0
+	override fun describeContents(): Int = 0
 }
